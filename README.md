@@ -42,6 +42,7 @@ The repository ships with a curated set of default skills covering common tasks:
 - **Bragi:** Presentation structuring, Question formulation, Trade-off communication
 - **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
+- **Kvasir:** Task decomposition, Risk assessment, Approach evaluation
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
 
 > **These defaults are starting points, not prescriptions.** Each skill is a Markdown file in the `skills/` directory. You are encouraged to review, modify, and extend them to match your team's workflows, coding standards, and tooling. Remove what you don't need, adjust what you do, and add your own. Yggdrasil is designed to be adapted, not adopted wholesale.
@@ -92,6 +93,14 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 ---
 
+### Kvasir — The Wise Counselor *(Strategic Advisor)*
+
+> *Kvasir was the wisest of all beings, created by the gods as a token of peace after the Æsir–Vanir war. He wandered the world, advising and teaching, sharing his wisdom freely with all who sought it. His blood was used to brew the Mead of Poetry — a drink that grants eloquence and wisdom to those who taste it.*
+
+**System Role:** Kvasir is the strategic advisor of the pantheon. He is summoned by Odin for complex, long, or high-stakes tasks — those that demand deep reasoning, careful decomposition, and thorough risk assessment. Kvasir synthesizes context into actionable strategic plans, evaluates approaches, and identifies failure modes before execution begins. He does not implement, research raw context, or delegate — he advises. Where Mimir gathers knowledge, Kvasir applies wisdom.
+
+---
+
 ### Brokk — The Smith *(Implementer)*
 
 > *Brokk is a master dwarf smith of unmatched skill. With his brother Eitri, he forged Mjölnir (Thor's hammer), Draupnir (Odin's golden ring), and Gullinbursti (Freyr's golden boar) — treasures that shaped the fate of gods and giants alike.*
@@ -116,10 +125,11 @@ The lifecycle flows naturally through the pantheon:
 
 1. **Odin** receives the objective and determines the path.
 2. **Bragi** advises on communication strategy and presentation.
-3. **Mimir** researches and gathers context.
-4. **Brokk** implements the solution.
-5. **Heimdall** reviews the result.
-6. **Odin** evaluates the outcome and decides next steps.
+3. **Kvasir** advises on strategy and decomposition for complex tasks.
+4. **Mimir** researches and gathers context.
+5. **Brokk** implements the solution.
+6. **Heimdall** reviews the result.
+7. **Odin** evaluates the outcome and decides next steps.
 
 Each agent is an expert in its domain. Each trusts the others to do their part. Together, they form a complete, collaborative intelligence — a pantheon bound by purpose, rooted in the world-tree.
 

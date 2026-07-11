@@ -10,6 +10,7 @@ AI agent configuration for OpenCode — a pantheon of autonomous agents for orch
 | **Mimir** | Researcher | Researches and gathers context to support decisions. Read-only access. | Does not modify files or make decisions. Reports to the requesting agent. |
 | **Brokk** | Implementer | Creates and modifies code, docs, tests, and configuration. Has write access. | Does not define requirements or communicate with the user. Output must be reviewed by Heimdall. |
 | **Heimdall** | Reviewer | Reviews implementations and changes for quality and correctness. Read-only. | Does not modify files or implement fixes. Reports to the requesting agent. |
+| **Kvasir** | Strategic Advisor | Advises on complex task strategy, decomposition, and risk assessment. Read-only access. | Does not modify files, delegate, or communicate with the user. |
 | **Bragi** | Communication Advisor | Advises on communication strategy and presentation. May communicate directly with the user when tasked. Read-only. | Does not make decisions or coordinate agents. |
 
 ## Skill Categories
@@ -20,6 +21,7 @@ AI agent configuration for OpenCode — a pantheon of autonomous agents for orch
 | **Mimir** | Researcher | `mimir-*` (codebase-exploration, data-analysis, debugging-analysis, dependency-analysis, impact-analysis, performance-analysis, security-analysis, web-research) |
 | **Brokk** | Implementer | api-design, backend-development, database-development, devops, documentation-writing, frontend-development, refactoring, testing |
 | **Heimdall** | Reviewer | `heimdall-*` (accessibility-review, api-contract-review, architecture-review, code-review, dependency-review, documentation-review, performance-review, security-review, test-review) |
+| **Kvasir** | Strategic Advisor | `kvasir-*` (task-decomposition, risk-assessment, approach-evaluation) |
 | **Bragi** | Communication Advisor | presentation-structuring, question-formulation, tradeoff-communication |
 
 Odin's skills are user-defined `odin-*` plugins, auto-discovered from `skills/odin/` and gated by Odin's allowlist. See the README section *Extending Odin with Tools & Skills* for how to add them.
@@ -37,6 +39,8 @@ Odin's skills are user-defined `odin-*` plugins, auto-discovered from `skills/od
 1. **Research → Report**: Mimir investigates, returns findings.
 2. **Research → Implement → Review**: Mimir gathers context, Brokk builds, Heimdall validates. The standard pattern.
 3. **Implement → Review**: Brokk produces, Heimdall approves. Use when context is already clear.
+4. **Research → Advise → Implement → Review**: Mimir researches, Kvasir advises, Brokk builds, Heimdall validates. Use for complex or high-stakes tasks.
+5. **Advise → Research → Implement → Review**: Kvasir decomposes, Mimir researches, Brokk builds, Heimdall validates. Use when decomposition is the primary challenge.
 
 ## Agent Selection Guide
 
@@ -46,6 +50,7 @@ Odin's skills are user-defined `odin-*` plugins, auto-discovered from `skills/od
 | Research & analysis | **Mimir** | `mimir-*` (codebase-exploration, data-analysis, debugging-analysis, dependency-analysis, impact-analysis, performance-analysis, security-analysis, web-research) |
 | Implementation | **Brokk** | api-design, backend-development, database-development, devops, documentation-writing, frontend-development, refactoring, testing |
 | Review & validation | **Heimdall** | `heimdall-*` (accessibility-review, api-contract-review, architecture-review, code-review, dependency-review, documentation-review, performance-review, security-review, test-review) |
+| Strategic planning & decomposition | **Kvasir** | `kvasir-*` (task-decomposition, risk-assessment, approach-evaluation) |
 
 ## Boundaries (Hard Rules)
 
