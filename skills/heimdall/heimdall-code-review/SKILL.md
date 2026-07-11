@@ -41,7 +41,7 @@ Evaluate code changes independently and ensure delivered work meets expectations
 
 - Every requirement has been traced to an implementation and verified.
 - All identified issues are documented with clear reproduction or explanation.
-- Feedback is actionable — the implementer knows exactly what to change.
+- Feedback is actionable — the author of the change knows exactly what to change.
 - The review covers correctness, not just style.
 
 ## Anti-Patterns

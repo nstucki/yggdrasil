@@ -3,11 +3,11 @@ name: mimir-dependency-analysis
 description: Analyze existing dependencies and evaluate new technologies for adoption.
 ---
 
-# Dependency & Technology Analysis
+# Dependency Analysis
 
 ## Purpose
 
-Assess the health, security, and compatibility of existing dependencies. Evaluate new libraries, frameworks, and technologies for adoption — including comparison of alternatives and migration cost.
+Assess the health, security, and compatibility of existing dependencies. Evaluate new libraries, frameworks, and technologies for adoption — including comparison of alternatives and migration cost. This is an investigative skill: it examines the existing state and options before or independent of implementation, producing findings that inform decisions — validating delivered dependency changes is the concern of a subsequent dependency review.
 
 ## When to Use
 
@@ -18,22 +18,22 @@ Assess the health, security, and compatibility of existing dependencies. Evaluat
 
 ## Workflow
 
-1. Define the evaluation scope.
+1. **Define the evaluation scope.**
    - Identify whether this is an audit of existing dependencies or an evaluation of new technologies.
    - For comparisons: define the evaluation criteria and weightings upfront.
-2. Inventory and assess dependencies.
+2. **Inventory and assess dependencies.**
    - List direct and transitive dependencies with versions and lock file status.
    - For new technologies: identify candidates and their key characteristics.
-3. Evaluate maintenance and community health.
+3. **Evaluate maintenance and community health.**
    - Check release frequency, recent activity, and number of maintainers.
    - Assess bus factor, issue/PR responsiveness, and community size.
    - Look at maturity, adoption, and real-world usage.
-4. Assess risks and compatibility.
+4. **Assess risks and compatibility.**
    - Check for known vulnerabilities (reference CVE or advisory IDs).
    - Evaluate licensing concerns and compliance conflicts.
    - Check compatibility with the existing stack and platform.
    - For new technologies: assess integration complexity and migration cost.
-5. Report findings.
+5. **Report findings.**
    - Summarize health and risk for each dependency or technology.
    - For comparisons: present a ranked recommendation with trade-offs.
    - Prioritize risks and recommend concrete actions.
@@ -54,5 +54,5 @@ Assess the health, security, and compatibility of existing dependencies. Evaluat
 
 ## Related Skills
 
-- `mimir-codebase-exploration` — for understanding how dependencies are used in the codebase.
-- `mimir-security-analysis` — for deeper security investigation of dependencies.
+- `mimir-codebase-exploration` — for understanding how dependencies are used in the codebase
+- `mimir-security-analysis` — for deeper security investigation of dependencies

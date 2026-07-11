@@ -37,7 +37,7 @@ Improve the structure, readability, and maintainability of existing code without
    - Add tests if coverage is missing.
    - Check edge cases and error paths.
 
-5. **Report completed work and remaining concerns to the requesting agent with a clear summary.**
+5. **Report.** Summarize completed work and remaining concerns to the requesting agent.
 
 ## Quality Criteria
 

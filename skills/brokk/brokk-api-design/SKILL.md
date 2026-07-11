@@ -38,6 +38,8 @@ Design and implement APIs that are consistent, predictable, and easy to consume.
    - Validate the specification against schema standards (e.g., OpenAPI validation).
    - Consider generating client SDKs or type definitions from the contract.
 
+5. **Report.** Summarize completed work and remaining concerns to the requesting agent.
+
 ## Quality Criteria
 
 - The contract is designed before implementation begins.
@@ -55,7 +57,7 @@ Design and implement APIs that are consistent, predictable, and easy to consume.
 
 ## Related Skills
 
-- `brokk-backend-development` — for implementing the server logic after design is approved.
+- `brokk-backend-development` — for implementing the server logic after design is approved
 - `brokk-documentation-writing` — for documenting the API contract and usage
 - `brokk-frontend-development` — for consuming the API from the client side
 - `brokk-testing` — for writing tests that validate API behavior

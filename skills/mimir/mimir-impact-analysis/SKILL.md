@@ -18,22 +18,22 @@ Determine which files, modules, services, and tests would be affected by a propo
 
 ## Workflow
 
-1. Define the proposed change.
+1. **Define the proposed change.**
    - Identify the specific files, functions, or interfaces to be modified.
    - Document the nature of the change (addition, modification, removal, rename).
-2. Trace dependencies and references.
+2. **Trace dependencies and references.**
    - Find all imports, calls, and references to the affected code.
    - Identify transitive dependencies — code that depends on code that depends on the change.
    - Check for dynamic references (reflection, string-based lookups, dependency injection).
-3. Assess test coverage impact.
+3. **Assess test coverage impact.**
    - Identify existing tests that cover the affected code.
    - Determine which tests need updating and which new tests are needed.
    - Flag areas with no test coverage that would be affected.
-4. Evaluate risk and scope.
+4. **Evaluate risk and scope.**
    - Classify the change scope (isolated, module-level, cross-module, system-wide).
    - Identify high-risk areas (shared utilities, public APIs, hot paths).
    - Flag potential breaking changes for consumers.
-5. Report the impact assessment.
+5. **Report the impact assessment.**
    - List all affected files grouped by module or service.
    - Summarize risk level and recommended approach (incremental vs. big-bang).
    - Identify safe-to-change areas and areas requiring extra caution.
@@ -54,5 +54,5 @@ Determine which files, modules, services, and tests would be affected by a propo
 
 ## Related Skills
 
-- `mimir-codebase-exploration` — for understanding the codebase structure before tracing impacts.
-- `mimir-dependency-analysis` — for assessing the impact of dependency changes.
+- `mimir-codebase-exploration` — for understanding the codebase structure before tracing impacts
+- `mimir-dependency-analysis` — for assessing the impact of dependency changes

@@ -42,6 +42,8 @@ Build and maintain deployment pipelines, infrastructure configuration, automatio
    - Verify monitoring and alerting are firing correctly.
    - Document the infrastructure and operational procedures.
 
+6. **Report.** Summarize completed work and remaining concerns to the requesting agent.
+
 ## Quality Criteria
 
 - Infrastructure is defined as code, not configured manually.

@@ -7,14 +7,14 @@ description: Review implementations for efficiency, scalability, and resource us
 
 ## Purpose
 
-Independently review implementations for performance characteristics, identify inefficient patterns, and verify that performance requirements are met.
+Independently review implementations for performance characteristics, identify inefficient patterns, and verify that performance requirements are met. This is a validation skill: it reviews delivered work and changes against performance requirements and prior analysis findings — open-ended bottleneck investigation of a running system belongs to a prior performance analysis.
 
 ## When to Use
 
 - Before deploying code that handles significant load or data volume.
 - When reviewing changes to critical paths, database queries, or network calls.
-- When a performance review is needed following a performance analysis.
-- When confirmation that performance requirements are satisfied is needed.
+- After a prior performance analysis, to validate that identified bottlenecks were addressed in the implementation.
+- To confirm performance requirements are satisfied before sign-off.
 
 ## Workflow
 

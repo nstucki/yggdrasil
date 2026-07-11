@@ -57,7 +57,7 @@ Understand an existing codebase from structure to architecture. Identify how the
 
 ## Related Skills
 
-- `mimir-dependency-analysis` — for assessing dependencies discovered during exploration.
-- `mimir-web-research` — for researching external documentation or standards.
-- `mimir-performance-analysis` — for deeper performance investigation.
-- `mimir-security-analysis` — for security concerns discovered during exploration.
+- `mimir-dependency-analysis` — for assessing dependencies discovered during exploration
+- `mimir-web-research` — for researching external documentation or standards
+- `mimir-performance-analysis` — for deeper performance investigation
+- `mimir-security-analysis` — for security concerns discovered during exploration

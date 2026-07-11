@@ -14,7 +14,7 @@ Independently review documentation for accuracy, clarity, completeness, and cons
 - Before publishing or delivering documentation to users.
 - When recently created or updated documentation needs review.
 - When reviewing API documentation, READMEs, or architectural docs.
-- When assurance that documentation is reliable and useful is needed.
+- To confirm documentation is reliable and useful before it is delivered.
 
 ## Workflow
 

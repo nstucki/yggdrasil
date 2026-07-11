@@ -18,11 +18,30 @@ Systematically compare multiple candidate approaches to a problem, evaluating ea
 
 ## Workflow
 
-1. **Enumerate approaches.** Identify all viable candidate approaches.
-2. **Define evaluation criteria.** Establish the dimensions of comparison (e.g., effort, risk, maintainability, scalability, alignment with existing patterns).
-3. **Score each approach.** Evaluate each candidate against the criteria.
-4. **Identify trade-offs.** Make explicit what each approach gains and sacrifices.
-5. **Recommend.** Select the approach best aligned with constraints and goals. Justify the recommendation.
+1. **Enumerate approaches.**
+   - Identify all viable candidate approaches, not just the obvious one.
+   - Include approaches that differ meaningfully in strategy or effort.
+   - Discard only those that are clearly infeasible, and note why.
+
+2. **Define evaluation criteria.**
+   - Establish the dimensions of comparison relevant to this task.
+   - Consider effort, risk, maintainability, scalability, and fit with existing patterns.
+   - Ensure the criteria reflect the actual constraints and goals.
+
+3. **Score each approach.**
+   - Evaluate each candidate consistently against every criterion.
+   - Base scores on evidence and reasoning, not first impressions.
+   - Record where an approach clearly excels or falls short.
+
+4. **Identify trade-offs.**
+   - Make explicit what each approach gains and what it sacrifices.
+   - Surface hidden costs such as complexity, lock-in, or maintenance burden.
+   - Compare trade-offs against the priorities that matter most here.
+
+5. **Recommend.**
+   - Select the approach best aligned with constraints and goals.
+   - Justify the recommendation against the criteria and trade-offs.
+   - State the conditions under which a different approach would be preferred.
 
 ## Quality Criteria
 
@@ -40,5 +59,5 @@ Systematically compare multiple candidate approaches to a problem, evaluating ea
 
 ## Related Skills
 
-- `kvasir-task-decomposition` — for decomposing the chosen approach into subtasks.
-- `kvasir-risk-assessment` — for evaluating risks in the recommended approach.
+- `kvasir-risk-assessment` — for evaluating risks in the recommended approach
+- `kvasir-task-decomposition` — for decomposing the chosen approach into subtasks

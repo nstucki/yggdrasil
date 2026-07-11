@@ -7,14 +7,14 @@ description: Review implementations for vulnerabilities, security risks, and com
 
 ## Purpose
 
-Independently assess implementations and designs for security vulnerabilities, unsafe practices, and compliance with security best practices.
+Independently assess implementations and designs for security vulnerabilities, unsafe practices, and compliance with security best practices. This is a validation skill: it reviews delivered work and changes against security standards and prior analysis findings — open-ended investigation of existing systems belongs to a prior security analysis.
 
 ## When to Use
 
 - Before releasing code that handles authentication, authorization, or sensitive data.
 - When reviewing changes that process user input or external data.
-- When a security review is needed following a security analysis.
-- When assurance that security-sensitive changes are safe to deploy is needed.
+- After a prior security analysis, to validate that identified risks were addressed in the implementation.
+- To confirm security-sensitive changes are safe to deploy.
 
 ## Workflow
 

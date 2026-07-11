@@ -42,6 +42,8 @@ Create clear, accurate, and maintainable documentation that helps users and deve
    - Review for typos, broken links, and outdated information.
    - Ensure a newcomer can follow the documentation without confusion.
 
+6. **Report.** Summarize completed work and remaining concerns to the requesting agent.
+
 ## Quality Criteria
 
 - The documentation is accurate against the current implementation.

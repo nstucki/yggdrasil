@@ -14,7 +14,7 @@ Review API specifications (OpenAPI, GraphQL schemas, protobuf, etc.) for consist
 - After an API specification has been created or modified.
 - Before implementing an API on the server or consuming it on the client.
 - When reviewing changes that affect external or internal API contracts.
-- When assurance that an API design is sound before implementation begins is needed.
+- To confirm an API design is sound before implementation begins.
 
 ## Workflow
 

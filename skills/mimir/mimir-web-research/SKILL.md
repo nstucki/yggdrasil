@@ -3,7 +3,7 @@ name: mimir-web-research
 description: Research external information from the web and official documentation.
 ---
 
-# Web & Documentation Research
+# Web Research
 
 ## Purpose
 
@@ -17,22 +17,22 @@ Gather information from external sources — official documentation, technical s
 
 ## Workflow
 
-1. Define the research question.
+1. **Define the research question.**
    - Identify what specific information is needed and why.
    - Frame the question precisely to guide the search.
-2. Search strategically.
+2. **Search strategically.**
    - Start with official documentation and authoritative sources.
    - Use targeted queries; refine based on initial results.
    - Prioritize primary sources over secondary interpretations.
-3. Evaluate source credibility.
+3. **Evaluate source credibility.**
    - Cross-reference findings across multiple sources.
    - Check publication dates for recency and applicability.
    - Assess the authority and reputation of each source.
-4. Extract relevant information.
+4. **Extract relevant information.**
    - Capture key facts, concepts, constraints, and examples.
    - Note any contradictions between sources.
    - Compare findings with the current implementation where applicable.
-5. Synthesize findings.
+5. **Synthesize findings.**
    - Summarize key findings with source references.
    - Highlight gaps and uncertainties.
    - Note contradictions and the most likely resolution.
@@ -53,5 +53,5 @@ Gather information from external sources — official documentation, technical s
 
 ## Related Skills
 
-- `mimir-codebase-exploration` — for understanding the local codebase context.
-- `mimir-dependency-analysis` — for evaluating technologies and dependencies found during research.
+- `mimir-codebase-exploration` — for understanding the local codebase context
+- `mimir-dependency-analysis` — for evaluating technologies and dependencies found during research

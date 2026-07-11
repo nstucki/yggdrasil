@@ -18,24 +18,24 @@ Evaluate the quality and effectiveness of tests — not just whether they pass, 
 
 ## Workflow
 
-1. Understand the testing context.
+1. **Understand the testing context.**
    - Identify what functionality the tests are meant to verify.
    - Determine the testing strategy (unit, integration, end-to-end).
    - Review the test framework and tooling choices.
-2. Evaluate coverage adequacy.
+2. **Evaluate coverage adequacy.**
    - Identify which code paths are tested and which are not.
    - Check for edge case coverage: boundary values, empty inputs, error paths.
    - Flag critical paths that lack test coverage.
-3. Assess test quality.
+3. **Assess test quality.**
    - Check that tests verify behavior, not implementation details.
    - Identify flaky tests or tests with hidden dependencies.
    - Look for over-mocking that makes tests tautological.
    - Evaluate assertion quality — are they specific enough to catch regressions?
-4. Review maintainability.
+4. **Review maintainability.**
    - Check for test duplication and excessive setup boilerplate.
    - Assess naming clarity and test organization.
    - Identify tests that would break on harmless refactors.
-5. Report findings.
+5. **Report findings.**
    - List coverage gaps by severity.
    - Identify tests that need rewriting or removal.
    - Recommend specific improvements to test strategy.
@@ -56,4 +56,4 @@ Evaluate the quality and effectiveness of tests — not just whether they pass, 
 
 ## Related Skills
 
-- `heimdall-code-review` — for reviewing the implementation code being tested.
+- `heimdall-code-review` — for reviewing the implementation code being tested

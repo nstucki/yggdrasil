@@ -33,7 +33,11 @@ This copies the files as follows:
 - **Agents** → `~/.config/opencode/agents/Yggdrasil/`
 - **Skills** → `~/.config/opencode/skills/Yggdrasil/`
 
-The script is safe to run multiple times — it performs a **merge**. Running it copies Yggdrasil's agent and skill definitions into the namespaced `Yggdrasil` folders and preserves any pre-existing files already present there that are not part of this project (it never deletes destination files); if files already exist, it prompts you before merging in the updates.
+The script is safe to run multiple times — it performs a **merge**:
+
+- New and same-named Yggdrasil files are added or overwritten in the namespaced `Yggdrasil` folders.
+- Pre-existing files that are not part of this project are preserved — the script never deletes destination files.
+- If the target directories already contain files, you are prompted (y/N, default No) before merging. Pass `-y`/`--yes`/`--force` to skip the prompt, e.g. for non-interactive installs (CI, or `curl ... | bash`).
 
 ### Default Skills
 
@@ -42,7 +46,7 @@ The repository ships with a curated set of default skills covering common tasks:
 - **Bragi:** Presentation structuring, Question formulation, Trade-off communication
 - **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
-- **Kvasir:** Task decomposition, Risk assessment, Approach evaluation
+- **Kvasir:** Approach evaluation, Risk assessment, Task decomposition
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
 
 > **These defaults are starting points, not prescriptions.** Each skill is a Markdown file in the `skills/` directory. You are encouraged to review, modify, and extend them to match your team's workflows, coding standards, and tooling. Remove what you don't need, adjust what you do, and add your own. Yggdrasil is designed to be adapted, not adopted wholesale.
@@ -51,7 +55,29 @@ The repository ships with a curated set of default skills covering common tasks:
 
 Subagents may be granted powers beyond their birthright — additional tools such as **MCPs (Model Context Protocol servers)** can be enabled for a specific subagent through its configuration. Yet Odin, wise though he is, can only orchestrate what he knows exists. When you bestow a new tool upon a subagent, you must also tell Odin of its presence, lest the gift go unused.
 
-This is done by adding an **Odin skill** — a `SKILL.md` placed in the `skills/odin/` folder whose name begins with the prefix **`odin-`**. Such a skill is an orchestration and routing guide: it teaches Odin *when* to send a task to the subagent that now wields the new tool, and how to weave the findings back into the greater plan. It is both signpost and permission — Odin's allowlist admits only skills matching `odin-*`, so the prefix is at once the naming convention and the gate of access. Any new Odin skill **must** be named `odin-<name>`.
+This is done by adding an **Odin skill**. Such a skill is an orchestration and routing guide: it teaches Odin *when* to send a task to the subagent that now wields the new tool, and how to weave the findings back into the greater plan. It is both signpost and permission — Odin's allowlist admits only skills matching `odin-*`, so the prefix is at once the naming convention and the gate of access.
+
+To add one:
+
+1. Create the directory `skills/odin/odin-<name>/` and place a `SKILL.md` inside it.
+2. In its YAML frontmatter, set `name: odin-<name>` — the name **must** carry the `odin-` prefix.
+3. Re-run `./setup.sh` to install it. See also `skills/odin/README.md`.
+
+```text
+skills/odin/
+└── odin-jira-routing/
+    └── SKILL.md        # frontmatter: name: odin-jira-routing
+```
+
+### Validation
+
+The repository ships a validator for its own definitions:
+
+```bash
+scripts/validate.sh    # or: bash scripts/validate.sh
+```
+
+It checks that agent frontmatter is valid, that skill frontmatter and required sections are present, that skill cross-references resolve, that the shared orchestration content in the Odin agent files stays in sync, and that subagent prompts and skills never reference other agents by name (subagent isolation). It is read-only and reports PASS/FAIL per check.
 
 ---
 
@@ -71,7 +97,7 @@ Odin operates in three modes, adapting his level of autonomy to the task at hand
 | **Guided** | Gathers initial requirements directly, then proceeds autonomously once the objective is clear. May task Bragi for advice on structuring the conversation. |
 | **Interactive** | Collaborates with the user directly, involving them when decisions or clarifications are needed. Tasks Bragi for advice on framing and presentation. |
 
-> **Note:** In Autonomous mode, Odin never interacts with the user. He makes reasonable assumptions and drives the full workflow independently. Bragi may still be consulted for advice on documenting assumptions and structuring summaries.
+> **Note:** Even in Autonomous mode, Bragi may still be consulted for advice on documenting assumptions and structuring summaries.
 
 See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to learn how to grant subagents new tools — such as MCPs — and make Odin aware of them through `odin-*` skills.
 
@@ -121,15 +147,19 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Just as Odin sends the Einherjar into battle, he dispatches agents across the tree to fulfill their purpose.*
 
-The lifecycle flows naturally through the pantheon:
+The lifecycle flows naturally through the pantheon: **Odin** receives the
+objective and determines the path; **Bragi** advises on communication, **Kvasir**
+on strategy and decomposition; **Mimir** researches and gathers context; **Brokk**
+implements; **Heimdall** reviews; and **Odin** evaluates the outcome and decides
+next steps.
 
-1. **Odin** receives the objective and determines the path.
-2. **Bragi** advises on communication strategy and presentation.
-3. **Kvasir** advises on strategy and decomposition for complex tasks.
-4. **Mimir** researches and gathers context.
-5. **Brokk** implements the solution.
-6. **Heimdall** reviews the result.
-7. **Odin** evaluates the outcome and decides next steps.
+Odin selects among several established orchestration patterns depending on the
+task — from a simple *Research → Report* to the standard *Research → Implement →
+Review* to fuller flows that bring Kvasir's counsel to bear on complex,
+high-stakes work. The canonical list of orchestration patterns and the rules
+that govern them lives in **[AGENTS.md](./AGENTS.md#orchestration-patterns)** — the
+authoritative reference. The three Odin agent files carry copies of shared
+orchestration content, kept byte-identical and checked by `scripts/validate.sh`.
 
 Each agent is an expert in its domain. Each trusts the others to do their part. Together, they form a complete, collaborative intelligence — a pantheon bound by purpose, rooted in the world-tree.
 

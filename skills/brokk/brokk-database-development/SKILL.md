@@ -42,6 +42,8 @@ Design and implement database schemas, migrations, queries, and data access laye
    - Check query plans for full table scans or missing indexes.
    - Verify data integrity constraints are enforced.
 
+6. **Report.** Summarize completed work and remaining concerns to the requesting agent.
+
 ## Quality Criteria
 
 - Migrations are reversible and tested.

@@ -7,7 +7,7 @@ description: Identify performance bottlenecks, inefficiencies, and optimization 
 
 ## Purpose
 
-Analyze systems for performance issues, identify bottlenecks, and recommend measurable improvements.
+Analyze systems for performance issues, identify bottlenecks, and recommend measurable improvements. This is an investigative skill: it examines the existing state before or independent of implementation, producing findings that inform decisions — validating that delivered changes meet performance requirements is the concern of a subsequent performance review.
 
 ## When to Use
 

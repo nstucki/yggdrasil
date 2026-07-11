@@ -7,7 +7,7 @@ description: Identify security risks, vulnerabilities, and unsafe patterns in co
 
 ## Purpose
 
-Analyze systems for security weaknesses, identify vulnerabilities, and recommend mitigation strategies.
+Analyze systems for security weaknesses, identify vulnerabilities, and recommend mitigation strategies. This is an investigative skill: it examines the existing state before or independent of implementation, producing findings that inform decisions — validating that delivered changes address those findings is the concern of a subsequent security review.
 
 ## When to Use
 
@@ -59,5 +59,5 @@ Analyze systems for security weaknesses, identify vulnerabilities, and recommend
 
 ## Related Skills
 
-- `mimir-codebase-exploration` — for understanding how data flows through the system
-- `mimir-dependency-analysis` — for checking dependency vulnerabilities and evaluating security of new technologies.
+- `mimir-codebase-exploration` — for mapping code structure, entry points, and where untrusted input crosses trust boundaries
+- `mimir-dependency-analysis` — for checking dependency vulnerabilities and evaluating security of new technologies

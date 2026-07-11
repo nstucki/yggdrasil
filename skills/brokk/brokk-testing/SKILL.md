@@ -43,6 +43,8 @@ Create and maintain automated tests that verify correctness, prevent regressions
    - Remove or update tests when behavior intentionally changes.
    - Flag flaky tests for investigation.
 
+6. **Report.** Summarize completed work and remaining concerns to the requesting agent.
+
 ## Quality Criteria
 
 - Tests are deterministic and isolated from each other.

@@ -18,11 +18,30 @@ Identify potential failure modes in a proposed plan or approach, evaluate their 
 
 ## Workflow
 
-1. **Enumerate risks.** Identify technical, operational, security, and strategic risks across the plan.
-2. **Evaluate impact and likelihood.** Assess each risk's severity and probability.
-3. **Identify cascade effects.** Determine which risks could block downstream subtasks.
-4. **Recommend mitigations.** For each significant risk, propose a concrete mitigation or contingency.
-5. **Prioritize.** Rank risks by combined impact and likelihood to guide attention.
+1. **Enumerate risks.**
+   - Scan the plan for technical, operational, security, and strategic risks.
+   - Consider unfamiliar technology, breaking changes, and sensitive areas.
+   - Capture each risk specifically, not as a vague concern.
+
+2. **Evaluate impact and likelihood.**
+   - Assess how severe the consequences would be if each risk materialized.
+   - Estimate the probability that each risk actually occurs.
+   - Combine severity and probability into an overall risk rating.
+
+3. **Identify cascade effects.**
+   - Trace which downstream subtasks depend on the at-risk work.
+   - Determine which failures would block or invalidate later steps.
+   - Flag risks that sit early in long dependency chains.
+
+4. **Recommend mitigations.**
+   - For each significant risk, propose a concrete mitigation or contingency.
+   - Prefer mitigations that reduce likelihood or contain the blast radius.
+   - Note any residual risk that remains after mitigation.
+
+5. **Prioritize.**
+   - Rank risks by combined impact and likelihood.
+   - Direct attention to high-impact, high-probability risks first.
+   - Avoid over-analyzing low-impact risks at the expense of progress.
 
 ## Quality Criteria
 
@@ -40,5 +59,5 @@ Identify potential failure modes in a proposed plan or approach, evaluate their 
 
 ## Related Skills
 
-- `kvasir-task-decomposition` — for structuring plans that account for identified risks.
-- `kvasir-approach-evaluation` — for comparing risk profiles across approaches.
+- `kvasir-approach-evaluation` — for comparing risk profiles across approaches
+- `kvasir-task-decomposition` — for structuring plans that account for identified risks

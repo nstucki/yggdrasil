@@ -7,7 +7,7 @@ description: Review project dependencies for security, licensing, maintenance he
 
 ## Purpose
 
-Review project dependencies to identify risks related to security, licensing, maintenance status, and version compatibility.
+Review project dependencies to identify risks related to security, licensing, maintenance status, and version compatibility. This is a validation skill: it assesses dependency decisions and changes that have been delivered (or proposed for adoption) against quality standards and prior analysis findings — open-ended investigation and technology comparison belongs to a prior dependency analysis.
 
 ## When to Use
 
@@ -52,8 +52,8 @@ Review project dependencies to identify risks related to security, licensing, ma
 
 ## Anti-Patterns
 
-- **Version blindness**: Failing to verify whether the review identifies version-specific issues.
-- **Ignoring transitive deps**: Not verifying whether the analysis covered the full dependency tree.
+- **Version blindness**: Approving dependencies without checking the specific versions in use for known issues.
+- **Ignoring transitive deps**: Reviewing only direct dependencies, leaving the transitive tree unexamined.
 - **Silent approval**: Not raising concerns about outdated or unmaintained dependencies.
 - **False precision**: Accepting health scores without verifying the underlying evidence.
 

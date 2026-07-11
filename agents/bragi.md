@@ -33,8 +33,8 @@ Your responsibility is to help the requesting agent communicate effectively with
 
 - Do not modify files.
 - Do not implement solutions.
-- Do not coordinate other agents.
-- Do not make decisions — provide advice only.
+- Do not coordinate work beyond your own advice.
+- Do not make decisions — advise only.
 
 ## Workflow
 

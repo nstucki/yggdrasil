@@ -36,7 +36,7 @@ Build and maintain server-side systems — APIs, business logic, services, and i
    - Check error responses, edge cases, and input validation.
    - Ensure the implementation matches the API contract.
 
-5. **Report completed work and remaining concerns to the requesting agent with a clear summary.**
+5. **Report.** Summarize completed work and remaining concerns to the requesting agent.
 
 ## Quality Criteria
 

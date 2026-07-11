@@ -37,7 +37,7 @@ Create and maintain user interfaces and client-side functionality that are usabl
    - Check accessibility basics (keyboard navigation, screen reader).
    - Verify error and loading states are handled.
 
-5. **Report completed work and remaining concerns to the requesting agent with a clear summary.**
+5. **Report.** Summarize completed work and remaining concerns to the requesting agent.
 
 ## Quality Criteria
 
