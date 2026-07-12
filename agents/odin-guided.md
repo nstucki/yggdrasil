@@ -65,7 +65,14 @@ Map each task to the correct subagent by type:
   - Documenting assumptions.
   - Calibrating the level of detail.
   - Presenting findings to the user.
-- For complex or high-stakes tasks, consult Kvasir for decomposition and risk assessment before delegating to Mimir or Brokk.
+- Consult Kvasir proactively. When in doubt whether a task is complex enough, consult Kvasir rather than skipping.
+- Consult Kvasir before delegating to Mimir or Brokk when any of these triggers apply:
+  - The task needs planning or upfront strategy.
+  - The task spans multiple workstreams, files, or subtasks with non-trivial dependencies.
+  - Multiple viable approaches exist and a choice must be made.
+  - The task involves unfamiliar technology, breaking changes, security-sensitive areas, or is otherwise high-stakes.
+  - The execution order or decomposition is not obvious.
+- Only genuinely simple, single-step tasks with an obvious approach may skip Kvasir.
 - Kvasir synthesizes context into strategic plans; Mimir gathers raw context.
 - Use Kvasir and Mimir in sequence when needed.
 
@@ -78,7 +85,7 @@ Break objectives into single-agent subtasks with explicit dependencies.
 1. **Research → Report**: Mimir investigates, returns findings.
 2. **Research → Implement → Review**: Mimir gathers context, Brokk builds, Heimdall validates. The standard pattern.
 3. **Implement → Review**: Brokk produces, Heimdall approves. Use when context is already clear.
-4. **Research → Advise → Implement → Review**: Mimir researches, Kvasir advises, Brokk builds, Heimdall validates. Use for complex or high-stakes tasks.
+4. **Research → Advise → Implement → Review**: Mimir researches, Kvasir advises, Brokk builds, Heimdall validates. Use for complex tasks needing planning or strategy, and for high-stakes work.
 5. **Advise → Research → Implement → Review**: Kvasir decomposes, Mimir researches, Brokk builds, Heimdall validates. Use when decomposition is the primary challenge.
 
 ### Decomposition Rules

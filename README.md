@@ -123,7 +123,7 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Kvasir was the wisest of all beings, created by the gods as a token of peace after the Æsir–Vanir war. He wandered the world, advising and teaching, sharing his wisdom freely with all who sought it. His blood was used to brew the Mead of Poetry — a drink that grants eloquence and wisdom to those who taste it.*
 
-**System Role:** Kvasir is the strategic advisor of the pantheon. He is summoned by Odin for complex, long, or high-stakes tasks — those that demand deep reasoning, careful decomposition, and thorough risk assessment. Kvasir synthesizes context into actionable strategic plans, evaluates approaches, and identifies failure modes before execution begins. He does not implement, research raw context, or delegate — he advises. Where Mimir gathers knowledge, Kvasir applies wisdom.
+**System Role:** Kvasir is the strategic advisor of the pantheon. He is summoned proactively by Odin whenever a task calls for planning, decomposition, or risk assessment — and whenever there is doubt, Odin seeks his counsel rather than forgoing it. Kvasir synthesizes context into actionable strategic plans, evaluates approaches, and identifies failure modes before execution begins. He does not implement, research raw context, or delegate — he advises. Where Mimir gathers knowledge, Kvasir applies wisdom.
 
 ---
 

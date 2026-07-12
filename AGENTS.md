@@ -25,13 +25,15 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 - No agent may review its own output — independent review always required.
 - Heimdall must receive the complete Brokk output, never partial.
 - The three Odin agent files share an identical body between `## Responsibilities` and `## Communication Policy`; edit all three together — enforced by `scripts/validate.sh`.
+- Odin consults Kvasir proactively for tasks needing planning, decomposition, or risk assessment — when in doubt, consult rather than skip.
+- Only genuinely simple, single-step tasks with an obvious approach skip Kvasir; the Odin agent files define the concrete triggers.
 
 ## Orchestration Patterns
 
 1. **Research → Report**: Mimir investigates, returns findings.
 2. **Research → Implement → Review**: Mimir gathers context, Brokk builds, Heimdall validates. The standard pattern.
 3. **Implement → Review**: Brokk produces, Heimdall approves. Use when context is already clear.
-4. **Research → Advise → Implement → Review**: Mimir researches, Kvasir advises, Brokk builds, Heimdall validates. Use for complex or high-stakes tasks.
+4. **Research → Advise → Implement → Review**: Mimir researches, Kvasir advises, Brokk builds, Heimdall validates. Use for complex tasks needing planning or strategy, and for high-stakes work.
 5. **Advise → Research → Implement → Review**: Kvasir decomposes, Mimir researches, Brokk builds, Heimdall validates. Use when decomposition is the primary challenge.
 
 ## Agent Selection Guide
