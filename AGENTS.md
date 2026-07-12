@@ -43,7 +43,7 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 | Orchestration & coordination | **Odin** | `odin-*` (user-defined, see `skills/odin/README.md`) |
 | Communication strategy | **Bragi** | `bragi-*` (presentation-structuring, question-formulation, tradeoff-communication) |
 | Research & analysis | **Mimir** | `mimir-*` (codebase-exploration, data-analysis, debugging-analysis, dependency-analysis, impact-analysis, performance-analysis, security-analysis, web-research) |
-| Implementation | **Brokk** | `brokk-*` (api-design, backend-development, database-development, devops, documentation-writing, frontend-development, refactoring, testing) |
+| Implementation | **Brokk** | `brokk-*` (api-design, backend-development, database-development, devops, documentation-writing, frontend-development, git, refactoring, testing) |
 | Review & validation | **Heimdall** | `heimdall-*` (accessibility-review, api-contract-review, architecture-review, code-review, dependency-review, documentation-review, performance-review, security-review, test-review) |
 | Strategic planning & decomposition | **Kvasir** | `kvasir-*` (approach-evaluation, risk-assessment, task-decomposition) |
 

@@ -44,7 +44,7 @@ The script is safe to run multiple times — it performs a **merge**:
 The repository ships with a curated set of default skills covering common tasks:
 
 - **Bragi:** Presentation structuring, Question formulation, Trade-off communication
-- **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Refactoring, Testing
+- **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
 - **Kvasir:** Approach evaluation, Risk assessment, Task decomposition
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research

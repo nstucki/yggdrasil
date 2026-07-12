@@ -4,7 +4,7 @@ description: Creates and modifies code, docs, tests, and configuration.
 mode: subagent
 permission:
   "*": deny
-  bash: 
+  bash:
     "*": allow
     "git*": deny
     # git inspection
@@ -17,6 +17,39 @@ permission:
     "git rev-parse*": allow
     "git show*": allow
     "git status*": allow
+    # git branch creation (create + switch, NOT switch to existing)
+    "git checkout -b*": allow
+    "git switch -c*": allow
+    # git staging
+    "git add*": allow
+    "git rm*": allow
+    "git mv*": allow
+    # git commit (inline message only)
+    "git commit -m*": allow
+    # git stash (shelving, NOT destruction)
+    "git stash": allow
+    "git stash list": allow
+    "git stash pop*": allow
+    "git stash apply*": allow
+    # git denials — must come AFTER allows (last-match-wins)
+    # block history modification
+    "git commit --amend*": deny
+    "git commit -m* --amend*": deny
+    "git commit -m*--amend*": deny
+    # block stash destruction
+    "git stash drop*": deny
+    "git stash clear*": deny
+    # block chained git commands that could bypass denies
+    "git*&&*": deny
+    "git*||*": deny
+    "git*;*": deny
+    "git*|*": deny
+    # block shell metacharacters in git commands
+    "git*$()*": deny
+    "git*`*": deny
+    "git*>*": deny
+    "git*>>*": deny
+    "git*<*": deny
   edit: allow
   glob: allow
   grep: allow
