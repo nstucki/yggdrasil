@@ -39,6 +39,21 @@ The script is safe to run multiple times — it performs a **merge**:
 - Pre-existing files that are not part of this project are preserved — the script never deletes destination files.
 - If the target directories already contain files, you are prompted (y/N, default No) before merging. Pass `-y`/`--yes`/`--force` to skip the prompt, e.g. for non-interactive installs (CI, or `curl ... | bash`).
 
+#### Configurable Installation Path
+
+The installation path is configurable via the `OPENCODE_CONFIG_BASE` environment variable or the `-c`/`--config-base` CLI flag. By default, agents and skills are installed to `~/.config/opencode/agents/Yggdrasil/` and `~/.config/opencode/skills/Yggdrasil/`. To install to a custom location, use one of:
+
+```bash
+# Using environment variable
+OPENCODE_CONFIG_BASE=/custom/path ./setup.sh -y
+
+# Using CLI flag
+./setup.sh --config-base /custom/path -y
+./setup.sh -c /custom/path -y
+```
+
+The CLI flag takes precedence over the environment variable. The path may include `~` (e.g., `~/my-opencode-config`), which will be expanded to your home directory.
+
 ### Default Skills
 
 The repository ships with a curated set of default skills covering common tasks:

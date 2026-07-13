@@ -3,8 +3,9 @@
 # setup.sh — Yggdrasil setup script
 #
 # Copies agent and skill definitions from this repository into the
-# OpenCode configuration directories (~/.config/opencode/agents/Yggdrasil/
-# and ~/.config/opencode/skills/Yggdrasil/).
+# OpenCode configuration directories (by default, ~/.config/opencode/agents/Yggdrasil/
+# and ~/.config/opencode/skills/Yggdrasil/). The base path is configurable via
+# the OPENCODE_CONFIG_BASE environment variable or the -c/--config-base CLI flag.
 #
 # Idempotent: safe to run multiple times.
 
@@ -32,17 +33,25 @@ err()   { printf "${RED}❌  %s${NC}\n" "$*" >&2; }
 # (e.g. `curl ... | bash`) without aborting.
 ASSUME_YES=false
 
+# CONFIG_BASE: the base directory for OpenCode config.
+# Computed from: environment variable > default.
+# Can be overridden by the CLI flag --config-base (which takes precedence).
+CONFIG_BASE=""
+
 usage() {
     cat <<'EOF'
 Usage: setup.sh [OPTIONS]
 
 Install Yggdrasil agent and skill definitions into your OpenCode
-configuration (~/.config/opencode/{agents,skills}/Yggdrasil/).
+configuration (by default, ~/.config/opencode/{agents,skills}/Yggdrasil/).
 
 Options:
-  -y, --yes, --force   Skip the confirmation prompt and proceed. Required for
-                       non-interactive installs (CI, or `curl ... | bash`).
-  -h, --help           Show this help and exit.
+  -c PATH, --config-base PATH   Set the OpenCode config base directory.
+                                Defaults to ~/.config/opencode.
+                                May also be set via OPENCODE_CONFIG_BASE env var.
+  -y, --yes, --force            Skip the confirmation prompt and proceed. Required for
+                                non-interactive installs (CI, or `curl ... | bash`).
+  -h, --help                    Show this help and exit.
 
 By default, if the target directories already contain files, you will be
 prompted (y/N, default No) before merging. New and same-named Yggdrasil
@@ -54,6 +63,60 @@ EOF
 # Parse arguments early so --help works before any pre-flight checks.
 while [ "$#" -gt 0 ]; do
     case "$1" in
+         -c)
+             # -c PATH form: next arg is the path
+             shift
+             if [ "$#" -eq 0 ]; then
+                 err "Option -c requires an argument."
+                 usage >&2
+                 exit 2
+             fi
+             # Reject if next arg looks like a flag (starts with -)
+             if [ "${1:0:1}" = "-" ]; then
+                 err "Option -c requires a path argument (expected after -c, got flag: $1)."
+                 usage >&2
+                 exit 2
+             fi
+             # Reject truly empty flag arguments at parse time for early feedback
+             if [ -z "$1" ]; then
+                 err "Option -c requires a non-empty path argument."
+                 usage >&2
+                 exit 2
+             fi
+             CONFIG_BASE="$1"
+             ;;
+         --config-base)
+             # --config-base PATH form: next arg is the path
+             shift
+             if [ "$#" -eq 0 ]; then
+                 err "Option --config-base requires an argument."
+                 usage >&2
+                 exit 2
+             fi
+             # Reject if next arg looks like a flag (starts with -)
+             if [ "${1:0:1}" = "-" ]; then
+                 err "Option --config-base requires a path argument (expected after --config-base, got flag: $1)."
+                 usage >&2
+                 exit 2
+             fi
+             # Reject truly empty flag arguments at parse time for early feedback
+             if [ -z "$1" ]; then
+                 err "Option --config-base requires a non-empty path argument."
+                 usage >&2
+                 exit 2
+             fi
+             CONFIG_BASE="$1"
+             ;;
+         --config-base=*)
+             # --config-base=PATH form: extract the path after =
+             CONFIG_BASE="${1#--config-base=}"
+             # Reject truly empty flag arguments at parse time for early feedback
+             if [ -z "$CONFIG_BASE" ]; then
+                 err "Option --config-base= requires a non-empty path argument."
+                 usage >&2
+                 exit 2
+             fi
+             ;;
         -y|--yes|--force)
             ASSUME_YES=true
             ;;
@@ -100,10 +163,7 @@ while [ -h "$SCRIPT_SOURCE" ]; do
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
 
-# ── Configuration ──────────────────────────────────────────────────────────
-
-SRC_AGENTS="${SCRIPT_DIR}/agents"
-SRC_SKILLS="${SCRIPT_DIR}/skills"
+# ── Compute config base path ───────────────────────────────────────────────
 
 # HOME must be non-empty before we build the destination paths: `set -u`
 # catches an UNSET HOME, but an EMPTY HOME (HOME="") would make DST_BASE
@@ -114,7 +174,56 @@ if [ -z "${HOME:-}" ]; then
     exit 1
 fi
 
-DST_BASE="${HOME}/.config/opencode"
+# Precedence: CLI flag (CONFIG_BASE, set above) > environment variable > default.
+# If CONFIG_BASE is empty, check the environment variable.
+if [ -z "$CONFIG_BASE" ]; then
+    CONFIG_BASE="${OPENCODE_CONFIG_BASE:-}"
+fi
+
+# If still empty, use the default.
+if [ -z "$CONFIG_BASE" ]; then
+    CONFIG_BASE="${HOME}/.config/opencode"
+fi
+
+# Normalize the config base path:
+# 1. Trim leading/trailing whitespace
+# 2. Expand leading ~ or ~/ to $HOME
+# 3. Strip trailing slashes
+# 4. Reject empty or whitespace-only values
+
+# Trim leading and trailing whitespace (POSIX-portable, bash-3.2-safe)
+CONFIG_BASE="$(printf '%s\n' "$CONFIG_BASE" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+# Expand ~ or ~/...
+case "$CONFIG_BASE" in
+    ~)
+        # Bare tilde: expand to HOME
+        CONFIG_BASE="$HOME"
+        ;;
+    ~*)
+        # Tilde followed by path: strip tilde and prepend HOME
+        CONFIG_BASE="${HOME}${CONFIG_BASE#\~}"
+        ;;
+esac
+
+# Strip trailing slashes
+while [ "${CONFIG_BASE%/}" != "$CONFIG_BASE" ]; do
+    CONFIG_BASE="${CONFIG_BASE%/}"
+done
+
+# After normalization, verify it's not empty or whitespace-only
+if [ -z "$CONFIG_BASE" ]; then
+    err "Refusing to install: config base path is empty or whitespace-only after normalization."
+    err "Check your OPENCODE_CONFIG_BASE setting or --config-base flag."
+    exit 2
+fi
+
+# ── Configuration ──────────────────────────────────────────────────────────
+
+SRC_AGENTS="${SCRIPT_DIR}/agents"
+SRC_SKILLS="${SCRIPT_DIR}/skills"
+
+DST_BASE="$CONFIG_BASE"
 DST_AGENTS="${DST_BASE}/agents/Yggdrasil"
 DST_SKILLS="${DST_BASE}/skills/Yggdrasil"
 
