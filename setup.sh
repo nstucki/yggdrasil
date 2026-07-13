@@ -3,8 +3,8 @@
 # setup.sh — Yggdrasil setup script
 #
 # Copies agent and skill definitions from this repository into the
-# OpenCode configuration directories (by default, ~/.config/opencode/agents/Yggdrasil/
-# and ~/.config/opencode/skills/Yggdrasil/). The base path is configurable via
+# OpenCode configuration directories (by default, ~/.config/opencode/agents/yggdrasil/
+# and ~/.config/opencode/skills/yggdrasil/). The base path is configurable via
 # the OPENCODE_CONFIG_BASE environment variable or the -c/--config-base CLI flag.
 #
 # Idempotent: safe to run multiple times.
@@ -43,7 +43,7 @@ usage() {
 Usage: setup.sh [OPTIONS]
 
 Install Yggdrasil agent and skill definitions into your OpenCode
-configuration (by default, ~/.config/opencode/{agents,skills}/Yggdrasil/).
+configuration (by default, ~/.config/opencode/{agents,skills}/yggdrasil/).
 
 Options:
   -c PATH, --config-base PATH   Set the OpenCode config base directory.
@@ -224,8 +224,8 @@ SRC_AGENTS="${SCRIPT_DIR}/agents"
 SRC_SKILLS="${SCRIPT_DIR}/skills"
 
 DST_BASE="$CONFIG_BASE"
-DST_AGENTS="${DST_BASE}/agents/Yggdrasil"
-DST_SKILLS="${DST_BASE}/skills/Yggdrasil"
+DST_AGENTS="${DST_BASE}/agents/yggdrasil"
+DST_SKILLS="${DST_BASE}/skills/yggdrasil"
 
 # ── Pre-flight checks ──────────────────────────────────────────────────────
 
@@ -284,9 +284,9 @@ if [ "$needs_prompt" = true ] && [ "$ASSUME_YES" != true ]; then
     esac
 fi
 
-# ── Safety guard: ensure we only write into the Yggdrasil namespace ──────────
+# ── Safety guard: ensure we only write into the yggdrasil namespace ──────────
 # Assert the destination paths are non-empty and end in the expected
-# `/Yggdrasil` namespace under the config base. Logical paths are compared
+# `/yggdrasil` namespace under the config base. Logical paths are compared
 # (symlinks are NOT resolved), so stow/yadm-managed config dirs are accepted.
 if [ -z "$DST_BASE" ] || [ -z "$DST_AGENTS" ] || [ -z "$DST_SKILLS" ]; then
     err "Refusing to install: computed destination paths are empty."
@@ -295,17 +295,17 @@ if [ -z "$DST_BASE" ] || [ -z "$DST_AGENTS" ] || [ -z "$DST_SKILLS" ]; then
 fi
 
 case "$DST_AGENTS" in
-    "${DST_BASE}"/*/Yggdrasil) ;;
+    "${DST_BASE}"/*/yggdrasil) ;;
     *)
-        err "Refusing to install outside the Yggdrasil namespace: ${DST_AGENTS}"
+        err "Refusing to install outside the yggdrasil namespace: ${DST_AGENTS}"
         exit 1
         ;;
 esac
 
 case "$DST_SKILLS" in
-    "${DST_BASE}"/*/Yggdrasil) ;;
+    "${DST_BASE}"/*/yggdrasil) ;;
     *)
-        err "Refusing to install outside the Yggdrasil namespace: ${DST_SKILLS}"
+        err "Refusing to install outside the yggdrasil namespace: ${DST_SKILLS}"
         exit 1
         ;;
 esac
