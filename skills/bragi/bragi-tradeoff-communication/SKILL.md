@@ -55,8 +55,3 @@ Advise on how to present options and decisions clearly when there is no single r
 - **Analysis paralysis**: Presenting too many options or too much detail.
 - **Buried recommendation**: Hiding the recommended path in a wall of text.
 - **Risk minimization**: Downplaying risks to steer the user toward a preferred option.
-
-## Related Skills
-
-- `bragi-presentation-structuring` — for formatting the comparison clearly
-- `bragi-question-formulation` — for clarifying what criteria matter to the user

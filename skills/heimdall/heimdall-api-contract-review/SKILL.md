@@ -55,9 +55,3 @@ Review API specifications (OpenAPI, GraphQL schemas, protobuf, etc.) for consist
 - **Inconsistent patterns**: Using different approaches for similar operations.
 - **Missing error models**: Only defining success responses.
 - **Over-fetching/under-fetching**: API responses don't match client needs.
-
-## Related Skills
-
-- `heimdall-architecture-review` — for evaluating how the API fits into the broader system
-- `heimdall-code-review` — for reviewing the implementation that realizes the contract
-- `heimdall-security-review` — for reviewing authentication and authorization in the API

@@ -2,24 +2,22 @@
 #
 # validate.sh — Read-only structural validator for the Yggdrasil project.
 #
-# This script performs six structural checks against the agent and skill
+# This script performs five structural checks against the agent and skill
 # definitions and reports a per-check summary plus a final PASS/FAIL verdict.
 #
 #   1. Frontmatter parse check — every agents/*.md and skills/**/SKILL.md has a
 #      well-formed YAML frontmatter block (--- ... ---) containing the two
 #      required top-level keys `name` and `description`.
-#   2. Required skill sections — every SKILL.md contains the 6 required section
+#   2. Required skill sections — every SKILL.md contains the 5 required section
 #      headers in the correct order.
 #   3. Slug / name-field match — each skill's `name:` frontmatter value equals
 #      its containing directory (the skill slug).
-#   4. Cross-reference resolution — every skill referenced in a "Related Skills"
-#      section resolves to an existing skill slug.
-#   5. Odin shared-block sync — the three Odin agent files (odin-autonomous,
+#   4. Odin shared-block sync — the three Odin agent files (odin-autonomous,
 #      odin-guided, odin-interactive) contain a byte-identical body block from
 #      the "## Responsibilities" line up to (not including) the
 #      "## Communication Policy" line, compared by checksum (shasum -a 256,
 #      falling back to cksum if shasum is unavailable).
-#   6. Subagent isolation — subagent prompts (agents/<name>.md for mimir,
+#   5. Subagent isolation — subagent prompts (agents/<name>.md for mimir,
 #      brokk, heimdall, kvasir, bragi) and their skills
 #      (skills/<name>/*/SKILL.md) must not reference any other agent by name
 #      (case-insensitive, word-boundary match). Self-references are allowed;
@@ -103,18 +101,16 @@ rel() {
 FAIL_FRONTMATTER=0
 FAIL_SECTIONS=0
 FAIL_SLUG=0
-FAIL_XREF=0
 FAIL_ODIN_SYNC=0
 FAIL_ISOLATION=0
 
-# The 6 required skill section headers, in their mandated order.
+# The 5 required skill section headers, in their mandated order.
 # Kept as a newline-delimited string to avoid array-portability concerns.
 REQUIRED_SECTIONS='Purpose
 When to Use
 Workflow
 Quality Criteria
-Anti-Patterns
-Related Skills'
+Anti-Patterns'
 
 # ---------------------------------------------------------------------------
 # Helper: extract the frontmatter block (content between the first two `---`
@@ -222,7 +218,7 @@ check_frontmatter() {
 # CHECK 2 — Required skill sections present and in order.
 #
 # We collect the sequence of "## " headers from each SKILL.md, then check that
-# the 6 required headers all appear and do so in the mandated relative order.
+# the 5 required headers all appear and do so in the mandated relative order.
 # ---------------------------------------------------------------------------
 check_sections() {
   heading "Check 2: Required skill sections present & ordered"
@@ -273,14 +269,14 @@ EOF
       FAIL_SECTIONS=$((FAIL_SECTIONS + 1))
     elif [ "$out_of_order" -eq 1 ]; then
       fail_msg "$(rel "$file"): required sections present but out of order"
-      info_msg "    expected order: Purpose, When to Use, Workflow, Quality Criteria, Anti-Patterns, Related Skills"
+      info_msg "    expected order: Purpose, When to Use, Workflow, Quality Criteria, Anti-Patterns"
       info_msg "    found order:    $(printf '%s' "$headers" | tr '\n' '|' | sed 's/|/, /g; s/, $//')"
       FAIL_SECTIONS=$((FAIL_SECTIONS + 1))
     fi
   done
 
   if [ "$FAIL_SECTIONS" -eq 0 ]; then
-    pass_msg "all skills contain the 6 required sections in the correct order"
+    pass_msg "all skills contain the 5 required sections in the correct order"
   else
     info_msg "${C_RED}${FAIL_SECTIONS} section failure(s)${C_RESET}"
   fi
@@ -314,86 +310,7 @@ check_slug_match() {
 }
 
 # ---------------------------------------------------------------------------
-# CHECK 4 — Cross-reference resolution.
-#
-# Build the set of valid skill slugs (directory names). Then, for each skill,
-# parse its "Related Skills" section, extract the leading slug token from each
-# bullet, and confirm the slug exists in the valid set.
-#
-# Reference format is typically:  - `skill-slug` — description
-# but we extract the leading slug token robustly whether or not it is wrapped
-# in backticks.
-# ---------------------------------------------------------------------------
-
-# Build a newline-delimited list of valid slugs (portable, no assoc arrays).
-build_valid_slugs() {
-  local file
-  for file in $(find "$SKILLS_DIR" -name SKILL.md | sort); do
-    basename "$(dirname "$file")"
-  done
-}
-
-# Is a given slug in the valid-slug list? ($1 = slug, $2 = newline list)
-slug_is_valid() {
-  printf '%s\n' "$2" | grep -Fxq "$1"
-}
-
-# Extract referenced slugs from a skill's Related Skills section.
-# Prints one slug per line.
-extract_related_refs() {
-  local file="$1"
-  awk '
-    /^## Related Skills[[:space:]]*$/ { inblock = 1; next }
-    inblock && /^## / { inblock = 0 }     # next section ends the block
-    inblock { print }
-  ' "$file" | \
-  # Consider only bullet lines.
-  grep -E '^[[:space:]]*[-*]' | \
-  # Extract the first token: strip bullet marker and optional backticks, then
-  # take the leading run of slug characters (letters, digits, hyphen).
-  sed -E '
-    s/^[[:space:]]*[-*][[:space:]]*//;   # remove bullet marker
-    s/^`//;                               # remove opening backtick if present
-    s/`.*$//;                             # if backticked, drop everything after closing tick
-  ' | \
-  # Now take only the leading slug-shaped token (handles non-backtick refs too).
-  sed -E 's/^([A-Za-z0-9-]+).*$/\1/' | \
-  grep -E '.'   # drop empty lines
-}
-
-check_xref() {
-  heading "Check 4: Related-skill cross-reference resolution"
-
-  local valid_slugs
-  valid_slugs=$(build_valid_slugs)
-
-  local slug_count
-  slug_count=$(printf '%s\n' "$valid_slugs" | grep -c . || true)
-  info_msg "discovered ${slug_count} valid skill slug(s)"
-
-  local file ref
-  for file in $(find "$SKILLS_DIR" -name SKILL.md | sort); do
-    # Iterate over each referenced slug in this file's Related Skills section.
-    while IFS= read -r ref; do
-      [ -n "$ref" ] || continue
-      if ! slug_is_valid "$ref" "$valid_slugs"; then
-        fail_msg "$(rel "$file"): unresolved reference '$ref'"
-        FAIL_XREF=$((FAIL_XREF + 1))
-      fi
-    done <<EOF
-$(extract_related_refs "$file")
-EOF
-  done
-
-  if [ "$FAIL_XREF" -eq 0 ]; then
-    pass_msg "all Related Skills references resolve to existing skills"
-  else
-    info_msg "${C_RED}${FAIL_XREF} broken reference(s)${C_RESET}"
-  fi
-}
-
-# ---------------------------------------------------------------------------
-# CHECK 5 — Odin shared-block sync.
+# CHECK 4 — Odin shared-block sync.
 #
 # The three Odin agent files must share a byte-identical body block starting
 # at the line "## Responsibilities" and ending just before the line
@@ -427,7 +344,7 @@ extract_odin_block() {
 }
 
 check_odin_sync() {
-  heading "Check 5: Odin shared-block sync (agents/odin-*.md)"
+  heading "Check 4: Odin shared-block sync (agents/odin-*.md)"
 
   local f path sum ref_sum="" ref_name=""
   for f in $ODIN_FILES; do
@@ -480,7 +397,7 @@ check_odin_sync() {
 }
 
 # ---------------------------------------------------------------------------
-# CHECK 6 — Subagent isolation.
+# CHECK 5 — Subagent isolation.
 #
 # Subagents do not know about each other: each subagent's prompt
 # (agents/<name>.md) and skills (skills/<name>/*/SKILL.md) must not mention
@@ -494,7 +411,7 @@ SUBAGENT_NAMES='mimir brokk heimdall kvasir bragi'
 ALL_AGENT_NAMES='odin mimir brokk heimdall kvasir bragi'
 
 check_isolation() {
-  heading "Check 6: Subagent isolation (no cross-agent references)"
+  heading "Check 5: Subagent isolation (no cross-agent references)"
 
   local agent other file hit
   for agent in $SUBAGENT_NAMES; do
@@ -545,21 +462,18 @@ main() {
   printf '\n'
   check_slug_match
   printf '\n'
-  check_xref
-  printf '\n'
   check_odin_sync
   printf '\n'
   check_isolation
   printf '\n'
 
   # ---- Final summary -------------------------------------------------------
-  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_XREF + FAIL_ODIN_SYNC + FAIL_ISOLATION))
+  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_SYNC + FAIL_ISOLATION))
 
   heading "Summary"
   printf '  %-34s %s\n' "Frontmatter parse:"        "$(fmt_count "$FAIL_FRONTMATTER")"
   printf '  %-34s %s\n' "Required sections/order:"  "$(fmt_count "$FAIL_SECTIONS")"
   printf '  %-34s %s\n' "Slug/name match:"          "$(fmt_count "$FAIL_SLUG")"
-  printf '  %-34s %s\n' "Cross-reference resolution:" "$(fmt_count "$FAIL_XREF")"
   printf '  %-34s %s\n' "Odin shared-block sync:"   "$(fmt_count "$FAIL_ODIN_SYNC")"
   printf '  %-34s %s\n' "Subagent isolation:"       "$(fmt_count "$FAIL_ISOLATION")"
   printf '  %s\n' "----------------------------------------------------"

@@ -50,8 +50,3 @@ Gather information from external sources — official documentation, technical s
 - **Surface-level search**: Skimming results without reading the actual content.
 - **Ignoring recency**: Relying on outdated information without checking for newer sources.
 - **Confirmation seeking**: Searching only for evidence that supports a preconceived answer.
-
-## Related Skills
-
-- `mimir-codebase-exploration` — for understanding the local codebase context
-- `mimir-dependency-analysis` — for evaluating technologies and dependencies found during research

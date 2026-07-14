@@ -55,9 +55,3 @@ Review implementations against accessibility standards (WCAG) and best practices
 - **Over-reliance on automated tools**: Assuming automated checks catch all issues (they don't).
 - **ARIA overuse**: Adding ARIA where native HTML semantics suffice.
 - **Ignoring edge cases**: Only testing the happy path or the most common user flow.
-
-## Related Skills
-
-- `heimdall-api-contract-review` — when the implementation involves API interfaces
-- `heimdall-code-review` — for general code review and QA of the same implementation
-- `heimdall-performance-review` — for assessing performance impact of accessibility features

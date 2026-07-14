@@ -58,8 +58,3 @@ Advise on how to structure information for the user to communicate clearly. The 
 - **Buried lede**: Putting the main point at the end.
 - **One-size-fits-all**: Using the same format regardless of audience.
 - **Over-explaining**: Giving excessive detail when a summary suffices.
-
-## Related Skills
-
-- `bragi-question-formulation` — for gathering the initial requirements
-- `bragi-tradeoff-communication` — for presenting options and decisions

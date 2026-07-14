@@ -57,9 +57,3 @@ Build and maintain deployment pipelines, infrastructure configuration, automatio
 - **Pet vs. cattle**: Treating servers as unique and irreplaceable instead of disposable.
 - **Secret sprawl**: Hardcoding or poorly managing secrets and credentials.
 - **Alert fatigue**: Setting up too many alerts that get ignored.
-
-## Related Skills
-
-- `brokk-backend-development` — for the applications being deployed
-- `brokk-documentation-writing` — for documenting infrastructure and runbooks
-- `brokk-testing` — for integrating tests into the deployment pipeline

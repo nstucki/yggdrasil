@@ -51,8 +51,3 @@ Assess the health, security, and compatibility of existing dependencies. Evaluat
 - **Ignoring transitive deps**: Assessing only direct dependencies, missing the full dependency tree.
 - **Shiny object bias**: Recommending new technologies without evaluating stability or migration cost.
 - **False precision**: Reporting health scores without citing concrete evidence.
-
-## Related Skills
-
-- `mimir-codebase-exploration` — for understanding how dependencies are used in the codebase
-- `mimir-security-analysis` — for deeper security investigation of dependencies

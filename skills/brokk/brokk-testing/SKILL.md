@@ -58,9 +58,3 @@ Create and maintain automated tests that verify correctness, prevent regressions
 - **Over-mocking**: Mocking everything so the test doesn't actually test real interactions.
 - **Coverage theater**: Aiming for a coverage percentage instead of meaningful assertions.
 - **Flaky tests**: Tests that pass or fail nondeterministically, eroding trust in the suite.
-
-## Related Skills
-
-- `brokk-backend-development` — for the code being tested
-- `brokk-frontend-development` — for the UI being tested
-- `brokk-refactoring` — for adding characterization tests before restructuring code

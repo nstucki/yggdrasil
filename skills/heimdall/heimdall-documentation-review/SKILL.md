@@ -55,9 +55,3 @@ Independently review documentation for accuracy, clarity, completeness, and cons
 - **Assuming knowledge**: Skipping fundamentals because "everyone knows this."
 - **Copy-paste errors**: Reusing documentation from other projects without adapting it.
 - **Documentation rot**: Letting docs fall out of sync with the implementation.
-
-## Related Skills
-
-- `heimdall-api-contract-review` — for reviewing API documentation against the contract
-- `heimdall-architecture-review` — when the documentation describes architectural decisions
-- `heimdall-code-review` — for reviewing the implementation the docs describe

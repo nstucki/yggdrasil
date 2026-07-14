@@ -56,8 +56,3 @@ Analyze systems for security weaknesses, identify vulnerabilities, and recommend
 - **Security theater**: Implementing security measures that look good but don't actually protect.
 - **Assuming the user is honest**: Not validating input or checking permissions because "it's internal."
 - **Over-reliance on tools**: Depending on automated scanners while ignoring logic flaws.
-
-## Related Skills
-
-- `mimir-codebase-exploration` — for mapping code structure, entry points, and where untrusted input crosses trust boundaries
-- `mimir-dependency-analysis` — for checking dependency vulnerabilities and evaluating security of new technologies

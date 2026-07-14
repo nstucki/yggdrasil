@@ -51,8 +51,3 @@ Determine which files, modules, services, and tests would be affected by a propo
 - **Ignoring dynamic references**: Missing reflection, string-based lookups, or runtime wiring.
 - **Scope underestimation**: Assuming a change is isolated without verifying.
 - **Skipping test impact**: Not identifying which tests need updating.
-
-## Related Skills
-
-- `mimir-codebase-exploration` — for understanding the codebase structure before tracing impacts
-- `mimir-dependency-analysis` — for assessing the impact of dependency changes

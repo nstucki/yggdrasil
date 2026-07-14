@@ -56,8 +56,3 @@ Systematically compare multiple candidate approaches to a problem, evaluating ea
 - **Criteria mismatch**: Evaluating against criteria irrelevant to the actual task.
 - **Unjustified recommendation**: Picking an approach without explaining why.
 - **Ignoring constraints**: Recommending an approach that violates known constraints.
-
-## Related Skills
-
-- `kvasir-risk-assessment` — for evaluating risks in the recommended approach
-- `kvasir-task-decomposition` — for decomposing the chosen approach into subtasks

@@ -55,9 +55,3 @@ Independently review implementations for performance characteristics, identify i
 - **Micro-optimization focus**: Worrying about minor inefficiencies while ignoring systemic issues.
 - **Ignoring the bottleneck principle**: Optimizing parts of the system that aren't the bottleneck.
 - **One-dimensional metrics**: Focusing on a single metric without considering overall system behavior.
-
-## Related Skills
-
-- `heimdall-api-contract-review` — when API design affects performance (payload size, pagination)
-- `heimdall-architecture-review` — when performance concerns require architectural changes
-- `heimdall-code-review` — for general code review of the same changes

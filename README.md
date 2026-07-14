@@ -92,7 +92,7 @@ The repository ships a validator for its own definitions:
 scripts/validate.sh    # or: bash scripts/validate.sh
 ```
 
-It checks that agent frontmatter is valid, that skill frontmatter and required sections are present, that skill cross-references resolve, that the shared orchestration content in the Odin agent files stays in sync, and that subagent prompts and skills never reference other agents by name (subagent isolation). It is read-only and reports PASS/FAIL per check.
+It checks that agent frontmatter is valid, that skill frontmatter and required sections are present, that the shared orchestration content in the Odin agent files stays in sync, and that subagent prompts and skills never reference other agents by name (subagent isolation). It is read-only and reports PASS/FAIL per check.
 
 ---
 

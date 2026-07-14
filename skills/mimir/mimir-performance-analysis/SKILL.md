@@ -55,9 +55,3 @@ Analyze systems for performance issues, identify bottlenecks, and recommend meas
 - **Micro-benchmarking**: Optimizing isolated operations that don't matter in the overall system.
 - **Ignoring the baseline**: Not knowing whether the system is actually slow before optimizing.
 - **One-dimensional focus**: Only optimizing one metric (e.g., latency) while ignoring others (e.g., memory).
-
-## Related Skills
-
-- `mimir-codebase-exploration` — for understanding the code paths involved
-- `mimir-data-analysis` — for deeper analysis of performance metrics and logs
-- `mimir-debugging-analysis` — when performance issues are causing errors or timeouts

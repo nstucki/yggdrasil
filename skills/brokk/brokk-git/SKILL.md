@@ -54,9 +54,3 @@ Local git operations for version control during implementation: branch creation,
 - **Committing secrets or junk**: API keys, `.env` files, `.DS_Store`, build artifacts — review the staged diff and verify `.gitignore` before every commit.
 - **Shell operators in git commands** (`git add . && git push`, `git commit -m "…" || echo error`): Chaining with `&&`, `||`, `;`, pipes, `$()`, or redirection can bypass safeguards; run each git command individually.
 - **Remote or shared-state operations** (`push`, `pull`, `fetch`, `merge`, `cherry-pick`, `revert`): These affect shared repositories or rewrite history — defer to the requesting agent for orchestration decisions. Create commits on the current branch only.
-
-## Related Skills
-
-- `brokk-documentation-writing` — for committing documentation changes
-- `brokk-refactoring` — for atomic commit strategy during refactoring
-- `brokk-testing` — for verifying tests pass before each commit

@@ -84,10 +84,9 @@ Conventional commits, lowercase, no period, ~50 chars:
 
 1. All agent definitions valid (YAML frontmatter parses correctly)
 2. All skill definitions valid (YAML frontmatter + required sections present)
-3. No broken cross-references between skills
-4. `setup.sh` installs correctly (idempotent)
-5. Documentation updated (README, AGENTS.md) if applicable
-6. No secrets or sensitive data committed
-7. No `.DS_Store` or other junk files tracked
+3. `setup.sh` installs correctly (idempotent)
+4. Documentation updated (README, AGENTS.md) if applicable
+5. No secrets or sensitive data committed
+6. No `.DS_Store` or other junk files tracked
 
-Items 1–3 are verified by running `scripts/validate.sh`.
+Items 1–2 are verified by running `scripts/validate.sh`.

@@ -53,7 +53,3 @@ Evaluate the quality and effectiveness of tests — not just whether they pass, 
 - **Over-mocking**: Mocking so much that tests verify mocks, not real behavior.
 - **Happy-path bias**: Testing only the expected flow, ignoring error and edge cases.
 - **Implementation coupling**: Tests so tied to implementation details that they break on harmless refactors.
-
-## Related Skills
-
-- `heimdall-code-review` — for reviewing the implementation code being tested

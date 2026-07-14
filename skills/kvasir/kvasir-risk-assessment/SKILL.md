@@ -56,8 +56,3 @@ Identify potential failure modes in a proposed plan or approach, evaluate their 
 - **No mitigations**: Listing risks without proposing how to handle them.
 - **Ignoring cascades**: Failing to identify how a failure in one subtask affects others.
 - **Paralysis**: Over-analyzing low-impact risks at the expense of progress.
-
-## Related Skills
-
-- `kvasir-approach-evaluation` — for comparing risk profiles across approaches
-- `kvasir-task-decomposition` — for structuring plans that account for identified risks

@@ -57,9 +57,3 @@ Design and implement database schemas, migrations, queries, and data access laye
 - **God table**: Creating overly broad tables with many nullable columns instead of normalized designs.
 - **Migration fear**: Avoiding schema changes because migrations are risky or untested.
 - **Raw SQL everywhere**: Not using the ORM or query builder consistently.
-
-## Related Skills
-
-- `brokk-backend-development` — for the application layer that uses the data access logic
-- `brokk-devops` — for managing database deployments and migrations
-- `brokk-testing` — for testing database interactions

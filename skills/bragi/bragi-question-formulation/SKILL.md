@@ -59,8 +59,3 @@ Advise on how to frame questions to extract maximum signal from user interaction
 - **Leading question**: "Don't you think we should use X?" (biases the answer).
 - **Assumption-laden question**: "How should we handle the database migration?" (assumes migration is needed).
 - **Open-ended without guidance**: "What do you want?" (too broad to be useful).
-
-## Related Skills
-
-- `bragi-presentation-structuring` — for conveying the answers back clearly
-- `bragi-tradeoff-communication` — for when the user needs to make a choice

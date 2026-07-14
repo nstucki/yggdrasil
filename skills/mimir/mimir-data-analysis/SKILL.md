@@ -56,9 +56,3 @@ Analyze logs, metrics, telemetry, and structured data to identify patterns, diag
 - **Over-interpretation**: Drawing strong conclusions from insufficient or noisy data.
 - **Correlation as causation**: Assuming a relationship is causal without evidence.
 - **Analysis paralysis**: Spending excessive time refining analysis instead of reporting actionable findings.
-
-## Related Skills
-
-- `mimir-codebase-exploration` — when data analysis needs to be combined with code understanding
-- `mimir-debugging-analysis` — when the analysis is part of an error investigation
-- `mimir-performance-analysis` — when the analysis focuses specifically on performance

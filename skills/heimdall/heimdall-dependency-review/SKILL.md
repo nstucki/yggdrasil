@@ -56,9 +56,3 @@ Review project dependencies to identify risks related to security, licensing, ma
 - **Ignoring transitive deps**: Reviewing only direct dependencies, leaving the transitive tree unexamined.
 - **Silent approval**: Not raising concerns about outdated or unmaintained dependencies.
 - **False precision**: Accepting health scores without verifying the underlying evidence.
-
-## Related Skills
-
-- `heimdall-architecture-review` — when dependency decisions affect system architecture
-- `heimdall-code-review` — for reviewing the implementation that introduces dependencies
-- `heimdall-security-review` — for reviewing how dependencies are used in the codebase

@@ -57,9 +57,3 @@ Create clear, accurate, and maintainable documentation that helps users and deve
 - **Documentation rot**: Letting docs fall out of sync with the code.
 - **Wall of text**: Large paragraphs without structure or visual breaks.
 - **Assuming knowledge**: Skipping fundamentals that the reader needs.
-
-## Related Skills
-
-- `brokk-api-design` — for documenting APIs and contracts
-- `brokk-backend-development` — for documenting server-side features
-- `brokk-frontend-development` — for documenting UI components and patterns

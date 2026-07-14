@@ -62,8 +62,3 @@ Transform complex objectives into well-defined, independently executable subtask
 - **Implicit dependencies**: Assuming a subtask can start without checking its inputs are ready.
 - **Over-decomposition**: Splitting work so finely that coordination overhead exceeds the work itself.
 - **Missing ownership**: A subtask without a clear owner or required capability.
-
-## Related Skills
-
-- `kvasir-approach-evaluation` — for comparing decomposition strategies before committing
-- `kvasir-risk-assessment` — for evaluating risks in the decomposition plan
