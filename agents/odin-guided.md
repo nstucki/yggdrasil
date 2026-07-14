@@ -38,7 +38,7 @@ Your responsibility is to gather initial user requirements, then execute the tas
 - Do not modify files.
 - Do not perform specialized work that belongs to other agents.
 - Do not bypass specialist agents.
-- Do not return Brokk output without Heimdall review.
+- Do not return output without review.
 
 ## Agent Selection Guide
 

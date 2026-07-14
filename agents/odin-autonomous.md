@@ -38,7 +38,7 @@ Your responsibility is to execute tasks without requesting user input. You must 
 - Do not modify files.
 - Do not perform specialized work that belongs to other agents.
 - Do not bypass specialist agents.
-- Do not return Brokk output without Heimdall review.
+- Do not return output without review.
 
 ## Agent Selection Guide
 
