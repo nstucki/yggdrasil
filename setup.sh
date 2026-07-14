@@ -241,12 +241,53 @@ if [ ! -d "$SRC_SKILLS" ]; then
     exit 1
 fi
 
+# ── Prompt to copy default skills ──────────────────────────────────────────
+
+# Resolve the skills prompt BEFORE the merge warning and any file writes, so
+# that:
+#  - The merge warning below only mentions the skills destination if the user
+#    actually opted in to copying skills (otherwise the warning would be
+#    misleading).
+#  - On a fresh non-interactive install (e.g. `curl ... | bash` without --yes)
+#    the script aborts here rather than after agents have already been copied
+#    (which would leave a partial install: agents present, no skills).
+#
+# Default to copying skills. Under --yes/-y (ASSUME_YES) the prompt is skipped
+# and skills are installed unconditionally (current behaviour). In interactive
+# mode, the user may decline to install the default skills.
+COPY_SKILLS=true
+if [ "$ASSUME_YES" != true ]; then
+    if ! [ -t 0 ]; then
+        err "Cannot prompt for skills: stdin is not a terminal (non-interactive run)."
+        err "Re-run with --yes (or -y/--force) to install non-interactively."
+        exit 1
+    fi
+
+    printf "${YELLOW}⚠️   Copy default skills?${NC} [Y/n] "
+    read -r REPLY
+    case "$REPLY" in
+        n|N)
+            COPY_SKILLS=false
+            ;;
+        *)
+            ;;
+    esac
+fi
+
+if [ "$COPY_SKILLS" != true ]; then
+    info "Skipping skills installation."
+fi
+
 # ── Check for existing files and prompt ─────────────────────────────────────
 
+# Agents are always copied, so a non-empty agents dir always triggers the
+# warning. Skills are only mentioned when the user opted in (COPY_SKILLS=true);
+# a non-empty skills dir does NOT trigger the warning if skills were declined.
 needs_prompt=false
 if [ -d "$DST_AGENTS" ] && [ -n "$(ls -A "$DST_AGENTS" 2>/dev/null)" ]; then
     needs_prompt=true
-elif [ -d "$DST_SKILLS" ] && [ -n "$(ls -A "$DST_SKILLS" 2>/dev/null)" ]; then
+fi
+if [ "$COPY_SKILLS" = true ] && [ -d "$DST_SKILLS" ] && [ -n "$(ls -A "$DST_SKILLS" 2>/dev/null)" ]; then
     needs_prompt=true
 fi
 
@@ -259,7 +300,9 @@ if [ "$needs_prompt" = true ] && [ "$ASSUME_YES" != true ]; then
     printf "    this project are preserved. Note: files removed or renamed upstream\n"
     printf "    are NOT deleted and may remain as orphans in:\n"
     printf "      %s\n" "$DST_AGENTS"
-    printf "      %s\n" "$DST_SKILLS"
+    if [ "$COPY_SKILLS" = true ]; then
+        printf "      %s\n" "$DST_SKILLS"
+    fi
     printf "${YELLOW}⚠️   Continue?${NC} [y/N] "
 
     # Under `set -e`, a bare `read` on closed/non-terminal stdin (e.g.
@@ -323,18 +366,24 @@ ok "Agents installed."
 
 # ── Install skills ─────────────────────────────────────────────────────────
 
-info "Creating skills directory…"
-mkdir -p "$DST_SKILLS"
+if [ "$COPY_SKILLS" = true ]; then
+    info "Creating skills directory…"
+    mkdir -p "$DST_SKILLS"
 
-info "Copying skills to ${DST_SKILLS}…"
-# Merge copy: copies Yggdrasil skill definitions into the destination.
-# Pre-existing files in the destination that are NOT part of this project are preserved.
-cp -R "${SRC_SKILLS}/." "$DST_SKILLS/"
-ok "Skills installed."
+    info "Copying skills to ${DST_SKILLS}…"
+    # Merge copy: copies Yggdrasil skill definitions into the destination.
+    # Pre-existing files in the destination that are NOT part of this project are preserved.
+    cp -R "${SRC_SKILLS}/." "$DST_SKILLS/"
+    ok "Skills installed."
+fi
 
 # ── Summary ────────────────────────────────────────────────────────────────
 
 printf "\n"
 ok "Yggdrasil setup complete!"
 printf "    Agents → %s\n" "$DST_AGENTS"
-printf "    Skills → %s\n" "$DST_SKILLS"
+if [ "$COPY_SKILLS" = true ]; then
+    printf "    Skills → %s\n" "$DST_SKILLS"
+else
+    printf "    Skills → (skipped)\n"
+fi
