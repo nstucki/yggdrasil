@@ -8,10 +8,10 @@ AI agent configuration for OpenCode — a pantheon of autonomous agents for orch
 | ------- | ------ | ------------------- | ------------ |
 | **Odin** | Orchestrator | Available in 3 modes: Autonomous, Guided, and Interactive. Coordinates all agents. Does not access files directly; delegates via `task:*`. | Must not implement, modify files, or bypass specialist review. |
 | **Mimir** | Researcher | Researches and gathers context to support decisions. | Does not modify files or make decisions. Reports to the requesting agent. |
-| **Brokk** | Implementer | Creates and modifies code, docs, tests, and configuration. Has write access. | Does not define requirements or communicate with the user. Output must be reviewed by Heimdall. |
-| **Heimdall** | Reviewer | Reviews implementations and changes for quality and correctness. May run read-only commands (tests, linters) to verify claims. | Does not modify files or implement fixes. Reports to the requesting agent. |
-| **Kvasir** | Strategic Advisor | Advises on complex task strategy, decomposition, and risk assessment. | Does not modify files, make decisions, delegate, or communicate with the user. |
-| **Bragi** | Communication Advisor | Advises on communication strategy and presentation. May communicate directly with the user when tasked. | Does not modify files, make decisions, or coordinate agents. |
+| **Brokk** | Implementer | Creates and modifies files and artifacts of any type. Has write access. | Does not define requirements or communicate with the user. Output must be reviewed by Heimdall. |
+| **Heimdall** | Reviewer | Reviews artifacts and changes for quality and correctness. May run read-only commands (tests, linters) to verify claims. | Does not modify files or implement fixes. Reports to the requesting agent. |
+| **Kvasir** | Strategic Advisor | Advises on strategy, planning, and task decomposition for complex tasks. | Does not modify files, make decisions, delegate, or communicate with the user. |
+| **Bragi** | Communication Specialist | Handles communication, including strategy, drafting, and user interaction. | Does not modify files, make decisions, or coordinate agents. |
 
 Agent definition files in `agents/` are authoritative for agent behavior; AGENTS.md summarizes them.
 
@@ -25,7 +25,7 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 - No agent may review its own output — independent review always required.
 - Heimdall must receive the complete Brokk output, never partial.
 - The three Odin agent files share an identical body between `## Responsibilities` and `## Communication Policy`; edit all three together — enforced by `scripts/validate.sh`.
-- Odin consults Kvasir proactively for tasks needing planning, decomposition, or risk assessment — when in doubt, consult rather than skip.
+- Odin consults Kvasir proactively for tasks needing planning, decomposition, or strategy — when in doubt, consult rather than skip.
 - Only genuinely simple, single-step tasks with an obvious approach skip Kvasir; the Odin agent files define the concrete triggers.
 
 ## Orchestration Patterns
@@ -41,10 +41,10 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 | Task Type | Agent | Skills |
 | --------- | ----- | ------ |
 | Orchestration & coordination | **Odin** | `odin-*` (user-defined, see `skills/odin/README.md`) |
-| Communication strategy | **Bragi** | `bragi-*` (presentation-structuring, question-formulation, tradeoff-communication) |
+| Communication | **Bragi** | `bragi-*` (presentation-structuring, question-formulation, tradeoff-communication) |
 | Research & analysis | **Mimir** | `mimir-*` (codebase-exploration, data-analysis, debugging-analysis, dependency-analysis, impact-analysis, performance-analysis, security-analysis, web-research) |
-| Implementation | **Brokk** | `brokk-*` (api-design, backend-development, database-development, devops, documentation-writing, frontend-development, git, refactoring, testing) |
-| Review & validation | **Heimdall** | `heimdall-*` (accessibility-review, api-contract-review, architecture-review, code-review, dependency-review, documentation-review, performance-review, security-review, test-review) |
+| Implementation & artifact creation | **Brokk** | `brokk-*` (api-design, backend-development, database-development, devops, documentation-writing, frontend-development, git, refactoring, testing) |
+| Artifact & change review | **Heimdall** | `heimdall-*` (accessibility-review, api-contract-review, architecture-review, code-review, dependency-review, documentation-review, performance-review, security-review, test-review) |
 | Strategic planning & decomposition | **Kvasir** | `kvasir-*` (approach-evaluation, risk-assessment, task-decomposition) |
 
 ## Boundaries (Hard Rules)
@@ -63,7 +63,7 @@ examples for the target projects agents build, not directories in this repo.
 ### On the Yggdrasil repo itself and all work
 
 - **No bypassing specialist agents** — Odin must not implement or review directly
-- **Do not modify YAML frontmatter in agent definition files** (it is configuration consumed by OpenCode)
+- **Do not modify YAML frontmatter fields except `description`** — `name`, `mode`, and `permission` are configuration consumed by OpenCode; `description` may be updated to match role changes
 - **Subagent isolation**: subagent prompts (`agents/*.md` except `odin-*`) and their skills (`skills/<subagent>/**`) must never reference other agents by name or presume the multi-agent pantheon — subagents do not know about each other; use "the requesting agent". Name references are enforced by `scripts/validate.sh`; nameless role-presumption is reviewed manually.
 
 ## Git Workflow

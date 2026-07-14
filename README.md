@@ -84,16 +84,6 @@ skills/odin/
     └── SKILL.md        # frontmatter: name: odin-jira-routing
 ```
 
-### Validation
-
-The repository ships a validator for its own definitions:
-
-```bash
-scripts/validate.sh    # or: bash scripts/validate.sh
-```
-
-It checks that agent frontmatter is valid, that skill frontmatter and required sections are present, that the shared orchestration content in the Odin agent files stays in sync, and that subagent prompts and skills never reference other agents by name (subagent isolation). It is read-only and reports PASS/FAIL per check.
-
 ---
 
 ## The Pantheon
@@ -126,11 +116,11 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 ---
 
-### Bragi — The Skald *(Communication Advisor)*
+### Bragi — The Skald *(Communication Specialist)*
 
 > *Bragi is the god of poetry and eloquence. He is renowned for his wisdom, his command of the spoken word, and his ability to weave meaning from speech. As the skalds of old shaped tales from raw events, Bragi shapes understanding from raw intent.*
 
-**System Role:** Bragi is the communication strategist of the pantheon. He advises Odin on how to communicate effectively and may communicate directly with the user when tasked to do so. He analyzes what needs to be said, recommends framing and structure, and helps formulate clear questions. Bragi advises on presentation structuring, question formulation, and trade-off communication — shaping *how* ideas are framed and decisions are conveyed. He does not implement, research, or coordinate — he advises.
+**System Role:** Bragi is the communication specialist of the pantheon. He handles all communication tasks — advising on communication strategy, drafting and presenting information, and communicating directly with the user when tasked to do so. He analyzes what needs to be said, recommends framing and structure, formulates clear questions, and drafts messages, summaries, and presentations. Bragi advises on presentation structuring, question formulation, and trade-off communication — shaping *how* ideas are framed, how information is presented, and how decisions are conveyed. He does not implement, research, or coordinate — he communicates and advises.
 
 ---
 
@@ -138,7 +128,7 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Kvasir was the wisest of all beings, created by the gods as a token of peace after the Æsir–Vanir war. He wandered the world, advising and teaching, sharing his wisdom freely with all who sought it. His blood was used to brew the Mead of Poetry — a drink that grants eloquence and wisdom to those who taste it.*
 
-**System Role:** Kvasir is the strategic advisor of the pantheon. He is summoned proactively by Odin whenever a task calls for planning, decomposition, or risk assessment — and whenever there is doubt, Odin seeks his counsel rather than forgoing it. Kvasir synthesizes context into actionable strategic plans, evaluates approaches, and identifies failure modes before execution begins. He does not implement, research raw context, or delegate — he advises. Where Mimir gathers knowledge, Kvasir applies wisdom.
+**System Role:** Kvasir is the strategic advisor of the pantheon. He is summoned proactively by Odin whenever a task calls for strategy, planning, or task decomposition — and whenever there is doubt, Odin seeks his counsel rather than forgoing it. Kvasir synthesizes context into actionable strategic plans and provides strategic guidance before execution begins. He does not implement, research raw context, or delegate — he advises. Where Mimir gathers knowledge, Kvasir applies wisdom.
 
 ---
 
@@ -146,7 +136,7 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Brokk is a master dwarf smith of unmatched skill. With his brother Eitri, he forged Mjölnir (Thor's hammer), Draupnir (Odin's golden ring), and Gullinbursti (Freyr's golden boar) — treasures that shaped the fate of gods and giants alike.*
 
-**System Role:** Brokk is the builder — the hands of the pantheon. He transforms requirements and plans into concrete artifacts: code, documentation, tests, and configuration changes. Where others conceive, plan, and review, Brokk *makes*. He writes, refactors, configures, and verifies his work. His domain is creation.
+**System Role:** Brokk is the builder — the hands of the pantheon. He transforms requirements and plans into concrete artifacts of any kind: code, documentation, tests, configuration, summaries, reports, and more. Where others conceive, plan, and review, Brokk *makes*. He writes, refactors, configures, and verifies his work. His domain is creation.
 
 ---
 
@@ -154,7 +144,7 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Heimdall is the ever-vigilant guardian of Bifröst, the rainbow bridge to Asgard. He sees and hears everything — his senses are so keen he can hear grass grow and see to the ends of the world. He stands watch, sounding Gjallarhorn when danger approaches.*
 
-**System Role:** Heimdall is the guardian of quality. He independently reviews all artifacts produced by the team — code, architecture, documentation, and security. He identifies bugs, risks, inconsistencies, and design flaws, providing actionable feedback. He never modifies files or implements fixes; his power is in *seeing* what others have missed and holding the line for quality.
+**System Role:** Heimdall is the guardian of quality. He independently reviews artifacts and changes of any kind produced by the team — code, architecture, documentation, security, summaries, reports, and more. He identifies bugs, risks, inconsistencies, and design flaws, providing actionable feedback. He never modifies files or implements fixes; his power is in *seeing* what others have missed and holding the line for quality.
 
 ---
 
@@ -181,3 +171,17 @@ Each agent is an expert in its domain. Each trusts the others to do their part. 
 ---
 
 *Yggdrasil — Ever green, ever growing. The tree that connects all things.*
+
+---
+
+## Development
+
+### Validation
+
+The repository ships a validator for its own definitions:
+
+```bash
+scripts/validate.sh    # or: bash scripts/validate.sh
+```
+
+It checks that agent frontmatter is valid, that skill frontmatter and required sections are present, that the shared orchestration content in the Odin agent files stays in sync, and that subagent prompts and skills never reference other agents by name (subagent isolation). It is read-only and reports PASS/FAIL per check.
