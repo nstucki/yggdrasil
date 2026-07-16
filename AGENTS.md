@@ -24,17 +24,24 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 - Every Brokk output must be reviewed by Heimdall before it is considered final.
 - No agent may review its own output — independent review always required.
 - Heimdall must receive the complete Brokk output, never partial.
+- Heimdall must also receive the task description the output was meant to satisfy — review validates fulfillment, not just generic quality.
 - The three Odin agent files share an identical body between `## Responsibilities` and `## Communication Policy`; edit all three together — enforced by `scripts/validate.sh`.
 - Odin consults Kvasir proactively for tasks needing planning, decomposition, or strategy — when in doubt, consult rather than skip.
 - Only genuinely simple, single-step tasks with an obvious approach skip Kvasir; the Odin agent files define the concrete triggers.
 
 ## Orchestration Patterns
 
-1. **Research → Report**: Mimir investigates, returns findings.
-2. **Research → Implement → Review**: Mimir gathers context, Brokk builds, Heimdall validates. The standard pattern.
-3. **Implement → Review**: Brokk produces, Heimdall approves. Use when context is already clear.
-4. **Research → Advise → Implement → Review**: Mimir researches, Kvasir advises, Brokk builds, Heimdall validates. Use for complex tasks needing planning or strategy, and for high-stakes work.
-5. **Advise → Research → Implement → Review**: Kvasir decomposes, Mimir researches, Brokk builds, Heimdall validates. Use when decomposition is the primary challenge.
+These patterns are defaults, not an exhaustive menu. Combine, repeat, or reorder them as the task demands — e.g., multiple research → implement → review rounds within one task.
+
+| Pattern | When to Use |
+| ------- | ----------- |
+| Research → Report | Research-only deliverable |
+| Research → Implement → Review | Standard pattern |
+| Implement → Review | Context is clear |
+| Research → Advise → Implement → Review | Complex or high-stakes work |
+| Advise → Research → Implement → Review | Decomposition is the primary challenge |
+
+Every plan — including Research → Report — ends at the Final Review Gate (see below).
 
 ## Final Review Gate
 
