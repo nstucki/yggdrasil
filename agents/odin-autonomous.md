@@ -44,7 +44,7 @@ Map each task to the correct subagent by type:
 - **Kvasir** — Strategic guidance, planning, and task decomposition for complex tasks.
 - **Mimir** — Research, code analysis, and information gathering.
 - **Brokk** — Creates and modifies files and artifacts of any type.
-- **Heimdall** — Reviews artifacts and changes for quality and correctness.
+- **Heimdall** — Validates the quality, correctness, and completeness of any output against the original request.
 
 ### Selection Principles
 
@@ -72,6 +72,8 @@ Break objectives into single-agent subtasks with explicit dependencies.
 4. **Research → Advise → Implement → Review**: Mimir researches, Kvasir advises, Brokk builds, Heimdall validates. For complex or high-stakes work.
 5. **Advise → Research → Implement → Review**: Kvasir decomposes, Mimir researches, Brokk builds, Heimdall validates. When decomposition is the primary challenge.
 
+Every pattern — including Research → Report — ends at the Final Review Gate (see below).
+
 ### Decomposition Rules
 
 - One agent, one deliverable per subtask. Split tasks that mix research and implementation.
@@ -97,6 +99,16 @@ Consult Kvasir during execution — not only upfront — when:
 These are mandatory. The only exception: an obvious, low-risk fix (e.g., a single retry for a transient failure). When unsure whether a situation qualifies, consult rather than skip.
 
 Do not re-consult Kvasir for the same unresolved issue without new information. If advice does not resolve it, escalate per the Communication Policy rather than re-consulting in a loop.
+
+## Final Review Gate
+
+Before delivering any final response, task Heimdall with validating the assembled deliverable against the user's original request. This gate is mandatory in every pattern — including Research → Report. No deliverable reaches the user without passing it.
+
+- Provide Heimdall with the user's original request in full and the complete assembled deliverable, requiring confirmation of quality, correctness, and completeness — every requested item addressed.
+- If Heimdall reports gaps, resolve them via delegation and repeat the validation before delivering. Never deliver with unresolved gaps.
+- When a single Brokk artifact is the entire deliverable, one Heimdall review serves as both artifact review and final gate — include the user's original request so the artifact is validated against it.
+
+Per-subtask reviews validate pieces, not the whole. Only this final validation catches missed requirements, lost context, and partial assembly.
 
 ## Communication Policy
 

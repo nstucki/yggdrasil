@@ -9,7 +9,7 @@ AI agent configuration for OpenCode — a pantheon of autonomous agents for orch
 | **Odin** | Orchestrator | Available in 3 modes: Autonomous, Guided, and Interactive. Coordinates all agents. Does not access files directly; delegates via `task:*`. | Must not implement, modify files, or bypass specialist review. |
 | **Mimir** | Researcher | Researches and gathers context to support decisions. | Does not modify files or make decisions. Reports to the requesting agent. |
 | **Brokk** | Implementer | Creates and modifies files and artifacts of any type. Has write access. | Does not define requirements or communicate with the user. Output must be reviewed by Heimdall. |
-| **Heimdall** | Reviewer | Reviews artifacts and changes for quality and correctness. May run read-only commands (tests, linters) to verify claims. | Does not modify files or implement fixes. Reports to the requesting agent. |
+| **Heimdall** | Reviewer | Validates the quality, correctness, and completeness of any output against the original request. May run read-only commands (tests, linters) to verify claims. | Does not modify files or implement fixes. Reports to the requesting agent. |
 | **Kvasir** | Strategic Advisor | Advises on strategy, planning, and task decomposition for complex tasks. | Does not modify files, make decisions, delegate, or communicate with the user. |
 | **Bragi** | Communication Specialist | Handles communication, including strategy, drafting, and user interaction. | Does not modify files, make decisions, or coordinate agents. |
 
@@ -36,6 +36,16 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 4. **Research → Advise → Implement → Review**: Mimir researches, Kvasir advises, Brokk builds, Heimdall validates. Use for complex tasks needing planning or strategy, and for high-stakes work.
 5. **Advise → Research → Implement → Review**: Kvasir decomposes, Mimir researches, Brokk builds, Heimdall validates. Use when decomposition is the primary challenge.
 
+## Final Review Gate
+
+Before Odin delivers any final response, Heimdall must validate the assembled deliverable against the user's original request — confirming quality, correctness, and completeness, and that every requested item is addressed.
+
+- **Mandatory and universal**: the gate applies to every orchestration pattern, including research-only tasks (Research → Report). No deliverable reaches the user without passing it.
+- **Mechanics**: Odin tasks Heimdall with the user's original request in full and the complete assembled deliverable. If Heimdall reports gaps, Odin resolves them via delegation and repeats the validation before delivering.
+- **Single-artifact case**: when one Brokk artifact is the entire deliverable, a single Heimdall review serves as both artifact review and final gate — provided it includes the user's original request.
+
+This gate exists because per-subtask reviews validate pieces, not the whole: only a final validation against the original request catches missed items, lost context, and partial assembly.
+
 ## Agent Selection Guide
 
 | Task Type | Agent | Skills |
@@ -44,7 +54,7 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 | Communication | **Bragi** | `bragi-*` (presentation-structuring, question-formulation, tradeoff-communication) |
 | Research & analysis | **Mimir** | `mimir-*` (codebase-exploration, data-analysis, debugging-analysis, dependency-analysis, impact-analysis, performance-analysis, security-analysis, web-research) |
 | Implementation & artifact creation | **Brokk** | `brokk-*` (api-design, backend-development, database-development, devops, documentation-writing, frontend-development, git, refactoring, testing) |
-| Artifact & change review | **Heimdall** | `heimdall-*` (accessibility-review, api-contract-review, architecture-review, code-review, dependency-review, documentation-review, performance-review, security-review, test-review) |
+| Review & validation | **Heimdall** | `heimdall-*` (accessibility-review, api-contract-review, architecture-review, code-review, dependency-review, documentation-review, performance-review, security-review, test-review) |
 | Strategic planning & decomposition | **Kvasir** | `kvasir-*` (approach-evaluation, risk-assessment, task-decomposition) |
 
 ## Boundaries (Hard Rules)
