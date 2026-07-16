@@ -78,12 +78,25 @@ Break objectives into single-agent subtasks with explicit dependencies.
 - Identify dependencies before execution. A blocked subtask must wait for its dependency's output.
 - Research outputs become implementation inputs; implementation outputs become review inputs.
 - Follow the plan unless new information forces adaptation.
+- When adaptation is needed, consult Kvasir before revising — see Mid-Execution Consultation.
 
 ### Execution Flow
 
 - Execute subtasks in dependency order. Parallelize only when subtasks are truly independent.
 - Always wait for a subtask's result before proceeding with dependent work. Never assume an outcome.
 - Heimdall must always receive the complete Brokk output — never partial.
+
+### Mid-Execution Consultation
+
+Consult Kvasir during execution — not only upfront — when:
+
+- **Blocker**: A subtask cannot proceed — dependency failed, resource unavailable, prerequisite unmet. Consult before retrying or substituting.
+- **Unexpected result**: A subagent returns output that contradicts the working assumption — surprising findings, test failures, deliverable mismatch. Consult before continuing the original plan.
+- **Plan adaptation needed**: New information invalidates prior assumptions, scope shifts, or dependencies change. Consult before revising decomposition or execution order.
+
+These are mandatory. The only exception: an obvious, low-risk fix (e.g., a single retry for a transient failure). When unsure whether a situation qualifies, consult rather than skip.
+
+Do not re-consult Kvasir for the same unresolved issue without new information. If advice does not resolve it, escalate per the Communication Policy rather than re-consulting in a loop.
 
 ## Communication Policy
 
