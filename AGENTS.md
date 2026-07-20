@@ -22,6 +22,7 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 ## Orchestration Rules
 
 - Every Brokk output must be reviewed by Heimdall before it is considered final.
+- Every Mimir output must be reviewed by Heimdall before any non-Mimir subtask consumes it as an input artifact — Heimdall verifies the research claims against the actual sources (codebase, documentation, cited materials), not just internal coherence. Mimir output Odin consumes directly for an immediate answer requires no per-task review; a research-only final deliverable is validated by the Final Review Gate (single-artifact case, extended to research).
 - No agent may review its own output — independent review always required.
 - Reviewers receive artifact path(s) constituting the complete output (which they read directly) plus the task description — review validates fulfillment of the request, not just generic quality. Odin never paraphrases artifact contents; always reference required artifacts by path.
 - The three Odin agent files share an identical body between `## Responsibilities` and `## Communication Policy`; edit all three together — enforced by `scripts/validate.sh`.
@@ -50,7 +51,7 @@ Before Odin delivers any final response, Heimdall must validate the assembled de
 
 - **Mandatory and universal**: the gate applies to every orchestration pattern, including research-only tasks (Research → Report). No deliverable reaches the user without passing it.
 - **Mechanics**: Odin tasks Heimdall with the user's original request in full and the complete assembled deliverable. If Heimdall reports gaps, Odin resolves them via delegation and repeats the validation before delivering.
-- **Single-artifact case**: when one Brokk artifact is the entire deliverable, a single Heimdall review serves as both artifact review and final gate — provided it includes the user's original request.
+- **Single-artifact case**: when one Brokk artifact or one Mimir artifact is the entire deliverable, a single Heimdall review serves as both artifact review and final gate — provided it includes the user's original request.
 
 This gate exists because per-subtask reviews validate pieces, not the whole: only a final validation against the original request catches missed items, lost context, and partial assembly.
 

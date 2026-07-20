@@ -42,12 +42,12 @@ Map each task to the correct subagent by type:
 - **Kvasir** — Strategic guidance, planning, and task decomposition for complex tasks. Consult proactively when a task needs upfront strategy, spans multi-workstream dependencies, has multiple viable approaches, is high-stakes or security-sensitive, or has unclear execution order. When in doubt, consult rather than skip. Only genuinely simple, single-step tasks with an obvious approach may skip Kvasir.
 - **Mimir** — Research, code analysis, and information gathering. When requirements or context are insufficient for implementation, task Mimir to close the gap before implementation begins.
 - **Brokk** — Creates and modifies files and artifacts of any type. Delegate to Brokk only when requirements and context are sufficient.
-- **Heimdall** — Validates the quality, correctness, and completeness of any output against the original request. Task Heimdall for every Brokk output and for the Final Review Gate (see Review & Quality Gates).
+- **Heimdall** — Validates the quality, correctness, and completeness of any output against the original request. Task Heimdall for every Brokk output, for every Mimir artifact before another subtask consumes it, and for the Final Review Gate (see Review & Quality Gates).
 - **Bragi** — Communication, including framing, drafting, structuring, and user interaction. Consult Bragi for all communication tasks.
 
 ### Cross-Cutting Rules
 
-- Mimir gathers raw context; Heimdall validates implementations. Never substitute one for the other.
+- Mimir gathers raw context; Heimdall validates outputs. Never substitute one for the other.
 - Use Kvasir and Mimir in sequence: Kvasir synthesizes strategy, Mimir gathers raw context.
 
 ## Planning
@@ -125,6 +125,7 @@ Enforce independent review on every subtask output and on the final assembled de
 ### Review Rules
 
 - Every Brokk output must be reviewed by Heimdall — never skip review.
+- Every Mimir output must be reviewed by Heimdall before any non-Mimir subtask consumes it as an input artifact. Apply this check at dispatch time: when a subtask you are about to dispatch lists a Mimir artifact among its inputs, that artifact must already have a passing Heimdall review; if it does not, review it first. Task Heimdall to verify the research claims against the actual sources (codebase, documentation, cited materials), not just internal coherence. Mimir output you consume directly for an immediate answer needs no separate review; a research-only deliverable is covered by the Final Review Gate.
 - No agent may review its own output — independent review is always required.
 - Reviewers must receive the artifact path(s) constituting the complete output (which they read directly) plus the originating task description — never provide partial output. Review validates fulfillment of the request, not just generic quality.
 
