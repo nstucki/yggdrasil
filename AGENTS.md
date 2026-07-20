@@ -7,11 +7,11 @@ AI agent configuration for OpenCode — a pantheon of autonomous agents for orch
 | Agent | Role | Responsibilities | Boundaries |
 | ------- | ------ | ------------------- | ------------ |
 | **Odin** | Orchestrator | Available in 3 modes: Autonomous, Guided, and Interactive. Coordinates all agents. Does not access files directly; delegates via `task:*`. | Must not implement, modify files, or bypass specialist review. |
-| **Mimir** | Researcher | Researches and gathers context to support decisions. | Does not modify files or make decisions. Reports to the requesting agent. |
+| **Mimir** | Researcher | Researches and gathers context to support decisions. | Writes only within the task artifact directory. Does not implement changes or make decisions. Reports to the requesting agent. |
 | **Brokk** | Implementer | Creates and modifies files and artifacts of any type. Has write access. | Does not define requirements or communicate with the user. Output must be reviewed by Heimdall. |
-| **Heimdall** | Reviewer | Validates the quality, correctness, and completeness of any output against the original request. May run read-only commands (tests, linters) to verify claims. | Does not modify files or implement fixes. Reports to the requesting agent. |
-| **Kvasir** | Strategic Advisor | Advises on strategy, planning, and task decomposition for complex tasks. | Does not modify files, make decisions, delegate, or communicate with the user. |
-| **Bragi** | Communication Specialist | Handles communication, including strategy, drafting, and user interaction. | Does not modify files, make decisions, or coordinate agents. |
+| **Heimdall** | Reviewer | Validates the quality, correctness, and completeness of any output against the original request. May run read-only commands (tests, linters) to verify claims. | Writes only within the task artifact directory. Does not implement fixes. Reports to the requesting agent. |
+| **Kvasir** | Strategic Advisor | Advises on strategy, planning, and task decomposition for complex tasks. | Writes only within the task artifact directory. Does not implement changes, make decisions, delegate, or communicate with the user. |
+| **Bragi** | Communication Specialist | Handles communication, including strategy, drafting, and user interaction. | Writes only within the task artifact directory. Does not implement solutions, make decisions, or coordinate agents. |
 
 Agent definition files in `agents/` are authoritative for agent behavior; AGENTS.md summarizes them.
 
@@ -23,11 +23,11 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 
 - Every Brokk output must be reviewed by Heimdall before it is considered final.
 - No agent may review its own output — independent review always required.
-- Heimdall must receive the complete Brokk output, never partial.
-- Heimdall must also receive the task description the output was meant to satisfy — review validates fulfillment, not just generic quality.
+- Reviewers receive artifact path(s) constituting the complete output (which they read directly) plus the task description — review validates fulfillment of the request, not just generic quality. Odin never paraphrases artifact contents; always reference required artifacts by path.
 - The three Odin agent files share an identical body between `## Responsibilities` and `## Communication Policy`; edit all three together — enforced by `scripts/validate.sh`.
 - Odin consults Kvasir proactively for tasks needing planning, decomposition, or strategy — when in doubt, consult rather than skip.
 - Only genuinely simple, single-step tasks with an obvious approach skip Kvasir; the Odin agent files define the concrete triggers.
+- **Artifact workspace convention**: Research, advisory, and review subagents write complete outputs to a task-scoped directory `.yggdrasil/<task-slug>/` with sequenced, self-describing filenames (e.g., `01-research-<topic>.md`, `02-plan.md`). The implementer's persistent output is file/code changes in the target project itself. This directory is gitignored and must never be committed. On host/target projects, establish and ignore a similar workspace.
 
 ## Orchestration Patterns
 
@@ -82,6 +82,7 @@ examples for the target projects agents build, not directories in this repo.
 - **No bypassing specialist agents** — Odin must not implement or review directly
 - **Do not modify YAML frontmatter fields except `description`** — `name`, `mode`, and `permission` are configuration consumed by OpenCode; `description` may be updated to match role changes
 - **Subagent isolation**: subagent prompts (`agents/*.md` except `odin-*`) and their skills (`skills/<subagent>/**`) must never reference other agents by name or presume the multi-agent pantheon — subagents do not know about each other; use "the requesting agent". Name references are enforced by `scripts/validate.sh`; nameless role-presumption is reviewed manually.
+- **Task artifact workspace is gitignored and transient**: The `.yggdrasil/` directory and its contents must never be committed. It exists only for the duration of a task lifecycle and is automatically ignored by git.
 
 ## Git Workflow
 

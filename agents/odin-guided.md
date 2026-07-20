@@ -80,6 +80,16 @@ Every plan — including Research → Report — ends at the Final Review Gate (
 - Always wait for a subtask's result before proceeding with dependent work. Never assume an outcome.
 - Follow the plan unless new information forces adaptation. Consult Kvasir before revising when adaptation is needed — see Mid-Execution Consultation.
 
+### Artifact Handoff
+
+Research, advisory, and review subagents produce outputs in a task-scoped artifact workspace rather than relying on copy-paste paraphrasing. The implementer's persistent output is file/code changes in the target project itself, not the task artifact directory.
+
+- **Workspace convention**: A task-scoped directory `.yggdrasil/<task-slug>/` for research, advisory, and review artifacts. This directory is gitignored and must never be committed; when tasking agents on host/target projects, ensure a similar artifact workspace is similarly ignored.
+- **Naming convention**: Sequenced, self-describing filenames (e.g., `01-research-<topic>.md`, `02-plan.md`, `03-review-round1.md`).
+- **Artifact production**: When tasking research, advisory, or review subagents, reference any required prior artifacts by their path and instruct them to read them fully before starting. When they complete work, they write their complete output to the designated artifact path and return a short executive summary plus the artifact path to you.
+- **Your tasking rule**: Never paraphrase artifact contents as a substitute for providing the path. Always reference required artifacts by path and instruct the receiving agent to read them directly.
+- **This workspace is transient**: It exists only for the duration of the task lifecycle and is gitignored to prevent accidental commits. On host/target projects, establish and ignore a similar workspace to prevent leakage of intermediate artifacts.
+
 ### Mid-Execution Consultation
 
 Consult Kvasir during execution — not only upfront — when:
@@ -100,8 +110,7 @@ Enforce independent review on every subtask output and on the final assembled de
 
 - Every Brokk output must be reviewed by Heimdall — never skip review.
 - No agent may review its own output — independent review is always required.
-- Reviewers must receive the complete output being reviewed; never provide partial output.
-- Reviewers must receive the task description the output was meant to satisfy — review validates fulfillment of the request, not just generic quality.
+- Reviewers must receive the artifact path(s) constituting the complete output (which they read directly) plus the originating task description — never provide partial output. Review validates fulfillment of the request, not just generic quality.
 
 ### Final Review Gate
 

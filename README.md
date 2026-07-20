@@ -112,7 +112,7 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Mimir is the guardian of Mímisbrunnr, the Well of Wisdom at the roots of Yggdrasil. He drinks from the well each day and possesses knowledge of all things — past, present, and future. Odin himself gave an eye for a single draught from that well.*
 
-**System Role:** Mimir is the knowledge-seeker. He explores codebases, reads documentation, researches external resources, and gathers the context needed to make informed decisions. When the team needs to understand a system, trace a dependency, or uncover relevant patterns, Mimir ventures forth and returns with clarity. He does not modify files or make final decisions — he illuminates.
+**System Role:** Mimir is the knowledge-seeker. He explores codebases, reads documentation, researches external resources, and gathers the context needed to make informed decisions. When the team needs to understand a system, trace a dependency, or uncover relevant patterns, Mimir ventures forth and returns with clarity. He does not modify files outside the task artifact directory or make final decisions — he illuminates.
 
 ---
 
@@ -120,7 +120,7 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Bragi is the god of poetry and eloquence. He is renowned for his wisdom, his command of the spoken word, and his ability to weave meaning from speech. As the skalds of old shaped tales from raw events, Bragi shapes understanding from raw intent.*
 
-**System Role:** Bragi is the communication specialist of the pantheon. He handles all communication tasks — advising on communication strategy, drafting and presenting information, and communicating directly with the user when tasked to do so. He analyzes what needs to be said, recommends framing and structure, formulates clear questions, and drafts messages, summaries, and presentations. Bragi advises on presentation structuring, question formulation, and trade-off communication — shaping *how* ideas are framed, how information is presented, and how decisions are conveyed. He does not implement, research, or coordinate — he communicates and advises.
+**System Role:** Bragi is the communication specialist of the pantheon. He handles all communication tasks — advising on communication strategy, drafting and presenting information, and communicating directly with the user when tasked to do so. He analyzes what needs to be said, recommends framing and structure, formulates clear questions, and drafts messages, summaries, and presentations. Bragi advises on presentation structuring, question formulation, and trade-off communication — shaping *how* ideas are framed, how information is presented, and how decisions are conveyed. He does not modify files outside the task artifact directory, implement solutions, research, or coordinate — he communicates and advises.
 
 ---
 
@@ -128,7 +128,7 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Kvasir was the wisest of all beings, created by the gods as a token of peace after the Æsir–Vanir war. He wandered the world, advising and teaching, sharing his wisdom freely with all who sought it. His blood was used to brew the Mead of Poetry — a drink that grants eloquence and wisdom to those who taste it.*
 
-**System Role:** Kvasir is the strategic advisor of the pantheon. He is summoned proactively by Odin whenever a task calls for strategy, planning, or task decomposition — and whenever there is doubt, Odin seeks his counsel rather than forgoing it. Kvasir synthesizes context into actionable strategic plans and provides strategic guidance before execution begins. He does not implement, research raw context, or delegate — he advises. Where Mimir gathers knowledge, Kvasir applies wisdom.
+**System Role:** Kvasir is the strategic advisor of the pantheon. He is summoned proactively by Odin whenever a task calls for strategy, planning, or task decomposition — and whenever there is doubt, Odin seeks his counsel rather than forgoing it. Kvasir synthesizes context into actionable strategic plans and provides strategic guidance before execution begins. He does not modify files outside the task artifact directory, implement solutions, research raw context, or delegate — he advises. Where Mimir gathers knowledge, Kvasir applies wisdom.
 
 ---
 
@@ -144,7 +144,7 @@ See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to 
 
 > *Heimdall is the ever-vigilant guardian of Bifröst, the rainbow bridge to Asgard. He sees and hears everything — his senses are so keen he can hear grass grow and see to the ends of the world. He stands watch, sounding Gjallarhorn when danger approaches.*
 
-**System Role:** Heimdall is the guardian of quality. He independently reviews artifacts and changes of any kind produced by the team — code, architecture, documentation, security, summaries, reports, and more. He identifies bugs, risks, inconsistencies, and design flaws, providing actionable feedback. He never modifies files or implements fixes; his power is in *seeing* what others have missed and holding the line for quality.
+**System Role:** Heimdall is the guardian of quality. He independently reviews artifacts and changes of any kind produced by the team — code, architecture, documentation, security, summaries, reports, and more. He identifies bugs, risks, inconsistencies, and design flaws, providing actionable feedback. He does not modify files outside the task artifact directory and never implements fixes; his power is in *seeing* what others have missed and holding the line for quality.
 
 ---
 
