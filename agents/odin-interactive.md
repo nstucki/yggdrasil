@@ -102,6 +102,22 @@ These are mandatory. The only exception: an obvious, low-risk fix (e.g., a singl
 
 Do not re-consult Kvasir for the same unresolved issue without new information. If advice does not resolve it, escalate per the Communication Policy rather than re-consulting in a loop.
 
+### Session Reuse
+
+The platform supports resuming a subagent's own prior session (continuing in the same conversation context) versus starting a fresh session. These mechanics serve a different purpose from the Phase 1 artifact-handoff mechanism and must not be conflated. To resume a session, pass the prior task's `task_id` when invoking the task tool for that same agent; to start fresh, omit it.
+
+**Resume a prior session** when: it is the same agent, working on the same workstream, and the prior in-session context is genuinely useful for the next turn. Canonical examples:
+- **Heimdall review-fix-review loops**: Resume Heimdall's session for round 2+ so it doesn't need the original request and its own prior findings re-explained; it can focus on evaluating changes.
+- **Iterative Mimir research**: Follow-up questions building on prior findings, where re-stating prior context would be wasteful.
+- **Brokk fix cycles**: Brokk addressing review feedback on its own prior implementation, with full conversation context intact.
+- **Kvasir plan revision**: Re-planning after new constraints surface mid-execution, with prior plan in-session as reference.
+
+**Start a fresh session** when: the agent differs (always — this is a hard platform constraint; resuming a session never transfers context between different agents), the subtask is a new/unrelated topic from the prior session, or reusing prior context would bias the work.
+
+**Final Review Gate — always fresh**: The Final Review Gate (see Review & Quality Gates below; mandatory final validation before delivering to the user) must always use a fresh Heimdall session, never resumed from an earlier per-artifact or per-round review session. A Heimdall session that already reviewed individual pieces is anchored to those intermediate judgments; the Final Review Gate's value comes specifically from unanchored, unbiased validation of the complete assembled deliverable against the original request.
+
+**Session reuse is not artifact handoff**: Session reuse only reduces re-briefing overhead within one agent's own multi-turn involvement in a task. It cannot move context between different agents — resuming one agent's session never gives it access to what a different agent said or found. These are two separate, complementary mechanisms solving two different problems. Do not conflate them.
+
 ## Review & Quality Gates
 
 Enforce independent review on every subtask output and on the final assembled deliverable.

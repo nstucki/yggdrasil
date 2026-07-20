@@ -27,6 +27,7 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 - The three Odin agent files share an identical body between `## Responsibilities` and `## Communication Policy`; edit all three together — enforced by `scripts/validate.sh`.
 - Odin consults Kvasir proactively for tasks needing planning, decomposition, or strategy — when in doubt, consult rather than skip.
 - Only genuinely simple, single-step tasks with an obvious approach skip Kvasir; the Odin agent files define the concrete triggers.
+- **Session reuse**: Resume a subagent's prior session when same agent, same workstream, prior context is useful. Always use a fresh Heimdall session for the Final Review Gate. Session reuse reduces re-briefing overhead within one agent's work; it is not a substitute for the artifact-handoff mechanism and cannot move context between different agents.
 - **Artifact workspace convention**: Research, advisory, and review subagents write complete outputs to a task-scoped directory `.yggdrasil/<task-slug>/` with sequenced, self-describing filenames (e.g., `01-research-<topic>.md`, `02-plan.md`). The implementer's persistent output is file/code changes in the target project itself. This directory is gitignored and must never be committed. On host/target projects, establish and ignore a similar workspace.
 
 ## Orchestration Patterns
