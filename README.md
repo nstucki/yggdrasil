@@ -4,7 +4,7 @@
 
 ---
 
-![Yggdrasil — The World-Tree](./images/Yggdrasil.png)
+![Yggdrasil — The World-Tree](./images/yggdrasil.png)
 
 ## Introduction
 
