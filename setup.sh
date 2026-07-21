@@ -222,10 +222,14 @@ fi
 
 SRC_AGENTS="${SCRIPT_DIR}/agents"
 SRC_SKILLS="${SCRIPT_DIR}/skills"
+SRC_GENERATOR="${SCRIPT_DIR}/scripts/generate-capabilities.sh"
 
 DST_BASE="$CONFIG_BASE"
 DST_AGENTS="${DST_BASE}/agents/yggdrasil"
 DST_SKILLS="${DST_BASE}/skills/yggdrasil"
+DST_CONFIG_HOME="${DST_BASE}/yggdrasil"
+DST_CUSTOM_CAPS="${DST_CONFIG_HOME}/custom-capabilities.yaml"
+DST_GENERATOR="${DST_CONFIG_HOME}/generate-capabilities.sh"
 
 # ── Pre-flight checks ──────────────────────────────────────────────────────
 
@@ -331,7 +335,9 @@ fi
 # Assert the destination paths are non-empty and end in the expected
 # `/yggdrasil` namespace under the config base. Logical paths are compared
 # (symlinks are NOT resolved), so stow/yadm-managed config dirs are accepted.
-if [ -z "$DST_BASE" ] || [ -z "$DST_AGENTS" ] || [ -z "$DST_SKILLS" ]; then
+# Also permit the new config-home directory (DST_CONFIG_HOME) which is directly
+# under DST_BASE and contains custom capabilities and installed tools.
+if [ -z "$DST_BASE" ] || [ -z "$DST_AGENTS" ] || [ -z "$DST_SKILLS" ] || [ -z "$DST_CONFIG_HOME" ]; then
     err "Refusing to install: computed destination paths are empty."
     err "Check that HOME is set correctly (HOME=\"${HOME:-}\")."
     exit 1
@@ -353,10 +359,59 @@ case "$DST_SKILLS" in
         ;;
 esac
 
+case "$DST_CONFIG_HOME" in
+    "${DST_BASE}"/yggdrasil) ;;
+    *)
+        err "Refusing to install outside the yggdrasil namespace: ${DST_CONFIG_HOME}"
+        exit 1
+        ;;
+esac
+
+# ── Backup/warn for agent file diffs (U1 mitigation) ───────────────────────
+# Before overwriting agent files, check if any existing file differs from the
+# incoming version. If so, back it up and warn the user (to help recover
+# manually-edited permission grants that would otherwise be lost on upgrade).
+backup_differing_agents() {
+    local differing_count=0
+    local differing_files=""
+    
+    for src_file in "${SRC_AGENTS}"/*.md; do
+        [ -f "$src_file" ] || continue
+        filename=$(basename "$src_file")
+        dst_file="${DST_AGENTS}/${filename}"
+        
+        # Only check if destination exists (not the first install).
+        if [ -f "$dst_file" ]; then
+            if ! diff -q "$src_file" "$dst_file" >/dev/null 2>&1; then
+                # Files differ. Back up the destination file with timestamp.
+                timestamp=$(date +%s)
+                backup_file="${dst_file}.bak.${timestamp}"
+                cp "$dst_file" "$backup_file"
+                differing_count=$((differing_count + 1))
+                differing_files="${differing_files}
+    - $filename (backed up to $backup_file)"
+            fi
+        fi
+    done
+    
+    if [ "$differing_count" -gt 0 ]; then
+        warn "Agent definition files were modified locally and have been backed up."
+        printf "    Modified files:%s\n" "$differing_files"
+        printf "    \n"
+        printf "    If you made custom permission edits (e.g., granting custom tools),\n"
+        printf "    review the backups and re-apply your changes to the new versions.\n"
+    fi
+}
+
 # ── Install agents ─────────────────────────────────────────────────────────
 
 info "Creating agents directory…"
 mkdir -p "$DST_AGENTS"
+
+# Back up any locally-modified agent files before overwriting (U1 mitigation).
+if [ -d "$DST_AGENTS" ] && [ -n "$(ls -A "$DST_AGENTS" 2>/dev/null)" ]; then
+    backup_differing_agents
+fi
 
 info "Copying agents to ${DST_AGENTS}…"
 # Merge copy: copies Yggdrasil agent definitions into the destination.
@@ -377,6 +432,51 @@ if [ "$COPY_SKILLS" = true ]; then
     ok "Skills installed."
 fi
 
+# ── Install generator and custom-capabilities scaffold ─────────────────────
+
+info "Creating config home directory…"
+mkdir -p "$DST_CONFIG_HOME"
+
+info "Installing capability generator…"
+cp "$SRC_GENERATOR" "$DST_GENERATOR"
+chmod +x "$DST_GENERATOR"
+ok "Generator installed to ${DST_GENERATOR}."
+
+# Scaffold custom-capabilities.yaml: only install on first setup, never overwrite
+# (to preserve user's custom tool grants across upgrades).
+if [ ! -f "$DST_CUSTOM_CAPS" ]; then
+    info "Creating custom-capabilities scaffold…"
+    cp "${SCRIPT_DIR}/custom-capabilities.yaml" "$DST_CUSTOM_CAPS"
+    ok "Custom capabilities scaffold created at ${DST_CUSTOM_CAPS}."
+else
+    ok "Custom capabilities file already exists (preserved: ${DST_CUSTOM_CAPS})."
+fi
+
+# ── Regenerate the capability mirror ─────────────────────────────────────────
+
+# After agents and skills have been copied (and custom-caps scaffold is in place),
+# regenerate the capability inventory. This ensures the installed capability inventory
+# is always current after install/upgrade, applying any framework updates to the
+# built-in skills and custom capabilities (if the user edited the scaffold).
+# NOTE: The generated file is no longer committed to the repo; it's created fresh
+# at install time. If skills were installed and regeneration fails, this is FATAL
+# (a silent failure would leave no capability inventory at all, invisibly).
+if [ "$COPY_SKILLS" = true ] && [ -d "$DST_SKILLS" ]; then
+    info "Regenerating capability mirror…"
+    if "$DST_GENERATOR" --config-base "$DST_BASE" >/dev/null 2>&1; then
+        ok "Capability mirror regenerated."
+    else
+        err "Failed to regenerate capability mirror (skills were installed but inventory could not be created)."
+        err "This is a fatal condition — the capability inventory is required for Odin and Kvasir to function."
+        err "Run manually to diagnose: ${DST_GENERATOR} --config-base ${DST_BASE}"
+        exit 1
+    fi
+else
+    if [ "$COPY_SKILLS" != true ]; then
+        info "Skipping capability mirror regeneration (skills not installed)."
+    fi
+fi
+
 # ── Summary ────────────────────────────────────────────────────────────────
 
 printf "\n"
@@ -387,3 +487,5 @@ if [ "$COPY_SKILLS" = true ]; then
 else
     printf "    Skills → (skipped)\n"
 fi
+printf "    Config home → %s\n" "$DST_CONFIG_HOME"
+printf "    Generator → ${DST_GENERATOR}\n"

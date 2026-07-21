@@ -1,0 +1,24 @@
+# Custom capability inventory scaffold — this is the template installed to
+# the user's config home ($CONFIG_BASE/yggdrasil/custom-capabilities.yaml) on
+# first setup. Real custom tool grants (MCP servers, locally-available tools, etc.)
+# belong in the INSTALLED copy only, never in this repo scaffold (which must remain
+# empty and is enforced by validate.sh Check 6c).
+#
+# AFTER INITIAL INSTALL: edit $CONFIG_BASE/yggdrasil/custom-capabilities.yaml directly.
+# To apply changes, run the installed generator:
+#   $CONFIG_BASE/yggdrasil/generate-capabilities.sh
+#
+# DO NOT edit this repo file to grant custom capabilities.
+#
+# Schema per entry (for your installed copy):
+#   - name: <capability-slug>
+#     role: <researcher|implementer|reviewer|strategist|communicator>
+#     summary: <role-phrased, nameless, self-contained: what it enables; when to use it>
+#
+# Example (for your installed copy):
+# custom_capabilities:
+#   - name: jira-mcp
+#     role: researcher
+#     summary: Can query Jira issues, sprints, and boards; prefer for ticket status, sprint scope, or issue history.
+
+custom_capabilities: []

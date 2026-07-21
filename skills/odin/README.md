@@ -1,5 +1,7 @@
 # Odin Skills
 
-This directory holds user-defined skills for the Odin orchestrator. Each skill lives at
-`skills/yggdrasil/odin/odin-<name>/SKILL.md` with frontmatter `name: odin-<name>`. Skills placed here
-are auto-discovered and gated by Odin's permission allowlist, which admits only `odin-*` names.
+This directory holds custom skills for the Odin orchestrator — for any purpose, not just capability routing.
+
+To add a custom skill, create a subdirectory here named `odin-<name>/` containing a `SKILL.md` file with frontmatter `name: odin-<name>`. It becomes available immediately — Odin auto-discovers skills in this directory, and its permission allowlist admits any `odin-*` name.
+
+For example, `odin-release-checklist/SKILL.md` (frontmatter `name: odin-release-checklist`) might teach Odin a specific sequence of checks to run through before finalizing any release-related task.

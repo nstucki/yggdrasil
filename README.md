@@ -18,45 +18,65 @@ Like the world-tree itself, Yggdrasil binds disparate strengths into a unified w
 
 ### Prerequisites
 
-- [OpenCode](https://github.com/sst/opencode) installed and configured on your system.
+- [OpenCode](https://github.com/sst/opencode) installed and configured on your system (requires `~/.config/opencode/` directory).
 
-### Install Agents & Skills
+### Basic Install
 
-The repository includes a setup script that installs all agent and skill definitions into the OpenCode configuration directories:
+The repository includes a setup script that installs all agent and skill definitions:
 
 ```bash
 ./setup.sh
 ```
 
-This copies the files as follows:
+You'll be prompted for two interactive choices:
 
-- **Agents** → `~/.config/opencode/agents/yggdrasil/`
-- **Skills** → `~/.config/opencode/skills/yggdrasil/`
+1. **Copy default skills?** — We ship with curated starter skills for all agents. You can decline to skip this, or accept to install them (default: yes).
+2. **Confirm merge?** — Only shown if target directories already contain files. Default is to skip. The script performs a merge: same-named Yggdrasil files are overwritten, new files are added, and pre-existing unrelated files are preserved (never deleted).
 
-The script is safe to run multiple times — it performs a **merge**:
-
-- New and same-named Yggdrasil files are added or overwritten in the namespaced `yggdrasil` folders.
-- Pre-existing files that are not part of this project are preserved — the script never deletes destination files.
-- If the target directories already contain files, you are prompted (y/N, default No) before merging. Pass `-y`/`--yes`/`--force` to skip the prompt, e.g. for non-interactive installs (CI, or `curl ... | bash`).
-
-#### Configurable Installation Path
-
-The installation path is configurable via the `OPENCODE_CONFIG_BASE` environment variable or the `-c`/`--config-base` CLI flag. By default, agents and skills are installed to `~/.config/opencode/agents/yggdrasil/` and `~/.config/opencode/skills/yggdrasil/`. To install to a custom location, use one of:
+To skip both prompts (for CI, non-interactive installs, or `curl ... | bash`), pass the `-y` flag:
 
 ```bash
-# Using environment variable
+./setup.sh -y
+```
+
+**What gets installed:**
+
+- **Agents** → `~/.config/opencode/agents/yggdrasil/`
+- **Skills** (if accepted) → `~/.config/opencode/skills/yggdrasil/`
+- **Capability generator** → `~/.config/opencode/yggdrasil/generate-capabilities.sh`
+- **Custom-capabilities scaffold** → `~/.config/opencode/yggdrasil/custom-capabilities.yaml` (first install only; never overwritten on upgrades)
+- **Capability inventory** (generated automatically if skills are installed) → `~/.config/opencode/skills/yggdrasil/shared/capability-inventory/SKILL.md`
+
+The capability inventory is a critical generated file that both Odin and Kvasir use to route work and understand available capabilities. It's automatically regenerated at install time and whenever you run the generator after adding custom tools.
+
+### Custom Installation Path
+
+By default, everything installs to `~/.config/opencode/`. To use a different location, set `OPENCODE_CONFIG_BASE` as an environment variable or use the `-c`/`--config-base` CLI flag:
+
+```bash
+# Environment variable
 OPENCODE_CONFIG_BASE=/custom/path ./setup.sh -y
 
-# Using CLI flag
-./setup.sh --config-base /custom/path -y
+# CLI flag (takes precedence)
 ./setup.sh -c /custom/path -y
 ```
 
-The CLI flag takes precedence over the environment variable. The path may include `~` (e.g., `~/my-opencode-config`), which will be expanded to your home directory.
+The path supports `~` expansion (e.g., `~/my-opencode-config`).
+
+### Upgrades
+
+When you run `./setup.sh` again after pulling the latest framework updates, it performs a safe upgrade:
+
+- **Agent files** that have been locally modified are backed up with a timestamp suffix (e.g., `odin-autonomous.md.bak.1234567890`) before being overwritten. Review your backup to recover any custom permission grants and re-apply them to the new version.
+- **Skill files** are overwritten if they match the current version; they're never backed up.
+- **Custom-capabilities.yaml** is never touched — your custom tool grants are always preserved.
+- **Capability inventory** is automatically regenerated to reflect framework updates and any new custom capabilities you've added.
+
+If skills were skipped during install, the capability inventory regeneration is also skipped (and will need to be done manually later if you install skills).
 
 ### Default Skills
 
-The repository ships with a curated set of default skills covering common tasks:
+Yggdrasil ships with a curated set of default skills:
 
 - **Bragi:** Presentation structuring, Question formulation, Trade-off communication
 - **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
@@ -64,27 +84,59 @@ The repository ships with a curated set of default skills covering common tasks:
 - **Kvasir:** Approach evaluation, Risk assessment, Task decomposition
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
 
-> **These defaults are starting points, not prescriptions.** Each skill is a Markdown file in the `skills/` directory. You are encouraged to review, modify, and extend them to match your team's workflows, coding standards, and tooling. Remove what you don't need, adjust what you do, and add your own. Yggdrasil is designed to be adapted, not adopted wholesale.
+**These are starting points, not prescriptions.** Each skill is a Markdown file in the installed `skills/yggdrasil/` directory. You are encouraged to review, modify, and extend them to match your team's workflows, coding standards, and tooling. Remove what you don't need, adjust what you do, and add your own. Yggdrasil is designed to be adapted, not adopted wholesale.
 
-### Extending Odin with Tools & Skills
+To grant custom tools to specialists after install, see [Extending Yggdrasil with Tools & Skills](#extending-yggdrasil-with-tools--skills) below.
 
-Subagents may be granted powers beyond their birthright — additional tools such as **MCPs (Model Context Protocol servers)** can be enabled for a specific subagent through its configuration. Yet Odin, wise though he is, can only orchestrate what he knows exists. When you bestow a new tool upon a subagent, you must also tell Odin of its presence, lest the gift go unused.
+## Extending Yggdrasil with Tools & Skills
 
-This is done by adding an **Odin skill**. Such a skill is an orchestration and routing guide: it teaches Odin *when* to send a task to the subagent that now wields the new tool, and how to weave the findings back into the greater plan. It is both signpost and permission — Odin's allowlist admits only skills matching `odin-*`, so the prefix is at once the naming convention and the gate of access.
+### Granting Custom Capabilities (After Install)
 
-To add one:
+The repo is only needed for the initial install and framework upgrades. Once installed, all custom-capability management happens in the installed location.
 
-1. Create the directory `skills/odin/odin-<name>/` and place a `SKILL.md` inside it.
-2. In its YAML frontmatter, set `name: odin-<name>` — the name **must** carry the `odin-` prefix.
-3. Re-run `./setup.sh` to install it. See also `skills/odin/README.md`.
+**To grant a new tool to a specialist:**
 
-```text
-skills/odin/
-└── odin-jira-routing/
-    └── SKILL.md        # frontmatter: name: odin-jira-routing
-```
+1. **Grant the tool** in the installed agent definition file:
+   ```
+   $CONFIG_BASE/agents/yggdrasil/<agent-name>.md
+   ```
+   Add the tool to the agent's `permission:` block (e.g., a new MCP or locally-available executable).
 
----
+2. **Register the capability** in the installed custom-capabilities file:
+   ```
+   $CONFIG_BASE/yggdrasil/custom-capabilities.yaml
+   ```
+   Add an entry:
+   ```yaml
+   custom_capabilities:
+     - name: <capability-slug>
+       role: <researcher|implementer|reviewer|strategist|communicator>
+       summary: <one-line, role-phrased description>
+   ```
+
+3. **Regenerate the capability mirror**:
+     ```bash
+     $CONFIG_BASE/yggdrasil/generate-capabilities.sh
+     ```
+     This updates `$CONFIG_BASE/skills/yggdrasil/shared/capability-inventory/SKILL.md`, making the new capability visible to both Odin and Kvasir immediately.
+
+### Built-In Capability Inventory
+
+Both Odin and Kvasir maintain awareness of all available capabilities — built-in skills plus custom-granted tools — by independently loading the same **`capability-inventory` skill**. This single, shared generated skill is consulted when routing work, avoiding the need for Odin to curate and relay information to Kvasir.
+
+The inventory is assembled from two sources:
+
+1. **Built-in skills** — Harvested automatically from the frontmatter of all agent and skill files. All roles see the full roster of capabilities each specialist can deploy.
+2. **Custom capabilities** — Read from `$CONFIG_BASE/yggdrasil/custom-capabilities.yaml` (the installed copy, not the repo).
+
+The generator (`$CONFIG_BASE/yggdrasil/generate-capabilities.sh`) is created automatically at install time and can be re-run as needed to regenerate `$CONFIG_BASE/skills/yggdrasil/shared/capability-inventory/SKILL.md`. The installed generator automatically detects its config base from its own location; `--config-base` and `OPENCODE_CONFIG_BASE` remain available as overrides (precedence: flag > env var > self-location > `~/.config/opencode`). Both Odin and Kvasir load the generated file automatically (each with its own explicit permission grant). The generated file is agent-neutral and contains:
+
+- **Inventory (Built-In Skills)** — All specialist capabilities, role-grouped, agent names stripped. Everyone consults this to route work to the right role.
+- **Inventory (Custom Capabilities)** — Any custom tools or MCPs you've granted to specialists.
+
+No relay, copying, or curation needed — both agents load the same source directly via name-based discovery.
+
+**Note:** The capability inventory is generated fresh at install time. The repo no longer contains a committed copy — it's created by `setup.sh`'s post-installation step, ensuring it always reflects the current framework state and any custom capabilities you've configured.
 
 ## The Pantheon
 
@@ -104,7 +156,7 @@ Odin operates in three modes, adapting his level of autonomy to the task at hand
 
 > **Note:** Even in Autonomous mode, Bragi may still be consulted for advice on documenting assumptions and structuring summaries.
 
-See [Extending Odin with Tools & Skills](#extending-odin-with-tools--skills) to learn how to grant subagents new tools — such as MCPs — and make Odin aware of them through `odin-*` skills.
+See [Extending Yggdrasil with Tools & Skills](#extending-yggdrasil-with-tools--skills) to learn how to grant subagents new tools — such as MCPs — and make Odin aware of them through `odin-*` skills.
 
 ---
 

@@ -17,7 +17,7 @@ Agent definition files in `agents/` are authoritative for agent behavior; AGENTS
 
 ## Skill Categories
 
-Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-selection-guide) below. Odin's skills are user-defined `odin-*` plugins, auto-discovered from `skills/odin/` and gated by Odin's allowlist. See the README section *Extending Odin with Tools & Skills* for how to add them.
+Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-selection-guide) below. Odin's skills are user-defined `odin-*` plugins, auto-discovered from `skills/odin/` and gated by Odin's allowlist. See the README section *Extending Yggdrasil with Tools & Skills* for how to add them.
 
 ## Orchestration Rules
 
@@ -30,6 +30,7 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 - Only genuinely simple, single-step tasks with an obvious approach skip Kvasir; the Odin agent files define the concrete triggers.
 - **Session reuse**: Resume a subagent's prior session when same agent, same workstream, prior context is useful. Always use a fresh Heimdall session for the Final Review Gate. Session reuse reduces re-briefing overhead within one agent's work; it is not a substitute for the artifact-handoff mechanism and cannot move context between different agents.
 - **Artifact workspace convention**: Research, advisory, and review subagents write complete outputs to a task-scoped directory `.yggdrasil/<task-slug>/` with sequenced, self-describing filenames (e.g., `01-research-<topic>.md`, `02-plan.md`). The implementer's persistent output is file/code changes in the target project itself. This directory is gitignored and must never be committed. On host/target projects, establish and ignore a similar workspace.
+- **Capability awareness**: Both Odin and Kvasir independently load the reserved `capability-inventory` skill at the start of task execution/planning, accessing the complete inventory of specialist capabilities (built-in skills by role + custom-granted tools) from `$CONFIG_BASE/skills/yggdrasil/shared/capability-inventory/SKILL.md`. No relay, curation, or copying needed — both agents load the same source directly via name-based discovery. Custom tool grants are managed post-install in `$CONFIG_BASE/yggdrasil/custom-capabilities.yaml` and `$CONFIG_BASE/agents/yggdrasil/`, never in the repo.
 
 ## Orchestration Patterns
 

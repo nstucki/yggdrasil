@@ -2,7 +2,7 @@
 #
 # validate.sh — Read-only structural validator for the Yggdrasil project.
 #
-# This script performs five structural checks against the agent and skill
+# This script performs six structural checks against the agent and skill
 # definitions and reports a per-check summary plus a final PASS/FAIL verdict.
 #
 #   1. Frontmatter parse check — every agents/*.md and skills/**/SKILL.md has a
@@ -22,6 +22,10 @@
 #      (skills/<name>/*/SKILL.md) must not reference any other agent by name
 #      (case-insensitive, word-boundary match). Self-references are allowed;
 #      Odin's files and skills are exempt from this scan.
+#   6. Skill description namelessness — every skills/**/SKILL.md's `description:`
+#      frontmatter field must not leak any agent name (odin, mimir, brokk, heimdall,
+#      kvasir, bragi — case-insensitive, whole-word match). Also verifies the repo's
+#      custom-capabilities.yaml scaffold remains empty (no real custom tool grants).
 #
 # GUARANTEE: This script is strictly READ-ONLY. It never creates, modifies, or
 # deletes any project file, and performs no git write operations. It only reads
@@ -103,6 +107,7 @@ FAIL_SECTIONS=0
 FAIL_SLUG=0
 FAIL_ODIN_SYNC=0
 FAIL_ISOLATION=0
+FAIL_CAPABILITIES=0
 
 # The 5 required skill section headers, in their mandated order.
 # Kept as a newline-delimited string to avoid array-portability concerns.
@@ -439,6 +444,62 @@ EOF
 }
 
 # ---------------------------------------------------------------------------
+# CHECK 6 — Skill description namelessness (6b) + repo scaffold emptiness (6c).
+# ---------------------------------------------------------------------------
+check_capabilities() {
+  heading "Check 6: Skill description namelessness + repo scaffold emptiness"
+
+  # Check 6b: Lint — scan every skill's description frontmatter field for agent-name
+  # leaks (no agent names should appear in descriptions, as these appear in the
+  # dynamically-generated capability-inventory skill).
+  local name_leaks=0
+  for skill_file in $(find "$SKILLS_DIR" -name "SKILL.md" | sort); do
+    local description=$(frontmatter_value "$skill_file" "description" 2>/dev/null || true)
+    if [ -z "$description" ]; then
+      continue
+    fi
+    
+    local line_num=0
+    while IFS= read -r line || [ -n "$line" ]; do
+      line_num=$((line_num + 1))
+      
+      # Check for agent names (case-insensitive, whole-word) in the description.
+      for agent in odin mimir brokk heimdall kvasir bragi; do
+        if echo "$line" | grep -iqw "$agent"; then
+          fail_msg "$(rel "$skill_file"): description contains agent name '$agent' (must be agent-neutral)"
+          name_leaks=$((name_leaks + 1))
+        fi
+      done
+    done <<< "$description"
+  done
+  
+  if [ "$name_leaks" -gt 0 ]; then
+    FAIL_CAPABILITIES=$((FAIL_CAPABILITIES + 1))
+  fi
+  
+  # Check 6c: Scaffold emptiness — the repo's custom-capabilities.yaml must be
+  # empty (no real custom tool grants). This prevents accidentally committing
+  # user-specific custom capabilities into the shared framework. Real custom
+  # grants live in the INSTALLED copy ($CONFIG_BASE/yggdrasil/custom-capabilities.yaml).
+  local custom_caps_file="$REPO_ROOT/custom-capabilities.yaml"
+  if [ -f "$custom_caps_file" ]; then
+    # Check if any non-comment, non-empty lines exist under custom_capabilities:.
+    # Look for "  - name:" entries (the start of a custom capability list item).
+    if grep -q "^  - name:" "$custom_caps_file"; then
+      fail_msg "$(rel "$custom_caps_file"): repo scaffold must remain empty (no custom entries)"
+      fail_msg "  Custom tool grants belong in the installed copy: \$CONFIG_BASE/yggdrasil/custom-capabilities.yaml"
+      FAIL_CAPABILITIES=$((FAIL_CAPABILITIES + 1))
+    fi
+  fi
+  
+  if [ "$FAIL_CAPABILITIES" -eq 0 ]; then
+    pass_msg "skill descriptions are nameless; repo scaffold is empty"
+  else
+    info_msg "${C_RED}${FAIL_CAPABILITIES} capability issue(s)${C_RESET}"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Main.
 # ---------------------------------------------------------------------------
 main() {
@@ -466,9 +527,11 @@ main() {
   printf '\n'
   check_isolation
   printf '\n'
+  check_capabilities
+  printf '\n'
 
   # ---- Final summary -------------------------------------------------------
-  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_SYNC + FAIL_ISOLATION))
+  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_SYNC + FAIL_ISOLATION + FAIL_CAPABILITIES))
 
   heading "Summary"
   printf '  %-34s %s\n' "Frontmatter parse:"        "$(fmt_count "$FAIL_FRONTMATTER")"
@@ -476,6 +539,7 @@ main() {
   printf '  %-34s %s\n' "Slug/name match:"          "$(fmt_count "$FAIL_SLUG")"
   printf '  %-34s %s\n' "Odin shared-block sync:"   "$(fmt_count "$FAIL_ODIN_SYNC")"
   printf '  %-34s %s\n' "Subagent isolation:"       "$(fmt_count "$FAIL_ISOLATION")"
+  printf '  %-34s %s\n' "Capability mirror:"        "$(fmt_count "$FAIL_CAPABILITIES")"
   printf '  %s\n' "----------------------------------------------------"
   printf '  %-34s %s\n' "Total failures:" "$total"
   printf '\n'
