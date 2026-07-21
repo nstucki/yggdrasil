@@ -254,11 +254,11 @@ if [ -f "$CUSTOM_CAPS_FILE" ]; then
     # If in custom list and line starts with "  - name:", parse entry.
     if [ "$in_custom" = 1 ]; then
       if echo "$line" | grep -q "^  - name:"; then
-        current_name=$(echo "$line" | sed 's/.*: *//; s/^ *//; s/ *$//' | tr -d '"'\''')
+        current_name=$(echo "$line" | sed 's/.*- name:[[:space:]]*//' | sed 's/^ *//; s/ *$//' | tr -d '"'\''')
       elif echo "$line" | grep -q "^    role:"; then
-        current_role=$(echo "$line" | sed 's/.*: *//; s/^ *//; s/ *$//' | tr -d '"'\''')
+        current_role=$(echo "$line" | sed 's/^[[:space:]]*role:[[:space:]]*//' | sed 's/ *$//' | tr -d '"'\''')
       elif echo "$line" | grep -q "^    summary:"; then
-        current_summary=$(echo "$line" | sed 's/.*: *//; s/^ *//; s/ *$//' | tr -d '"'\''')
+        current_summary=$(echo "$line" | sed 's/^[[:space:]]*summary:[[:space:]]*//' | sed 's/ *$//' | tr -d '"'\''')
         
         # Emit the entry.
         if [ -n "$current_name" ] && [ -n "$current_role" ] && [ -n "$current_summary" ]; then
