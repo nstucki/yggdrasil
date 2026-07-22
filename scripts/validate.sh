@@ -196,7 +196,7 @@ check_frontmatter() {
   done
 
   # Skills: require a well-formed block containing `name` and `description`.
-  for file in $(find "$SKILLS_DIR" -name SKILL.md | sort); do
+  while IFS= read -r -d '' file; do
     if ! extract_frontmatter "$file" >/dev/null 2>&1; then
       fail_msg "$(rel "$file"): malformed frontmatter (missing opening/closing '---')"
       FAIL_FRONTMATTER=$((FAIL_FRONTMATTER + 1))
@@ -210,7 +210,7 @@ check_frontmatter() {
       fail_msg "$(rel "$file"): frontmatter missing required key 'description'"
       FAIL_FRONTMATTER=$((FAIL_FRONTMATTER + 1))
     fi
-  done
+  done < <(find "$SKILLS_DIR" -name SKILL.md -print0 | sort -z)
 
   if [ "$FAIL_FRONTMATTER" -eq 0 ]; then
     pass_msg "all agent and skill files have well-formed frontmatter"
@@ -229,7 +229,7 @@ check_sections() {
   heading "Check 2: Required skill sections present & ordered"
 
   local file
-  for file in $(find "$SKILLS_DIR" -name SKILL.md | sort); do
+  while IFS= read -r -d '' file; do
     # The ordered list of level-2 headers in this file, one per line.
     # Strip the leading "## " and any trailing whitespace.
     local headers
@@ -278,7 +278,7 @@ EOF
       info_msg "    found order:    $(printf '%s' "$headers" | tr '\n' '|' | sed 's/|/, /g; s/, $//')"
       FAIL_SECTIONS=$((FAIL_SECTIONS + 1))
     fi
-  done
+  done < <(find "$SKILLS_DIR" -name SKILL.md -print0 | sort -z)
 
   if [ "$FAIL_SECTIONS" -eq 0 ]; then
     pass_msg "all skills contain the 5 required sections in the correct order"
@@ -295,7 +295,7 @@ check_slug_match() {
   heading "Check 3: Skill name-field matches directory slug"
 
   local file slug name
-  for file in $(find "$SKILLS_DIR" -name SKILL.md | sort); do
+  while IFS= read -r -d '' file; do
     slug=$(basename "$(dirname "$file")")
     name=$(frontmatter_value "$file" "name")
     if [ -z "$name" ]; then
@@ -305,7 +305,7 @@ check_slug_match() {
       fail_msg "$(rel "$file"): name '$name' != directory slug '$slug'"
       FAIL_SLUG=$((FAIL_SLUG + 1))
     fi
-  done
+  done < <(find "$SKILLS_DIR" -name SKILL.md -print0 | sort -z)
 
   if [ "$FAIL_SLUG" -eq 0 ]; then
     pass_msg "every skill's name field matches its directory slug"
@@ -453,7 +453,7 @@ check_capabilities() {
   # leaks (no agent names should appear in descriptions, as these appear in the
   # dynamically-generated capability-inventory skill).
   local name_leaks=0
-  for skill_file in $(find "$SKILLS_DIR" -name "SKILL.md" | sort); do
+  while IFS= read -r -d '' skill_file; do
     local description=$(frontmatter_value "$skill_file" "description" 2>/dev/null || true)
     if [ -z "$description" ]; then
       continue
@@ -471,7 +471,7 @@ check_capabilities() {
         fi
       done
     done <<< "$description"
-  done
+  done < <(find "$SKILLS_DIR" -name "SKILL.md" -print0 | sort -z)
   
   if [ "$name_leaks" -gt 0 ]; then
     FAIL_CAPABILITIES=$((FAIL_CAPABILITIES + 1))

@@ -9,7 +9,6 @@ permission:
     # filesystem inspection
     "du*": allow
     "file*": allow
-    "find*": allow
     "ls*": allow
     "pwd": allow
     "tree*": allow

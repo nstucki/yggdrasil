@@ -153,7 +153,7 @@ communicator_skills=""
 # Extract agent as the first path component after SKILLS_DIR:
 # E.g.: $SKILLS_DIR/mimir/mimir-web-research/SKILL.md → agent is "mimir"
 export LC_ALL=C
-for skill_file in $(find "$SKILLS_DIR" -name SKILL.md | sort); do
+while IFS= read -r -d '' skill_file; do
   skill_name=$(frontmatter_value "$skill_file" "name" 2>/dev/null || true)
   skill_desc=$(frontmatter_value "$skill_file" "description" 2>/dev/null || true)
   
@@ -231,7 +231,7 @@ ${entry}"
       fi
       ;;
   esac
-done
+done < <(find "$SKILLS_DIR" -name SKILL.md -print0 | sort -z)
 
 # --- Step 2: Harvest custom capabilities from custom-capabilities.yaml ---
 
