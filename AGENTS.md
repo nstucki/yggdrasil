@@ -83,7 +83,10 @@ examples for the target projects agents build, not directories in this repo.
 ### On the Yggdrasil repo itself and all work
 
 - **No bypassing specialist agents** — Odin must not implement or review directly
-- **Do not modify YAML frontmatter fields except `description`** — `name`, `mode`, and `permission` are configuration consumed by OpenCode; `description` may be updated to match role changes
+- **Frontmatter governance — protected vs. tunable fields**:
+  - **Protected (do not modify):** `name`, `mode`, and `permission` are configuration consumed by OpenCode and must not be changed.
+  - **Updatable:** `description` may be updated to match role changes.
+  - **Deliberately tunable:** `temperature` is tunable configuration that controls model variance; change it only via documented decision with observed cause/rationale, never as a side effect of other edits. Adjust at most one role's temperature at a time to enable clear observation of behavioral impact.
 - **Subagent isolation**: subagent prompts (`agents/*.md` except `odin-*`) and their skills (`skills/<subagent>/**`) must never reference other agents by name or presume the multi-agent pantheon — subagents do not know about each other; use "the requesting agent". Name references are enforced by `scripts/validate.sh`; nameless role-presumption is reviewed manually.
 - **Task artifact workspace is gitignored and transient**: The `.yggdrasil/` directory and its contents must never be committed. It exists only for the duration of a task lifecycle and is automatically ignored by git.
 

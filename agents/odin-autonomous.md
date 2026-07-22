@@ -2,6 +2,7 @@
 name: Odin (Autonomous)
 description: Orchestrates specialist agents autonomously, executing tasks without user interaction.
 mode: primary
+temperature: 0.1
 permission:
   "*": deny
   skill:

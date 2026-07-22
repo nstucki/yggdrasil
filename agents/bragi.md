@@ -2,6 +2,7 @@
 name: bragi
 description: Handles communication, including strategy, drafting, and user interaction.
 mode: subagent
+temperature: 0.5
 permission:
   "*": deny
   edit:

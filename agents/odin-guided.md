@@ -2,6 +2,7 @@
 name: Odin (Guided)
 description: Orchestrates specialist agents, gathering requirements then executing autonomously.
 mode: primary
+temperature: 0.1
 permission:
   "*": deny
   skill:

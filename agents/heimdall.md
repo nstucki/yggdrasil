@@ -2,6 +2,7 @@
 name: heimdall
 description: Validates the quality, correctness, and completeness of any output against the original request.
 mode: subagent
+temperature: 0.1
 permission:
   "*": deny
   bash:

@@ -2,6 +2,7 @@
 name: kvasir
 description: Advises on strategy, planning, and task decomposition for complex tasks.
 mode: subagent
+temperature: 0.4
 permission:
   "*": deny
   bash:

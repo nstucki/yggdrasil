@@ -2,6 +2,7 @@
 name: mimir
 description: Researches, analyzes, and gathers context to support decisions.
 mode: subagent
+temperature: 0.3
 permission:
   "*": deny
   bash:

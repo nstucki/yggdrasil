@@ -2,6 +2,7 @@
 name: Odin (Interactive)
 description: Orchestrates specialist agents with user collaboration throughout.
 mode: primary
+temperature: 0.1
 permission:
   "*": deny
   skill:

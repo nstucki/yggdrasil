@@ -2,6 +2,7 @@
 name: brokk
 description: Creates and modifies files and artifacts of any type.
 mode: subagent
+temperature: 0.2
 permission:
   "*": deny
   bash:
