@@ -2,7 +2,7 @@
 #
 # validate.sh — Read-only structural validator for the Yggdrasil project.
 #
-# This script performs six structural checks against the agent and skill
+# This script performs seven structural checks against the agent and skill
 # definitions and reports a per-check summary plus a final PASS/FAIL verdict.
 #
 #   1. Frontmatter parse check — every agents/*.md and skills/**/SKILL.md has a
@@ -26,6 +26,9 @@
 #      frontmatter field must not leak any agent name (odin, mimir, brokk, heimdall,
 #      kvasir, bragi — case-insensitive, whole-word match). Also verifies the repo's
 #      custom-capabilities.yaml scaffold remains empty (no real custom tool grants).
+#   7. AGENTS.md ↔ Odin parity markers — a curated list of distinctive strings
+#      (parity markers) must appear in both AGENTS.md and agents/odin-autonomous.md
+#      to guard invariant orchestration rules that must remain synchronized.
 #
 # GUARANTEE: This script is strictly READ-ONLY. It never creates, modifies, or
 # deletes any project file, and performs no git write operations. It only reads
@@ -108,6 +111,7 @@ FAIL_SLUG=0
 FAIL_ODIN_SYNC=0
 FAIL_ISOLATION=0
 FAIL_CAPABILITIES=0
+FAIL_PARITY_MARKERS=0
 
 # The 5 required skill section headers, in their mandated order.
 # Kept as a newline-delimited string to avoid array-portability concerns.
@@ -500,6 +504,67 @@ check_capabilities() {
 }
 
 # ---------------------------------------------------------------------------
+# CHECK 7 — AGENTS.md ↔ Odin parity markers.
+#
+# Verifies that a curated list of distinctive, fixed strings (parity markers)
+# appear in both AGENTS.md and agents/odin-autonomous.md (the other two Odin
+# files are covered transitively by check 4). These markers guard invariant
+# orchestration rules that must remain synchronized between the two sources.
+# ---------------------------------------------------------------------------
+check_parity_markers() {
+  heading "Check 7: AGENTS.md ↔ Odin parity markers"
+
+  local agents_file="$REPO_ROOT/AGENTS.md"
+  local odin_file="$AGENTS_DIR/odin-autonomous.md"
+  
+  if [ ! -f "$agents_file" ]; then
+    fail_msg "AGENTS.md not found: $agents_file"
+    FAIL_PARITY_MARKERS=$((FAIL_PARITY_MARKERS + 1))
+    return
+  fi
+  if [ ! -f "$odin_file" ]; then
+    fail_msg "odin-autonomous.md not found: $odin_file"
+    FAIL_PARITY_MARKERS=$((FAIL_PARITY_MARKERS + 1))
+    return
+  fi
+
+  # Parity marker list: each marker must appear (case-insensitive fixed-string match)
+  # in both AGENTS.md and odin-autonomous.md.
+  local markers=(
+    "Mimir artifact is the entire deliverable"
+    "verify the research claims against the actual sources"
+    "fresh Heimdall session"
+    "paraphrase artifact contents"
+    "documented blocker"
+    ".yggdrasil/<yyyymmdd>-<task-slug>-<xx>/"
+    "may review its own output"
+    "PASS-WITH-NOTES"
+    "failed-review escalation ladder"
+    "single substantive subtask"
+  )
+
+  local marker
+  for marker in "${markers[@]}"; do
+    # Check AGENTS.md (case-insensitive, fixed-string match)
+    if ! grep -iF "$marker" "$agents_file" >/dev/null 2>&1; then
+      fail_msg "AGENTS.md: missing parity marker: '$marker'"
+      FAIL_PARITY_MARKERS=$((FAIL_PARITY_MARKERS + 1))
+    fi
+    # Check odin-autonomous.md (case-insensitive, fixed-string match)
+    if ! grep -iF "$marker" "$odin_file" >/dev/null 2>&1; then
+      fail_msg "odin-autonomous.md: missing parity marker: '$marker'"
+      FAIL_PARITY_MARKERS=$((FAIL_PARITY_MARKERS + 1))
+    fi
+  done
+
+  if [ "$FAIL_PARITY_MARKERS" -eq 0 ]; then
+    pass_msg "all 10 parity markers present in both AGENTS.md and odin-autonomous.md"
+  else
+    info_msg "${C_RED}${FAIL_PARITY_MARKERS} parity marker failure(s)${C_RESET}"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Main.
 # ---------------------------------------------------------------------------
 main() {
@@ -529,9 +594,11 @@ main() {
   printf '\n'
   check_capabilities
   printf '\n'
+  check_parity_markers
+  printf '\n'
 
   # ---- Final summary -------------------------------------------------------
-  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_SYNC + FAIL_ISOLATION + FAIL_CAPABILITIES))
+  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_SYNC + FAIL_ISOLATION + FAIL_CAPABILITIES + FAIL_PARITY_MARKERS))
 
   heading "Summary"
   printf '  %-34s %s\n' "Frontmatter parse:"        "$(fmt_count "$FAIL_FRONTMATTER")"
@@ -540,6 +607,7 @@ main() {
   printf '  %-34s %s\n' "Odin shared-block sync:"   "$(fmt_count "$FAIL_ODIN_SYNC")"
   printf '  %-34s %s\n' "Subagent isolation:"       "$(fmt_count "$FAIL_ISOLATION")"
   printf '  %-34s %s\n' "Capability mirror:"        "$(fmt_count "$FAIL_CAPABILITIES")"
+  printf '  %-34s %s\n' "Parity markers:"           "$(fmt_count "$FAIL_PARITY_MARKERS")"
   printf '  %s\n' "----------------------------------------------------"
   printf '  %-34s %s\n' "Total failures:" "$total"
   printf '\n'
