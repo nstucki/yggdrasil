@@ -24,8 +24,8 @@ The knowledge base serves as a cross-task repository of distilled knowledge — 
 
 When tasked to establish `.yggdrasil-memory/` in a project:
 
-1. **Check for existing directory.** If `.yggdrasil-memory/` already exists, report that it is already established and stop.
-2. **Create the directory structure:**
+1. **Check for existing directory.** If `.yggdrasil-memory/` already exists at the root of the current working directory, report that it is already established and stop.
+2. **Create the directory structure at the root of the current working directory:**
    ```
    .yggdrasil-memory/
    ├── README.md       (canonical template from this skill)
@@ -206,3 +206,4 @@ This README is generated from the canonical template in the `brokk-memory-curati
 - **Treating memory entries as a place for raw or unreviewed notes.** Memory is not a scratch pad. Every entry is a durable claim backed by reviewed sources. If you are tempted to write something without a reviewed source, it does not belong in memory yet.
 - **Promoting task narratives or transient state.** Memory is for durable knowledge, not "what happened in this task" or "the current state of X." If a claim is only true for this task or only true right now, it is not durable enough for memory.
 - **Chaining forget into other operations.** Dream prunes by judgment (reviewed); forget obeys explicit instruction (confirmed). Keep the semantics separate. Never silently delete entries as a side effect of dream or any other operation.
+- **Creating or mutating a knowledge base anywhere other than the current working directory.** The knowledge base must be rooted at the current working directory of the session — never in a configuration or install location, and never in another project's tree. Always establish and work with `.yggdrasil-memory/` at the root of the cwd.

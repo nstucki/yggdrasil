@@ -15,4 +15,4 @@ Execute the memory-promotion pattern defined in your memory conventions:
 - Only Heimdall-passed research is eligible for promotion. Distillation is
   implemented by the implementer and reviewed before it is final. Never
   promote secrets or credentials.
-- If no knowledge base exists at `.yggdrasil-memory/`, offer to establish it.
+- If no knowledge base exists at `.yggdrasil-memory/` in the current working directory, offer to establish it.

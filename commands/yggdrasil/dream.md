@@ -17,4 +17,4 @@ Execute the dream maintenance pattern defined in your memory conventions:
 4. Have the resulting memory diff reviewed for fidelity before it's final.
 5. Never silently perform a forget as part of consolidation — deletion of
    user-named scope is a separate, explicitly confirmed operation.
-- If no knowledge base exists at `.yggdrasil-memory/`, offer to establish it.
+- If no knowledge base exists at `.yggdrasil-memory/` in the current working directory, offer to establish it.

@@ -265,7 +265,7 @@ Each agent is an expert in its domain. Each trusts the others to do their part. 
 
 ## Memory System
 
-Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/` in each project — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace. This knowledge base stores distilled, source-cited findings that persist across task lifecycles.
+Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project) — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace. This knowledge base stores distilled, source-cited findings that persist across task lifecycles.
 
 ### What Memory Contains
 

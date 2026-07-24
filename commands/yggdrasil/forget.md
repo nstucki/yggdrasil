@@ -21,4 +21,4 @@ non-negotiable guardrails:
 4. Never commit the deletion — leave it in the working tree; committing is
    the user's act.
 5. Full wipe requires an interaction-capable mode and a second confirmation.
-- If no knowledge base exists at `.yggdrasil-memory/`, offer to establish it.
+- If no knowledge base exists at `.yggdrasil-memory/` in the current working directory, offer to establish it.

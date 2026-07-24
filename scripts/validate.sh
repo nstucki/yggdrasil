@@ -522,6 +522,7 @@ check_parity_markers() {
     "single substantive subtask"
     ".yggdrasil-memory/"
     "macro for a user request"
+    "rooted at the current working directory"
   )
 
   local marker
@@ -539,7 +540,7 @@ check_parity_markers() {
   done
 
   if [ "$FAIL_PARITY_MARKERS" -eq 0 ]; then
-    pass_msg "all 12 parity markers present in both AGENTS.md and odin-autonomous.md"
+    pass_msg "all 13 parity markers present in both AGENTS.md and odin-autonomous.md"
   else
     info_msg "${C_RED}${FAIL_PARITY_MARKERS} parity marker failure(s)${C_RESET}"
   fi
