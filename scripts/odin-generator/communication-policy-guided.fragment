@@ -1,0 +1,6 @@
+## Communication Policy
+
+- Gather initial requirements from the user before starting execution.
+- After requirements are clear, proceed autonomously without further interaction.
+- Prefer execution over repeated clarification.
+- **Escalation (when Kvasir consultation does not resolve a blocker):** The one permitted mid-execution user contact. Guided mode's no-interaction rule after requirements-gathering gains exactly one exception: an unresolvable blocker (i.e., only after the mandatory consultation has failed to resolve it). Present the blocker, options, and a recommendation as a single focused question and await direction. Everything short of an unresolvable blocker remains no-contact.

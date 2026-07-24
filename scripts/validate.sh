@@ -111,7 +111,7 @@ rel() {
 FAIL_FRONTMATTER=0
 FAIL_SECTIONS=0
 FAIL_SLUG=0
-FAIL_ODIN_SYNC=0
+FAIL_ODIN_FRESHNESS=0
 FAIL_ISOLATION=0
 FAIL_CAPABILITIES=0
 FAIL_PARITY_MARKERS=0
@@ -322,89 +322,65 @@ check_slug_match() {
 }
 
 # ---------------------------------------------------------------------------
-# CHECK 4 — Odin shared-block sync.
+# CHECK 4 — Odin agent freshness.
 #
-# The three Odin agent files must share a byte-identical body block starting
-# at the line "## Responsibilities" and ending just before the line
-# "## Communication Policy" (the start heading is included in the block, the
-# end heading is not). We extract the block with awk and compare checksums.
+# The three Odin agent files are generated from a single source (template + fragments).
+# This check regenerates them and verifies they match the committed versions byte-for-byte.
+# Any drift — whether from hand-editing a generated file or failing to regenerate after
+# editing the source — is caught.
 #
-# Checksum tool: prefers `shasum -a 256` (present on stock macOS and most
-# Linux distros via perl); falls back to POSIX `cksum` if shasum is absent.
+# The generator is located at scripts/generate-odin-agents.sh.
 # ---------------------------------------------------------------------------
-ODIN_SHARED_START='## Responsibilities'
-ODIN_SHARED_END='## Communication Policy'
 ODIN_FILES='odin-autonomous.md odin-guided.md odin-interactive.md'
+ODIN_GENERATOR="$REPO_ROOT/scripts/generate-odin-agents.sh"
 
-# Read stdin, print a checksum token (read-only; no temp files).
-block_checksum() {
-  if command -v shasum >/dev/null 2>&1; then
-    shasum -a 256 | awk '{print $1}'
-  else
-    cksum | awk '{print $1 "-" $2}'
+check_odin_freshness() {
+  heading "Check 4: Odin agent freshness (regenerate and diff)"
+
+  # Verify generator exists
+  if [ ! -f "$ODIN_GENERATOR" ]; then
+    fail_msg "Odin generator not found: $ODIN_GENERATOR"
+    FAIL_ODIN_FRESHNESS=$((FAIL_ODIN_FRESHNESS + 1))
+    return
   fi
-}
 
-# Print the shared block of an Odin file: from the start heading (inclusive)
-# up to the end heading (exclusive).
-extract_odin_block() {
-  awk -v start="$ODIN_SHARED_START" -v end="$ODIN_SHARED_END" '
-    $0 == end   { exit }
-    $0 == start { inblock = 1 }
-    inblock     { print }
-  ' "$1"
-}
+  # Create temp directory for regenerated files
+  local tmp
+  tmp=$(mktemp -d)
+  trap "rm -rf '$tmp'" RETURN
 
-check_odin_sync() {
-  heading "Check 4: Odin shared-block sync (agents/odin-*.md)"
-
-  local f path sum ref_sum="" ref_name=""
-  for f in $ODIN_FILES; do
-    path="$AGENTS_DIR/$f"
-    if [ ! -f "$path" ]; then
-      fail_msg "agents/$f: file not found"
-      FAIL_ODIN_SYNC=$((FAIL_ODIN_SYNC + 1))
+  # Regenerate all three files
+  local mode
+  for mode in autonomous guided interactive; do
+    if ! "$ODIN_GENERATOR" --mode "$mode" --print > "$tmp/odin-$mode.md" 2>/dev/null; then
+      fail_msg "agents/odin-$mode.md: generator failed"
+      FAIL_ODIN_FRESHNESS=$((FAIL_ODIN_FRESHNESS + 1))
       continue
-    fi
-    if ! grep -Fxq "$ODIN_SHARED_START" "$path"; then
-      fail_msg "agents/$f: missing '$ODIN_SHARED_START' heading (cannot extract shared block)"
-      FAIL_ODIN_SYNC=$((FAIL_ODIN_SYNC + 1))
-      continue
-    fi
-    if ! grep -Fxq "$ODIN_SHARED_END" "$path"; then
-      fail_msg "agents/$f: missing '$ODIN_SHARED_END' heading (cannot extract shared block)"
-      FAIL_ODIN_SYNC=$((FAIL_ODIN_SYNC + 1))
-      continue
-    fi
-    # Guard against empty extraction BEFORE checksumming: the checksum of
-    # empty input is a valid non-empty string, so checking the checksum alone
-    # would let all-empty extractions falsely compare equal (false PASS).
-    # `wc -c` output is used unquoted: on macOS it carries leading spaces,
-    # which word-splitting removes.
-    if [ $(extract_odin_block "$path" | wc -c) -eq 0 ]; then
-      fail_msg "agents/$f: shared block extraction produced no content"
-      FAIL_ODIN_SYNC=$((FAIL_ODIN_SYNC + 1))
-      continue
-    fi
-    sum=$(extract_odin_block "$path" | block_checksum)
-    if [ -z "$sum" ]; then
-      fail_msg "agents/$f: checksum tool produced no output (shasum/cksum failure)"
-      FAIL_ODIN_SYNC=$((FAIL_ODIN_SYNC + 1))
-      continue
-    fi
-    if [ -z "$ref_sum" ]; then
-      ref_sum="$sum"
-      ref_name="$f"
-    elif [ "$sum" != "$ref_sum" ]; then
-      fail_msg "agents/$f: shared block differs from agents/$ref_name"
-      FAIL_ODIN_SYNC=$((FAIL_ODIN_SYNC + 1))
     fi
   done
 
-  if [ "$FAIL_ODIN_SYNC" -eq 0 ]; then
-    pass_msg "all 3 Odin agents share an identical Responsibilities → Communication Policy block"
+  # Compare each file against committed version
+  local f
+  for f in $ODIN_FILES; do
+    local committed="$AGENTS_DIR/$f"
+    local generated="$tmp/$f"
+
+    if [ ! -f "$committed" ]; then
+      fail_msg "agents/$f: file not found"
+      FAIL_ODIN_FRESHNESS=$((FAIL_ODIN_FRESHNESS + 1))
+      continue
+    fi
+
+    if ! diff -q "$committed" "$generated" >/dev/null 2>&1; then
+      fail_msg "agents/$f: stale (regenerate with: scripts/generate-odin-agents.sh)"
+      FAIL_ODIN_FRESHNESS=$((FAIL_ODIN_FRESHNESS + 1))
+    fi
+  done
+
+  if [ "$FAIL_ODIN_FRESHNESS" -eq 0 ]; then
+    pass_msg "all 3 Odin agents match regenerated output (byte-identical)"
   else
-    info_msg "${C_RED}${FAIL_ODIN_SYNC} shared-block failure(s)${C_RESET}"
+    info_msg "${C_RED}${FAIL_ODIN_FRESHNESS} freshness failure(s)${C_RESET}"
   fi
 }
 
@@ -686,7 +662,7 @@ main() {
   printf '\n'
   check_slug_match
   printf '\n'
-  check_odin_sync
+  check_odin_freshness
   printf '\n'
   check_isolation
   printf '\n'
@@ -698,13 +674,13 @@ main() {
   printf '\n'
 
   # ---- Final summary -------------------------------------------------------
-  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_SYNC + FAIL_ISOLATION + FAIL_CAPABILITIES + FAIL_PARITY_MARKERS + FAIL_COMMANDS))
+  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_FRESHNESS + FAIL_ISOLATION + FAIL_CAPABILITIES + FAIL_PARITY_MARKERS + FAIL_COMMANDS))
 
   heading "Summary"
   printf '  %-34s %s\n' "Frontmatter parse:"        "$(fmt_count "$FAIL_FRONTMATTER")"
   printf '  %-34s %s\n' "Required sections/order:"  "$(fmt_count "$FAIL_SECTIONS")"
   printf '  %-34s %s\n' "Slug/name match:"          "$(fmt_count "$FAIL_SLUG")"
-  printf '  %-34s %s\n' "Odin shared-block sync:"   "$(fmt_count "$FAIL_ODIN_SYNC")"
+  printf '  %-34s %s\n' "Odin agent freshness:"   "$(fmt_count "$FAIL_ODIN_FRESHNESS")"
   printf '  %-34s %s\n' "Subagent isolation:"       "$(fmt_count "$FAIL_ISOLATION")"
   printf '  %-34s %s\n' "Capability mirror:"        "$(fmt_count "$FAIL_CAPABILITIES")"
   printf '  %-34s %s\n' "Parity markers:"           "$(fmt_count "$FAIL_PARITY_MARKERS")"

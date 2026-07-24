@@ -26,7 +26,7 @@ Each agent's skills are enumerated once, in the [Agent Selection Guide](#agent-s
 - No agent may review its own output — independent review always required.
 - Reviewers receive artifact path(s) constituting the complete output (which they read directly) plus the task description — review validates fulfillment of the request, not just generic quality. Never paraphrase artifact contents; always reference required artifacts by path.
 - Heimdall reviews open with a single-line verdict (PASS / PASS-WITH-NOTES / BLOCKED); PASS-WITH-NOTES counts as passing.
-- The three Odin agent files share an identical body between `## Responsibilities` and `## Communication Policy`; edit all three together — enforced by `scripts/validate.sh`. Rule-bearing details shared between AGENTS.md and the Odin files are tripwired by parity markers in `scripts/validate.sh`; update both sources and the marker list together.
+- The three Odin agent files are generated from a single source (template + mode-specific fragments) by `scripts/generate-odin-agents.sh`; the committed files are byte-identical to regenerated output, enforced by `scripts/validate.sh` check 4. Rule-bearing details shared between AGENTS.md and the Odin files are tripwired by parity markers in `scripts/validate.sh`; update both sources and the marker list together.
 - Odin consults Kvasir proactively for tasks needing planning, decomposition, or strategy — when in doubt, consult rather than skip.
 - Only tasks with a single substantive subtask (mandatory review gates excluded) and an obvious approach skip Kvasir; the Odin agent files define the concrete triggers.
 - **Session reuse**: Resume a subagent's prior session when same agent, same workstream, prior context is useful. Always use a fresh Heimdall session for the Final Review Gate (merged single-artifact fix rounds resume the same session). Session reuse reduces re-briefing overhead within one agent's work; it is not a substitute for the artifact-handoff mechanism and cannot move context between different agents.
@@ -92,6 +92,23 @@ examples for the target projects agents build, not directories in this repo.
   - **Deliberately tunable:** `temperature` is tunable configuration that controls model variance; change it only via documented decision with observed cause/rationale, never as a side effect of other edits. Adjust at most one role's temperature at a time to enable clear observation of behavioral impact.
 - **Subagent isolation**: subagent prompts (`agents/*.md` except `odin-*`) and their skills (`skills/<subagent>/**`) must never reference other agents by name or presume the multi-agent pantheon — subagents do not know about each other; use "the requesting agent". Name references are enforced by `scripts/validate.sh`; nameless role-presumption is reviewed manually.
 - **Task artifact workspace is gitignored and transient**: The `.yggdrasil-workspace/` directory and its contents must never be committed. It exists only for the duration of a task lifecycle and is automatically ignored by git.
+
+## Odin Agent Generation (Documented Decision)
+
+**What changed:** The three Odin agent files (`agents/odin-autonomous.md`, `agents/odin-guided.md`, `agents/odin-interactive.md`) are now generated from a single source of truth rather than hand-maintained with manual synchronization.
+
+**Why:** The three files share an identical body block (Responsibilities → Review & Quality Gates) with only the frontmatter and Communication Policy section differing by mode. Maintaining three copies required careful hand-editing to keep them in sync, enforced by a checksum-based validation check. Generating them from a shared template + mode-specific fragments reduces maintenance friction while preserving the identical-body governance guarantee.
+
+**How it works:**
+- **Source files** live in `scripts/odin-generator/`:
+  - `preamble.template` — frontmatter and title (with placeholders for mode-specific fields)
+  - `shared-body.template` — the byte-identical block (Responsibilities through Review & Quality Gates)
+  - `communication-policy-<mode>.fragment` — mode-specific Communication Policy sections (one per mode)
+- **Generator** (`scripts/generate-odin-agents.sh`) assembles each mode's file by substituting placeholders and concatenating the parts.
+- **Validation** (`scripts/validate.sh` check 4) regenerates the files and diffs against committed versions; any drift (hand-edits or un-regenerated source changes) fails validation.
+- **Smoke test** (`scripts/ci-smoke-odin-generator.sh`) provides an end-to-end test of the generator for CI/pre-commit use.
+
+**Governance impact:** The parity-marker mechanism (check 7) is unchanged — markers continue to pin rule text across AGENTS.md and the Odin files. The committed Odin files remain the runtime artifacts; `setup.sh` installs them unchanged. Future edits to the shared body or mode-specific sections happen in the template/fragment source files, then regenerated.
 
 ## Git Workflow
 
