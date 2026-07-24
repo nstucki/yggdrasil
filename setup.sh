@@ -222,11 +222,13 @@ fi
 
 SRC_AGENTS="${SCRIPT_DIR}/agents"
 SRC_SKILLS="${SCRIPT_DIR}/skills"
+SRC_COMMANDS="${SCRIPT_DIR}/commands/yggdrasil"
 SRC_GENERATOR="${SCRIPT_DIR}/scripts/generate-capabilities.sh"
 
 DST_BASE="$CONFIG_BASE"
 DST_AGENTS="${DST_BASE}/agents/yggdrasil"
 DST_SKILLS="${DST_BASE}/skills/yggdrasil"
+DST_COMMANDS="${DST_BASE}/commands/yggdrasil"
 DST_CONFIG_HOME="${DST_BASE}/yggdrasil"
 DST_CUSTOM_CAPS="${DST_CONFIG_HOME}/custom-capabilities.yaml"
 DST_GENERATOR="${DST_CONFIG_HOME}/generate-capabilities.sh"
@@ -242,6 +244,12 @@ fi
 if [ ! -d "$SRC_SKILLS" ]; then
     err "Source directory not found: ${SRC_SKILLS}"
     err "Make sure you are running this script from the Yggdrasil repository root."
+    exit 1
+fi
+
+if [ ! -d "$SRC_COMMANDS" ]; then
+    err "Source directory not found: ${SRC_COMMANDS}"
+    err "Make sure you are running this script from the Yggdrasil repository root and that commands/yggdrasil/ exists."
     exit 1
 fi
 
@@ -284,14 +292,19 @@ fi
 
 # ── Check for existing files and prompt ─────────────────────────────────────
 
-# Agents are always copied, so a non-empty agents dir always triggers the
-# warning. Skills are only mentioned when the user opted in (COPY_SKILLS=true);
-# a non-empty skills dir does NOT trigger the warning if skills were declined.
+# Agents and commands are always copied, so non-empty dirs always trigger the
+# warning. The brokk-memory-curation skill is also always copied (see the
+# "Install brokk-memory-curation" section below), so DST_SKILLS is now checked
+# unconditionally too — even if the user declines the skills prompt, that one
+# skill still lands there and pre-existing content deserves the same warning.
 needs_prompt=false
 if [ -d "$DST_AGENTS" ] && [ -n "$(ls -A "$DST_AGENTS" 2>/dev/null)" ]; then
     needs_prompt=true
 fi
-if [ "$COPY_SKILLS" = true ] && [ -d "$DST_SKILLS" ] && [ -n "$(ls -A "$DST_SKILLS" 2>/dev/null)" ]; then
+if [ -d "$DST_COMMANDS" ] && [ -n "$(ls -A "$DST_COMMANDS" 2>/dev/null)" ]; then
+    needs_prompt=true
+fi
+if [ -d "$DST_SKILLS" ] && [ -n "$(ls -A "$DST_SKILLS" 2>/dev/null)" ]; then
     needs_prompt=true
 fi
 
@@ -304,9 +317,8 @@ if [ "$needs_prompt" = true ] && [ "$ASSUME_YES" != true ]; then
     printf "    this project are preserved. Note: files removed or renamed upstream\n"
     printf "    are NOT deleted and may remain as orphans in:\n"
     printf "      %s\n" "$DST_AGENTS"
-    if [ "$COPY_SKILLS" = true ]; then
-        printf "      %s\n" "$DST_SKILLS"
-    fi
+    printf "      %s\n" "$DST_COMMANDS"
+    printf "      %s\n" "$DST_SKILLS"
     printf "${YELLOW}⚠️   Continue?${NC} [y/N] "
 
     # Under `set -e`, a bare `read` on closed/non-terminal stdin (e.g.
@@ -337,7 +349,8 @@ fi
 # (symlinks are NOT resolved), so stow/yadm-managed config dirs are accepted.
 # Also permit the new config-home directory (DST_CONFIG_HOME) which is directly
 # under DST_BASE and contains custom capabilities and installed tools.
-if [ -z "$DST_BASE" ] || [ -z "$DST_AGENTS" ] || [ -z "$DST_SKILLS" ] || [ -z "$DST_CONFIG_HOME" ]; then
+# Commands are installed to the global commands directory (not namespaced).
+if [ -z "$DST_BASE" ] || [ -z "$DST_AGENTS" ] || [ -z "$DST_SKILLS" ] || [ -z "$DST_COMMANDS" ] || [ -z "$DST_CONFIG_HOME" ]; then
     err "Refusing to install: computed destination paths are empty."
     err "Check that HOME is set correctly (HOME=\"${HOME:-}\")."
     exit 1
@@ -355,6 +368,14 @@ case "$DST_SKILLS" in
     "${DST_BASE}"/*/yggdrasil) ;;
     *)
         err "Refusing to install outside the yggdrasil namespace: ${DST_SKILLS}"
+        exit 1
+        ;;
+esac
+
+case "$DST_COMMANDS" in
+    "${DST_BASE}"/commands/yggdrasil) ;;
+    *)
+        err "Refusing to install commands outside the expected location: ${DST_COMMANDS}"
         exit 1
         ;;
 esac
@@ -419,6 +440,42 @@ info "Copying agents to ${DST_AGENTS}…"
 cp -R "${SRC_AGENTS}/." "$DST_AGENTS/"
 ok "Agents installed."
 
+# ── Install brokk-memory-curation (unconditional) ──────────────────────────
+
+# This one skill installs unconditionally — regardless of the answer to the
+# "Copy default skills?" prompt above — folded into the same unconditional
+# footing as agents and commands. Rationale: the three memory commands
+# (/yggdrasil/remember, /yggdrasil/dream, /yggdrasil/forget), which always
+# install (see "Install commands" below), depend on this skill for the
+# canonical entry schema, INDEX.md format, and README template. This is a
+# single, narrowly-scoped exception for this one skill/command pairing, NOT
+# a general core/optional skill tier — every other skill remains gated
+# behind COPY_SKILLS exactly as before.
+SRC_MEMORY_SKILL="${SRC_SKILLS}/brokk/brokk-memory-curation"
+DST_MEMORY_SKILL="${DST_SKILLS}/brokk/brokk-memory-curation"
+
+if [ -d "$SRC_MEMORY_SKILL" ]; then
+    info "Creating skills directory…"
+    mkdir -p "$DST_MEMORY_SKILL"
+
+    info "Copying brokk-memory-curation to ${DST_MEMORY_SKILL}…"
+    # Merge copy: copies just this one skill directory unconditionally.
+    # If COPY_SKILLS=true below, the bulk copy will also copy this same
+    # directory from the same source — harmless, since both copies write
+    # identical content (no double-copy conflict, just a redundant overwrite).
+    cp -R "${SRC_MEMORY_SKILL}/." "$DST_MEMORY_SKILL/"
+    ok "brokk-memory-curation installed."
+    # Only surface this note when it contradicts the user's own answer above
+    # (i.e., they declined the skills prompt but got this one skill anyway).
+    # If they accepted, all skills install per their own answer and the note
+    # is redundant noise.
+    if [ "$COPY_SKILLS" != true ]; then
+        warn "Note: brokk-memory-curation installs unconditionally — the memory"
+        warn "commands (/yggdrasil/remember, /yggdrasil/dream, /yggdrasil/forget),"
+        warn "which always install, depend on it regardless of your answer above."
+    fi
+fi
+
 # ── Install skills ─────────────────────────────────────────────────────────
 
 if [ "$COPY_SKILLS" = true ]; then
@@ -431,6 +488,57 @@ if [ "$COPY_SKILLS" = true ]; then
     cp -R "${SRC_SKILLS}/." "$DST_SKILLS/"
     ok "Skills installed."
 fi
+
+# ── Install commands ───────────────────────────────────────────────────────
+
+# Back up any locally-modified command files before overwriting (similar to agents).
+backup_differing_commands() {
+    local differing_count=0
+    local differing_files=""
+    
+    # Recursively find all .md files under SRC_COMMANDS, preserving relative paths.
+    while IFS= read -r -d '' src_file; do
+        [ -f "$src_file" ] || continue
+        # Get the relative path from SRC_COMMANDS to this file.
+        rel_path="${src_file#${SRC_COMMANDS}/}"
+        dst_file="${DST_COMMANDS}/${rel_path}"
+        
+        # Only check if destination exists (not the first install).
+        if [ -f "$dst_file" ]; then
+            if ! diff -q "$src_file" "$dst_file" >/dev/null 2>&1; then
+                # Files differ. Back up the destination file with timestamp.
+                timestamp=$(date +%s)
+                backup_file="${dst_file}.bak.${timestamp}"
+                cp "$dst_file" "$backup_file"
+                differing_count=$((differing_count + 1))
+                differing_files="${differing_files}
+    - $rel_path (backed up to $backup_file)"
+            fi
+        fi
+    done < <(find "${SRC_COMMANDS}" -name "*.md" -print0 | sort -z)
+    
+    if [ "$differing_count" -gt 0 ]; then
+        warn "Command definition files were modified locally and have been backed up."
+        printf "    Modified files:%s\n" "$differing_files"
+        printf "    \n"
+        printf "    If you made custom edits to command templates, review the backups\n"
+        printf "    and re-apply your changes to the new versions.\n"
+    fi
+}
+
+info "Creating commands directory…"
+mkdir -p "$DST_COMMANDS"
+
+# Back up any locally-modified command files before overwriting.
+if [ -d "$DST_COMMANDS" ] && [ -n "$(ls -A "$DST_COMMANDS" 2>/dev/null)" ]; then
+    backup_differing_commands
+fi
+
+info "Copying commands to ${DST_COMMANDS}…"
+# Merge copy: copies Yggdrasil command definitions into the destination.
+# Pre-existing files in the destination that are NOT part of this project are preserved.
+cp -R "${SRC_COMMANDS}/." "$DST_COMMANDS/"
+ok "Commands installed."
 
 # ── Install generator and custom-capabilities scaffold ─────────────────────
 
@@ -459,22 +567,20 @@ fi
 # is always current after install/upgrade, applying any framework updates to the
 # built-in skills and custom capabilities (if the user edited the scaffold).
 # NOTE: The generated file is no longer committed to the repo; it's created fresh
-# at install time. If skills were installed and regeneration fails, this is FATAL
-# (a silent failure would leave no capability inventory at all, invisibly).
-if [ "$COPY_SKILLS" = true ] && [ -d "$DST_SKILLS" ]; then
-    info "Regenerating capability mirror…"
-    if "$DST_GENERATOR" --config-base "$DST_BASE" >/dev/null 2>&1; then
-        ok "Capability mirror regenerated."
-    else
-        err "Failed to regenerate capability mirror (skills were installed but inventory could not be created)."
-        err "This is a fatal condition — the capability inventory is required for Odin and Kvasir to function."
-        err "Run manually to diagnose: ${DST_GENERATOR} --config-base ${DST_BASE}"
-        exit 1
-    fi
+# at install time. Run unconditionally on every install: brokk-memory-curation
+# always installs (see "Install brokk-memory-curation" above), so DST_SKILLS is
+# populated on every normal install, even when the user declines the skills prompt.
+# If regeneration fails — including the abnormal case of a corrupted checkout
+# missing the skills directory entirely — this is FATAL (a silent failure would
+# leave no capability inventory at all, invisibly).
+info "Regenerating capability mirror…"
+if "$DST_GENERATOR" --config-base "$DST_BASE" >/dev/null 2>&1; then
+    ok "Capability mirror regenerated."
 else
-    if [ "$COPY_SKILLS" != true ]; then
-        info "Skipping capability mirror regeneration (skills not installed)."
-    fi
+    err "Failed to regenerate capability mirror (skills were installed but inventory could not be created)."
+    err "This is a fatal condition — the capability inventory is required for Odin and Kvasir to function."
+    err "Run manually to diagnose: ${DST_GENERATOR} --config-base ${DST_BASE}"
+    exit 1
 fi
 
 # ── Summary ────────────────────────────────────────────────────────────────
@@ -482,10 +588,11 @@ fi
 printf "\n"
 ok "Yggdrasil setup complete!"
 printf "    Agents → %s\n" "$DST_AGENTS"
+printf "    Commands → %s\n" "$DST_COMMANDS"
 if [ "$COPY_SKILLS" = true ]; then
     printf "    Skills → %s\n" "$DST_SKILLS"
 else
-    printf "    Skills → (skipped)\n"
+    printf "    Skills → %s (brokk-memory-curation only; rest skipped)\n" "$DST_SKILLS"
 fi
 printf "    Config home → %s\n" "$DST_CONFIG_HOME"
 printf "    Generator → ${DST_GENERATOR}\n"

@@ -23,6 +23,8 @@ permission:
     "tail*": allow
     "ls*": allow
     "wc*": allow
+    # git denial baseline
+    "git*": deny
     # git inspection (read-only)
     "git blame*": allow
     "git branch": allow
@@ -33,8 +35,7 @@ permission:
     "git rev-parse*": allow
     "git show*": allow
     "git status*": allow
-    # git denials — prevent write operations & shell escapes
-    "git*": deny
+    # git shell-escape guards
     "git*&&*": deny
     "git*||*": deny
     "git*;*": deny
@@ -46,7 +47,7 @@ permission:
     "git*<*": deny
   edit:
     "*": deny
-    ".yggdrasil/**": allow
+    ".yggdrasil-workspace/**": allow
   glob: allow
   grep: allow
   lsp: allow

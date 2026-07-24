@@ -7,7 +7,7 @@ permission:
   "*": deny
   edit:
     "*": deny
-    ".yggdrasil/**": allow
+    ".yggdrasil-workspace/**": allow
   read: allow
   skill:
     "*": deny

@@ -2,8 +2,8 @@
 #
 # validate.sh — Read-only structural validator for the Yggdrasil project.
 #
-# This script performs seven structural checks against the agent and skill
-# definitions and reports a per-check summary plus a final PASS/FAIL verdict.
+# This script performs eight structural checks against the agent, skill, and
+# command definitions and reports a per-check summary plus a final PASS/FAIL verdict.
 #
 #   1. Frontmatter parse check — every agents/*.md and skills/**/SKILL.md has a
 #      well-formed YAML frontmatter block (--- ... ---) containing the two
@@ -29,6 +29,9 @@
 #   7. AGENTS.md ↔ Odin parity markers — a curated list of distinctive strings
 #      (parity markers) must appear in both AGENTS.md and agents/odin-autonomous.md
 #      to guard invariant orchestration rules that must remain synchronized.
+#   8. Command file validation — every commands/*.md has required frontmatter
+#      (`description`), valid `agent` field (if present, must be an Odin variant),
+#      valid `subtask` field (if present, must be `false`), and non-empty template body.
 #
 # GUARANTEE: This script is strictly READ-ONLY. It never creates, modifies, or
 # deletes any project file, and performs no git write operations. It only reads
@@ -536,11 +539,13 @@ check_parity_markers() {
     "fresh Heimdall session"
     "paraphrase artifact contents"
     "documented blocker"
-    ".yggdrasil/<yyyymmdd>-<task-slug>-<xx>/"
+    ".yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/"
     "may review its own output"
     "PASS-WITH-NOTES"
     "failed-review escalation ladder"
     "single substantive subtask"
+    ".yggdrasil-memory/"
+    "macro for a user request"
   )
 
   local marker
@@ -558,9 +563,102 @@ check_parity_markers() {
   done
 
   if [ "$FAIL_PARITY_MARKERS" -eq 0 ]; then
-    pass_msg "all 10 parity markers present in both AGENTS.md and odin-autonomous.md"
+    pass_msg "all 12 parity markers present in both AGENTS.md and odin-autonomous.md"
   else
     info_msg "${C_RED}${FAIL_PARITY_MARKERS} parity marker failure(s)${C_RESET}"
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# CHECK 8 — Command file validation.
+#
+# Verifies that command files in commands/*.md have:
+# (a) Required frontmatter present (`description` at minimum).
+# (b) If an `agent` field is present, its value must exactly match one of the
+#     three Odin variants' display names (Odin (Autonomous), Odin (Guided),
+#     Odin (Interactive)) — this tripwire prevents specialist-targeted commands.
+# (c) `subtask` if present must be `false` (not `true`).
+# (d) Template body is non-empty (references $ARGUMENTS or contains instructions).
+# ---------------------------------------------------------------------------
+FAIL_COMMANDS=0
+COMMANDS_DIR="$REPO_ROOT/commands"
+
+check_commands() {
+  heading "Check 8: Command file validation (commands/*.md)"
+
+  # If commands directory doesn't exist, that's OK (not an error).
+  if [ ! -d "$COMMANDS_DIR" ]; then
+    pass_msg "commands directory does not exist (optional)"
+    return
+  fi
+
+  local file agent subtask body_empty
+  while IFS= read -r -d '' file; do
+    # Check frontmatter parses and has required fields.
+    if ! extract_frontmatter "$file" >/dev/null 2>&1; then
+      fail_msg "$(rel "$file"): malformed frontmatter (missing opening/closing '---')"
+      FAIL_COMMANDS=$((FAIL_COMMANDS + 1))
+      continue
+    fi
+    if ! frontmatter_has_key "$file" "description"; then
+      fail_msg "$(rel "$file"): frontmatter missing required key 'description'"
+      FAIL_COMMANDS=$((FAIL_COMMANDS + 1))
+    fi
+
+    # Check agent field if present: must be an Odin variant.
+    if frontmatter_has_key "$file" "agent"; then
+      agent=$(frontmatter_value "$file" "agent")
+      case "$agent" in
+        "Odin (Autonomous)"|"Odin (Guided)"|"Odin (Interactive)")
+          # Valid Odin variant.
+          ;;
+        *)
+          fail_msg "$(rel "$file"): agent field '$agent' is not an Odin variant (must be 'Odin (Autonomous)', 'Odin (Guided)', or 'Odin (Interactive)')"
+          FAIL_COMMANDS=$((FAIL_COMMANDS + 1))
+          ;;
+      esac
+    fi
+
+    # Check subtask field if present: must be false (not true).
+    if frontmatter_has_key "$file" "subtask"; then
+      subtask=$(frontmatter_value "$file" "subtask")
+      case "$subtask" in
+        false|"false")
+          # Valid.
+          ;;
+        true|"true")
+          fail_msg "$(rel "$file"): subtask must be 'false' or omitted (not 'true')"
+          FAIL_COMMANDS=$((FAIL_COMMANDS + 1))
+          ;;
+        *)
+          fail_msg "$(rel "$file"): subtask field has invalid value '$subtask' (must be 'true' or 'false')"
+          FAIL_COMMANDS=$((FAIL_COMMANDS + 1))
+          ;;
+      esac
+    fi
+
+    # Check template body is non-empty (everything after frontmatter).
+    # Extract the body: skip frontmatter, then check if anything remains.
+    local body
+    body=$(awk '
+      NR == 1 { if ($0 != "---") exit 2; opened = 1; next }
+      opened && $0 == "---" { closed = 1; next }
+      closed { print }
+    ' "$file" 2>/dev/null || true)
+    
+    # Trim leading/trailing whitespace from body.
+    body=$(printf '%s\n' "$body" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    
+    if [ -z "$body" ]; then
+      fail_msg "$(rel "$file"): template body is empty (must contain instructions)"
+      FAIL_COMMANDS=$((FAIL_COMMANDS + 1))
+    fi
+  done < <(find "$COMMANDS_DIR" -name "*.md" -print0 2>/dev/null | sort -z)
+
+  if [ "$FAIL_COMMANDS" -eq 0 ]; then
+    pass_msg "all command files have valid frontmatter and templates"
+  else
+    info_msg "${C_RED}${FAIL_COMMANDS} command file failure(s)${C_RESET}"
   fi
 }
 
@@ -596,9 +694,11 @@ main() {
   printf '\n'
   check_parity_markers
   printf '\n'
+  check_commands
+  printf '\n'
 
   # ---- Final summary -------------------------------------------------------
-  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_SYNC + FAIL_ISOLATION + FAIL_CAPABILITIES + FAIL_PARITY_MARKERS))
+  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_SYNC + FAIL_ISOLATION + FAIL_CAPABILITIES + FAIL_PARITY_MARKERS + FAIL_COMMANDS))
 
   heading "Summary"
   printf '  %-34s %s\n' "Frontmatter parse:"        "$(fmt_count "$FAIL_FRONTMATTER")"
@@ -608,6 +708,7 @@ main() {
   printf '  %-34s %s\n' "Subagent isolation:"       "$(fmt_count "$FAIL_ISOLATION")"
   printf '  %-34s %s\n' "Capability mirror:"        "$(fmt_count "$FAIL_CAPABILITIES")"
   printf '  %-34s %s\n' "Parity markers:"           "$(fmt_count "$FAIL_PARITY_MARKERS")"
+  printf '  %-34s %s\n' "Command files:"            "$(fmt_count "$FAIL_COMMANDS")"
   printf '  %s\n' "----------------------------------------------------"
   printf '  %-34s %s\n' "Total failures:" "$total"
   printf '\n'

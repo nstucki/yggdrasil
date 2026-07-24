@@ -60,11 +60,25 @@ These are standing conventions established at task start and applied at every di
 
 At the start of every task, if a skill named `capability-inventory` is installed, load it before planning or delegating (once per session). It is the generated inventory of all specialist capabilities — built-in skills by role plus custom-granted tools; without it you may plan around capabilities you don't know exist.
 
+### Memory System
+
+Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` (per project/repo) — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace. Memory contains distilled, source-cited entries (markdown + YAML frontmatter) plus an `INDEX.md` manifest.
+
+**Remember (promotion):** At task wrap-up, identify durable findings from Heimdall-passed research and propose promotion to memory. Only reviewed research is eligible. Task Brokk to distill findings into memory entries, citing sources. Heimdall reviews the memory write before it is final. Never promote secrets or credentials.
+
+**Dream (consolidation):** A user-triggered maintenance task (Odin may suggest it). Runs the standard Research → Implement → Review pattern: Mimir audits the knowledge base for duplicates, contradictions, and staleness; Heimdall reviews the audit; Brokk consolidates per the audit; Heimdall reviews the resulting diff. Dream prunes by reviewed judgment but never silently performs a forget — deletion of user-named scope is a separate, explicitly confirmed operation.
+
+**Forget (deletion):** Explicit user instruction naming a scope. Resolve the scope to the exact list of entries affected, present that list to the user, and obtain explicit confirmation before any deletion is dispatched. Task Brokk to delete exactly the confirmed scope. Heimdall reviews the diff for exact-scope fidelity. Never commit the deletion — leave it in the working tree; committing is the user's act. Forget is never autonomous and never chains from another operation. Full wipe requires an interaction-capable mode and a second confirmation.
+
+**Fail-safe establishment:** If `.yggdrasil-memory/` is absent in a project, inform the user and offer to establish it (scaffolded by Brokk per the memory-curation skill's canonical templates). This is what makes globally installed memory commands safe in host projects with no memory directory.
+
+**Command-macro rule:** A slash-command is a macro for a user request to Odin — it must produce a pipeline indistinguishable from the natural-language equivalent. Any command whose `agent` targets a specialist is a review-bypass backdoor and forbidden.
+
 ### Artifact Workspace
 
 Research, advisory, and review subagents produce outputs in a task-scoped artifact workspace rather than relying on copy-paste paraphrasing. The implementer's persistent output is file/code changes in the target project itself, not the task artifact directory.
 
-- **Workspace directory convention**: A task-scoped directory `.yggdrasil/<yyyymmdd>-<task-slug>-<xx>/` for research, advisory, and review artifacts, where `<yyyymmdd>` is today's date, `<task-slug>` is a short kebab-case task summary, and `<xx>` is a 2–4 character suffix Odin invents at task start and reuses for that task's lifetime (provides collision-avoidance when multiple concurrent sessions work in the same repo). This directory is gitignored and must never be committed; when tasking agents on host/target projects, ensure a similar artifact workspace is similarly ignored.
+- **Workspace directory convention**: A task-scoped directory `.yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/` for research, advisory, and review artifacts, where `<yyyymmdd>` is today's date, `<task-slug>` is a short kebab-case task summary, and `<xx>` is a 2–4 character suffix Odin invents at task start and reuses for that task's lifetime (provides collision-avoidance when multiple concurrent sessions work in the same repo). This directory is gitignored and must never be committed; when tasking agents on host/target projects, ensure a similar artifact workspace is similarly ignored.
 - **Naming convention**: Sequenced, self-describing filenames (e.g., `01-research-<topic>.md`, `02-plan.md`, `03-review-round1.md`).
 - **Deliverable promotion**: the workspace is transient — never deliver a bare workspace path as the final deliverable. For research-only tasks, the final user-facing response must carry the deliverable content itself, produced from the artifact by a delegated subtask (e.g., a communication draft, or the gate-validated artifact content); when the user asks for a persistent file, task the implementer to place a copy at a user-designated persistent location (subject to normal review).
 

@@ -37,7 +37,7 @@ permission:
     "pytest*": allow
   edit:
     "*": deny
-    ".yggdrasil/**": allow
+    ".yggdrasil-workspace/**": allow
   glob: allow
   grep: allow
   lsp: allow

@@ -30,7 +30,7 @@ The repository includes a setup script that installs all agent and skill definit
 
 You'll be prompted for two interactive choices:
 
-1. **Copy default skills?** — We ship with curated starter skills for all agents. You can decline to skip this, or accept to install them (default: yes).
+1. **Copy default skills?** — We ship with curated starter skills for all agents. You can decline to skip this, or accept to install them (default: yes). One exception: `brokk-memory-curation` always installs regardless of your answer, since the always-installed memory commands depend on it.
 2. **Confirm merge?** — Only shown if target directories already contain files. Default is to skip. The script performs a merge: same-named Yggdrasil files are overwritten, new files are added, and pre-existing unrelated files are preserved (never deleted).
 
 To skip both prompts (for CI, non-interactive installs, or `curl ... | bash`), pass the `-y` flag:
@@ -42,12 +42,15 @@ To skip both prompts (for CI, non-interactive installs, or `curl ... | bash`), p
 **What gets installed:**
 
 - **Agents** → `~/.config/opencode/agents/yggdrasil/`
-- **Skills** (if accepted) → `~/.config/opencode/skills/yggdrasil/`
+- **Skills** (if accepted, except `brokk-memory-curation`, which always installs since the memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/`
+- **Commands** → `~/.config/opencode/commands/yggdrasil/` (global slash-commands for memory operations; see [Commands](#commands) section for invocation details)
 - **Capability generator** → `~/.config/opencode/yggdrasil/generate-capabilities.sh`
 - **Custom-capabilities scaffold** → `~/.config/opencode/yggdrasil/custom-capabilities.yaml` (first install only; never overwritten on upgrades)
-- **Capability inventory** (generated automatically if skills are installed) → `~/.config/opencode/skills/yggdrasil/shared/capability-inventory/SKILL.md`
+- **Capability inventory** (always regenerated automatically on every install) → `~/.config/opencode/skills/yggdrasil/shared/capability-inventory/SKILL.md`
 
 The capability inventory is a critical generated file that both Odin and Kvasir use to route work and understand available capabilities. It's automatically regenerated at install time and whenever you run the generator after adding custom tools.
+
+Commands are installed globally and are available in every project once installed. See [Commands](#commands) above for usage details.
 
 ### Custom Installation Path
 
@@ -70,23 +73,61 @@ When you run `./setup.sh` again after pulling the latest framework updates, it p
 - **Agent files** that have been locally modified are backed up with a timestamp suffix (e.g., `odin-autonomous.md.bak.1234567890`) before being overwritten. Review your backup to recover any custom permission grants and re-apply them to the new version.
 - **Skill files** are overwritten if they match the current version; they're never backed up.
 - **Custom-capabilities.yaml** is never touched — your custom tool grants are always preserved.
-- **Capability inventory** is automatically regenerated to reflect framework updates and any new custom capabilities you've added.
-
-If skills were skipped during install, the capability inventory regeneration is also skipped (and will need to be done manually later if you install skills).
+- **Capability inventory** is always regenerated to reflect framework updates and any new custom capabilities you've added, reflecting whichever skills are present — the full curated set, or just `brokk-memory-curation` if you declined the rest.
 
 ### Default Skills
 
 Yggdrasil ships with a curated set of default skills:
 
 - **Bragi:** Presentation structuring, Question formulation, Trade-off communication
-- **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
+- **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Memory curation (installed unconditionally — see [Commands](#commands)), Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
-- **Kvasir:** Approach evaluation, Risk assessment, Task decomposition
+- **Kvasir:** Approach evaluation, Research decomposition, Risk assessment, Task decomposition
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
 
 **These are starting points, not prescriptions.** Each skill is a Markdown file in the installed `skills/yggdrasil/` directory. You are encouraged to review, modify, and extend them to match your team's workflows, coding standards, and tooling. Remove what you don't need, adjust what you do, and add your own. Yggdrasil is designed to be adapted, not adopted wholesale.
 
 To grant custom tools to specialists after install, see [Extending Yggdrasil with Tools & Skills](#extending-yggdrasil-with-tools--skills) below.
+
+## Commands
+
+Yggdrasil provides three slash-commands for managing the project knowledge base. These are installed globally via `setup.sh` and are available in every project once installed.
+
+### `/yggdrasil/remember [topic]`
+
+Promote findings to the project knowledge base. Runs the reviewed promotion pipeline (orchestrated, not an instant write).
+
+- **With a topic argument:** Promote that specific finding or artifact to the knowledge base.
+- **Without arguments:** Identify durable findings from the current task's reviewed research, propose the promotion list to the user, and proceed only on approval.
+
+Only Heimdall-passed research is eligible for promotion. Distillation is implemented by the implementer and reviewed before it is final. Never promotes secrets or credentials. If no knowledge base exists, offers to establish it.
+
+### `/yggdrasil/dream [scope]`
+
+Consolidate and audit the project knowledge base. Runs an orchestrated maintenance task that may take several delegation rounds.
+
+- **With a scope argument:** Focus the audit on that area (e.g., a topic, staleness filter).
+- **Without arguments:** Audit the entire knowledge base.
+
+Executes the dream maintenance pattern: audit for duplicates, contradictions, and staleness; review the audit; then apply consolidation and have the resulting diff reviewed. Dream may prune by judgment but never silently performs a forget. If no knowledge base exists, offers to establish it.
+
+### `/yggdrasil/forget <scope>`
+
+Delete entries from the project knowledge base. Destructive and always confirmed — never instant.
+
+- **Requires an explicit scope:** Topic name, staleness filter, or full wipe. Empty or ambiguous scope is rejected.
+- **Confirmation is mandatory:** Odin resolves the scope to the exact list of affected entries, presents it to the user, and obtains explicit confirmation BEFORE any deletion is dispatched. Invocation is intent, not confirmation.
+- **Reviewed and safe:** The deletion is implemented by the implementer and the resulting diff reviewed for exact-scope fidelity before it is final.
+- **Working tree only:** Changes are left in the working tree; committing is the user's act.
+- **Full wipe requires a second confirmation:** Deleting the entire knowledge base requires an interaction-capable mode and explicit re-confirmation.
+
+If no knowledge base exists, offers to establish it.
+
+### Command Philosophy
+
+Commands are **macros for user requests to Odin** — they are equivalent to stating the same request in natural language. Natural-language invocation remains fully valid; commands are shortcuts, not the only door. This design ensures that commands always flow through the full orchestration pipeline with proper review gates — never bypassing specialist review.
+
+---
 
 ## Extending Yggdrasil with Tools & Skills
 
@@ -118,7 +159,7 @@ The repo is only needed for the initial install and framework upgrades. Once ins
      ```bash
      $CONFIG_BASE/yggdrasil/generate-capabilities.sh
      ```
-     This updates `$CONFIG_BASE/skills/yggdrasil/shared/capability-inventory/SKILL.md`, making the new capability visible to both Odin and Kvasir immediately.
+      This updates `$CONFIG_BASE/skills/yggdrasil/shared/capability-inventory/SKILL.md`, making the new capability visible to both Odin and Kvasir immediately.
 
 ### Built-In Capability Inventory
 
@@ -219,6 +260,45 @@ authoritative reference. The three Odin agent files carry copies of shared
 orchestration content, kept byte-identical and checked by `scripts/validate.sh`.
 
 Each agent is an expert in its domain. Each trusts the others to do their part. Together, they form a complete, collaborative intelligence — a pantheon bound by purpose, rooted in the world-tree.
+
+---
+
+## Memory System
+
+Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/` in each project — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace. This knowledge base stores distilled, source-cited findings that persist across task lifecycles.
+
+### What Memory Contains
+
+- **Facts about the project** — verified findings with file/line citations (e.g., "validate.sh Check 4 enforces byte-identical shared body blocks").
+- **Decisions and rationale** — why certain choices were made and what trade-offs were considered.
+- **Hard-won findings** — root causes from debugging, dependency quirks, performance characteristics.
+- **NOT**: task narratives, review verdicts, transient state, or anything reproducible in seconds by reading one file.
+
+### The Three Memory Operations
+
+Memory is maintained through three commands, each routed through the full reviewed orchestration pipeline — never an instant, unreviewed write:
+
+- **`/yggdrasil/remember`** — promote reviewed findings into the knowledge base.
+- **`/yggdrasil/dream`** — consolidate and audit the knowledge base for duplicates, contradictions, and staleness.
+- **`/yggdrasil/forget`** — delete entries from the knowledge base, always confirmed before dispatch.
+
+See [Commands](#commands) above for full arguments, guardrails, and behavior for each.
+
+### Installation & Availability
+
+Commands are installed globally via `setup.sh` and are available in every project once installed. They are **macros for user requests to Odin** — invoking the memory commands (documented in the [Commands](#commands) section) is equivalent to stating the same request in natural language. Natural-language invocation remains fully valid; commands are shortcuts, not the only door.
+
+**Important safety property:** Commands are forbidden from targeting specialist agents directly (only Odin can be targeted). This is enforced by `scripts/validate.sh` and ensures that commands always flow through the full orchestration pipeline with proper review gates — never bypassing specialist review.
+
+### Fail-Safe Behavior
+
+If a project has no `.yggdrasil-memory/` directory, the commands offer to establish it. The knowledge base is scaffolded from canonical templates in the `brokk-memory-curation` skill, ensuring consistent schema across all projects.
+
+### Git History as Recovery Net
+
+By default, the knowledge base is git-tracked. Git history provides an audit trail of all changes and serves as a recovery net for destructive operations — a mistaken deletion is `git checkout` away.
+
+For full details on memory conventions, the promotion pipeline, and the consolidation/deletion patterns, see **[AGENTS.md § Memory System Convention](./AGENTS.md#orchestration-rules)** and the canonical entry-schema template in **[`skills/brokk/brokk-memory-curation/SKILL.md`](./skills/brokk/brokk-memory-curation/SKILL.md)** (scaffolded automatically into `.yggdrasil-memory/README.md` on first use in any project, including this one).
 
 ---
 
