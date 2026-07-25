@@ -95,7 +95,7 @@ Yggdrasil provides three slash-commands for managing the project knowledge base.
 
 ### `/yggdrasil/remember [topic]`
 
-Promote findings to the project knowledge base. Runs the reviewed promotion pipeline (orchestrated, not an instant write).
+Promote findings to the project knowledge base. Runs the reviewed promotion pipeline (orchestrated, not an instant write). This command (or an equivalent natural-language request) is the **only** way promotion is initiated — there is no automatic wrap-up promotion.
 
 - **With a topic argument:** Promote that specific finding or artifact to the knowledge base.
 - **Without arguments:** Identify durable findings from the current task's reviewed research, propose the promotion list to the user, and proceed only on approval.
@@ -138,16 +138,21 @@ The repo is only needed for the initial install and framework upgrades. Once ins
 **To grant a new tool to a specialist:**
 
 1. **Grant the tool** in the installed agent definition file:
-   ```
+
+   ```bash
    $CONFIG_BASE/agents/yggdrasil/<agent-name>.md
    ```
+
    Add the tool to the agent's `permission:` block (e.g., a new MCP or locally-available executable).
 
 2. **Register the capability** in the installed custom-capabilities file:
-   ```
+
+   ```bash
    $CONFIG_BASE/yggdrasil/custom-capabilities.yaml
    ```
+
    Add an entry:
+
    ```yaml
    custom_capabilities:
      - name: <capability-slug>
@@ -156,9 +161,11 @@ The repo is only needed for the initial install and framework upgrades. Once ins
    ```
 
 3. **Regenerate the capability mirror**:
+
      ```bash
      $CONFIG_BASE/yggdrasil/generate-capabilities.sh
      ```
+
       This updates `$CONFIG_BASE/skills/yggdrasil/shared/capability-inventory/SKILL.md`, making the new capability visible to both Odin and Kvasir immediately.
 
 ### Built-In Capability Inventory
