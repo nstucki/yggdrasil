@@ -1,7 +1,10 @@
 ---
 description: "arg: focus, optional (else all memories)"
+agent: Odin (Interactive)
 subtask: false
 ---
+
+# Dream
 
 Memory consolidation request (orchestrated maintenance task — audit, then
 reviewed consolidation; this may take several delegation rounds).
@@ -9,6 +12,7 @@ reviewed consolidation; this may take several delegation rounds).
 Focus scope (optional; empty = entire knowledge base): $ARGUMENTS
 
 Execute the dream maintenance pattern defined in your memory conventions:
+
 1. Audit the knowledge base for duplicates, contradictions, and staleness,
    re-verifying claims against current sources.
 2. Have the audit reviewed before acting on it.
@@ -17,4 +21,5 @@ Execute the dream maintenance pattern defined in your memory conventions:
 4. Have the resulting memory diff reviewed for fidelity before it's final.
 5. Never silently perform a forget as part of consolidation — deletion of
    user-named scope is a separate, explicitly confirmed operation.
+
 - If no knowledge base exists at `.yggdrasil-memory/` in the current working directory, offer to establish it.

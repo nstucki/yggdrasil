@@ -1,13 +1,17 @@
 ---
 description: "arg: topic, optional (else current task)"
+agent: Odin (Interactive)
 subtask: false
 ---
+
+# Remember
 
 Memory promotion request (orchestrated, reviewed pipeline — not an instant write).
 
 Subject: $ARGUMENTS
 
 Execute the memory-promotion pattern defined in your memory conventions:
+
 - If a subject is given above, promote that finding/topic/artifact.
 - If the subject is empty, identify durable findings from the current task's
   reviewed research, propose the promotion list to the user, and proceed only

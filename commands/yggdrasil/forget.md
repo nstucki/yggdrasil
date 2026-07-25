@@ -4,6 +4,8 @@ agent: Odin (Interactive)
 subtask: false
 ---
 
+# Forget
+
 Memory deletion request (destructive; runs the confirmed, reviewed deletion
 pipeline — never instant).
 
@@ -11,6 +13,7 @@ Requested scope: $ARGUMENTS
 
 Execute the forget pattern defined in your memory conventions, with these
 non-negotiable guardrails:
+
 1. If the scope above is empty or ambiguous, do NOT proceed — ask the user
    to name an explicit scope (topic, staleness filter, or full wipe).
 2. Resolve the scope to the exact list of entries affected, present that
@@ -21,4 +24,5 @@ non-negotiable guardrails:
 4. Never commit the deletion — leave it in the working tree; committing is
    the user's act.
 5. Full wipe requires an interaction-capable mode and a second confirmation.
+
 - If no knowledge base exists at `.yggdrasil-memory/` in the current working directory, offer to establish it.
