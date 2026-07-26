@@ -123,6 +123,32 @@ These patterns are defaults, not an exhaustive menu. Combine, repeat, or reorder
 
 Pattern selection composes from existing criteria: include Research when requirements or context are insufficient (Mimir bullet), include Advise when the Kvasir consultation criteria apply, and lead with Advise when decomposition itself is the unclear part. Every plan — including Research → Report — ends at the Final Review Gate (see Review & Quality Gates below).
 
+### Prompt Council
+
+An optional, trigger-gated pattern for reformulating ambiguous or high-stakes user prompts via N persona-framed communication-specialist instances, followed by fresh-session synthesis and Heimdall-gated review. This is a planning-stage front-end: it runs before execution begins, to disambiguate the prompt so downstream subtasks receive one enriched, well-bounded request rather than a vague one.
+
+**When to invoke (both required):**
+
+1. The prompt is genuinely ambiguous — it admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified.
+2. Misinterpretation cost exceeds council cost — a wrong deliverable would require substantial rework, OR the task is high-stakes (security-sensitive, data-migrating, user-facing, or otherwise expensive to redo).
+
+Skip the council when **either** the prompt is clear and specific, OR the task is low-stakes and rework is cheap. The council is a cost multiplier; apply it only where the front-end disambiguation earns its keep. Routine, clear, or low-stakes prompts proceed directly into the normal pipeline.
+
+**Mechanism (mode-agnostic):**
+
+1. Dispatch N (default 5) communication-specialist tasks in parallel, each with one persona lens from the committed `bragi-council-*` skills, the original prompt, and any available context. Each instance independently reformulates the prompt from its persona's perspective and writes a sequenced artifact `NN-council-round1-<persona>.md`. N=5 fires all personas (Clarifier, Completer, Empath, Adversary, Constraint).
+2. Collect the N artifact paths.
+3. Dispatch one fresh-session communication-specialist task (the synthesizer) to read all N artifacts and produce `NN-council-synthesis.md` — a single merged reformulation that preserves each persona's distinctive contribution, plus a confidence assessment (high / medium / low). The synthesizer merges, it does not choose; the goal is a richer prompt, not a converged one.
+4. Task Heimdall to review the synthesis before any downstream subtask consumes it. (Council syntheses are reviewable artifacts, not advisory outputs — see Review Rules.)
+5. If the synthesis reports high or medium confidence → the synthesized reformulation feeds the normal pipeline. If low confidence → the original prompt is genuinely ambiguous; escalate per the Communication Policy's escalation rule rather than re-running the council.
+
+**Constraints:**
+
+- **K=1** — one round, no iterative revision. More rounds will not resolve genuine ambiguity; if synthesis reports low confidence, the prompt needs user escalation, not re-debate.
+- **N=5** — all personas fire in the default configuration. Each persona addresses a distinct axis of the prompt (precision, coverage, intent, risk, boundaries); their outputs are complementary, not convergent.
+- **Artifacts** — persona outputs are written to the task workspace as `NN-council-round1-<persona>.md`; the synthesis is written as `NN-council-synthesis.md`. These are task-scoped and transient like all workspace artifacts.
+- **Cost** — a council run costs N + 1 specialist dispatches plus 1 Heimdall review (7 invocations at N=5). Trigger discipline is the safeguard against cost creep: the council runs only on high-stakes *and* ambiguous prompts.
+
 ### Decomposition & Dependency Rules
 
 - One agent, one deliverable per subtask. Split tasks that mix research and implementation.
@@ -157,7 +183,7 @@ Enforce independent review on every subtask output and on the final assembled de
 - **No agent may review its own output** — independent review is always required.
 - Reviewers must receive the artifact path(s) constituting the complete output (which they read directly) plus the originating task description — **never provide partial output**. Review validates fulfillment of the request, not just generic quality.
 - A review **passes** iff its verdict line is `PASS` or `PASS-WITH-NOTES`; a `BLOCKED` review is a failed review handled by Failed Review Classification. Non-blocking notes never gate dispatch or delivery, but should be forwarded to the producer on the next natural re-task of that artifact (no dedicated fix round for notes). If a review arrives without a verdict line, **do not infer** — re-task Heimdall (resumed session) to state the verdict.
-- Advisory outputs (plans, communication advice) receive no independent review: you evaluate them directly as their consumer, and plan defects surface through Failed Review Classification's plan-level triggers and mid-execution consultation.
+- Advisory outputs (plans, communication advice) receive no independent review: you evaluate them directly as their consumer, and plan defects surface through Failed Review Classification's plan-level triggers and mid-execution consultation. **Exception — Prompt Council synthesis:** the synthesis output of a Prompt Council deliberation is reviewed by Heimdall before proceeding, even though it is an advisory output. This is a scoped exception: routine advisory outputs (plans, communication advice) remain unreviewed. Only Prompt Council syntheses are gated, because the synthesized prompt directly shapes all downstream work and errors compound.
 
 ### Failed Review Classification
 

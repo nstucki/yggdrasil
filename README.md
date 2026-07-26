@@ -26,7 +26,7 @@ The name is drawn from the immense ash tree of Norse mythology at the center of 
 | ----- | ------------- | ---- | ------ |
 | **Odin** | The All-Father | Orchestrator | Receives the objective, devises the workflow, delegates. Never implements, researches, or reviews directly. |
 | **Mimir** | Well-Keeper of Mímisbrunnr | Researcher | Explores codebases, reads docs, gathers context. Illuminates; does not decide or implement. |
-| **Bragi** | The Skald | Communicator | Advises on communication strategy, drafts and presents information, talks to the user when tasked. |
+| **Bragi** | The Skald | Communicator | Advises on communication strategy, drafts and presents information, provides multi-persona prompt council for high-stakes deliberation. |
 | **Kvasir** | The Wise Counselor | Strategic Advisor | Synthesizes context into plans; decomposition, risk, approach. Consulted proactively by Odin. |
 | **Brokk** | The Smith | Implementer | Transforms requirements into concrete artifacts: code, docs, tests, config. Has write access. |
 | **Heimdall** | The Watchman | Reviewer | Independently validates quality, correctness, completeness. Never implements fixes. |
@@ -108,7 +108,7 @@ You'll be prompted for two choices: whether to copy the curated default skills (
 **What gets installed:**
 
 - **Agents** → `~/.config/opencode/agents/yggdrasil/`
-- **Skills** (if accepted; `brokk-memory-curation` always installs since the memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/`
+- **Skills** (if accepted; `brokk-memory-curation` and the five `bragi-council-*` persona skills always install — the memory commands and Odin's Prompt Council mechanism depend on them) → `~/.config/opencode/skills/yggdrasil/`
 - **Commands** → `~/.config/opencode/commands/yggdrasil/`
 - **Capability generator** → `~/.config/opencode/yggdrasil/generate-capabilities.sh`
 - **Custom-capabilities scaffold** → `~/.config/opencode/yggdrasil/custom-capabilities.yaml` (first install only; never overwritten on upgrades)
@@ -143,7 +143,7 @@ Re-running `./setup.sh` after pulling the latest framework updates performs a sa
 
 Yggdrasil ships with a curated set of default skills. **These are starting points, not prescriptions** — each is a Markdown file in the installed `skills/yggdrasil/` directory. Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own.
 
-- **Bragi:** Presentation structuring, Question formulation, Trade-off communication
+- **Bragi:** Presentation structuring, Question formulation, Trade-off communication, Council personas (Clarifier, Completer, Empath, Adversary, Constraint — council-dispatch only)
 - **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Memory curation (installed unconditionally), Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
 - **Kvasir:** Approach evaluation, Research decomposition, Risk assessment, Task decomposition
@@ -211,6 +211,20 @@ The repo is only needed for the initial install and framework upgrades. Once ins
 Both Odin and Kvasir maintain awareness of all available capabilities — built-in skills plus custom-granted tools — by independently loading the same **`capability-inventory` skill** at the start of task execution/planning. No relay, copying, or curation needed — both agents load the same source directly via name-based discovery.
 
 The inventory is assembled from two sources: **built-in skills** (harvested automatically from agent and skill frontmatter) and **custom capabilities** (read from `custom-capabilities.yaml`). The generator is created at install time and can be re-run after adding custom tools. Custom tool grants are managed post-install in `$CONFIG_BASE/yggdrasil/custom-capabilities.yaml` and `$CONFIG_BASE/agents/yggdrasil/`, never in the repo.
+
+### Prompt Council
+
+Odin's shared body includes an optional **Prompt Council** — a trigger-gated pattern for reformulating ambiguous or high-stakes prompts before execution begins. When a prompt is *both* genuinely ambiguous *and* expensive to misinterpret (high-stakes, security-sensitive, or costly to redo), Odin may dispatch N (default 5) communication-specialist instances in parallel, each adopting one committed persona lens:
+
+- **Clarifier** — precision (surface vague terms, pin referents)
+- **Completer** — coverage (surface missing requirements, implicit assumptions)
+- **Empath** — user intent (reconstruct the goal behind the literal words)
+- **Adversary** — risk and failure modes (surface edge cases, load-bearing assumptions)
+- **Constraint** — boundaries and scope (surface in/out of scope, non-goals, invariants)
+
+A fresh-session synthesizer then merges the five reformulations into one enriched prompt (merging, not forcing consensus — the personas are complementary, not convergent), Heimdall gates the synthesis before any downstream subtask consumes it, and the enriched prompt feeds the normal pipeline. If synthesis reports low confidence, the original prompt is genuinely ambiguous and Odin escalates per the mode's Communication Policy rather than re-running the council.
+
+The council is capped at **K=1** (one round, no iterative revision) and costs N + 1 specialist dispatches plus one Heimdall review. Trigger discipline is the safeguard against cost creep: the council runs only on high-stakes *and* ambiguous prompts — routine, clear, or low-stakes prompts proceed directly into the normal pipeline.
 
 ## Development
 
