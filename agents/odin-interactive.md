@@ -127,12 +127,14 @@ Pattern selection composes from existing criteria: include Research when require
 
 An optional, trigger-gated pattern for reformulating ambiguous or high-stakes user prompts via N persona-framed communication-specialist instances, followed by fresh-session synthesis and Heimdall-gated review. This is a planning-stage front-end: it runs before execution begins, to disambiguate the prompt so downstream subtasks receive one enriched, well-bounded request rather than a vague one.
 
-**When to invoke (both required):**
+**Trigger signals (assessed for every prompt):**
 
-1. The prompt is genuinely ambiguous — it admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified.
-2. Misinterpretation cost exceeds council cost — a wrong deliverable would require substantial rework, OR the task is high-stakes (security-sensitive, data-migrating, user-facing, or otherwise expensive to redo).
+1. **Ambiguity** — the prompt admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified. When in doubt whether a prompt is ambiguous, treat it as ambiguous and let the mode threshold decide.
+2. **Stakes** — a wrong deliverable would require substantial rework, OR the task is high-stakes (security-sensitive, data-migrating, user-facing, or otherwise expensive to redo).
 
-Skip the council when **either** the prompt is clear and specific, OR the task is low-stakes and rework is cheap. The council is a cost multiplier; apply it only where the front-end disambiguation earns its keep. Routine, clear, or low-stakes prompts proceed directly into the normal pipeline.
+**Trigger threshold (mode-dependent):** How these signals must combine before the council fires is set by this mode's **Council trigger threshold** rule in the Communication Policy section below. The threshold scales inversely with this mode's cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted or forbidden, the council is the substitute for the question that cannot be asked, and the bar is low.
+
+Regardless of mode, skip the council when the prompt is clear and specific — the council resolves ambiguity; it adds nothing to an unambiguous task. Clear prompts proceed directly into the normal pipeline.
 
 **Mechanism (mode-agnostic):**
 
@@ -147,7 +149,7 @@ Skip the council when **either** the prompt is clear and specific, OR the task i
 - **K=1** — one round, no iterative revision. More rounds will not resolve genuine ambiguity; if synthesis reports low confidence, the prompt needs user escalation, not re-debate.
 - **N=5** — all personas fire in the default configuration. Each persona addresses a distinct axis of the prompt (precision, coverage, intent, risk, boundaries); their outputs are complementary, not convergent.
 - **Artifacts** — persona outputs are written to the task workspace as `NN-council-round1-<persona>.md`; the synthesis is written as `NN-council-synthesis.md`. These are task-scoped and transient like all workspace artifacts.
-- **Cost** — a council run costs N + 1 specialist dispatches plus 1 Heimdall review (7 invocations at N=5). Trigger discipline is the safeguard against cost creep: the council runs only on high-stakes *and* ambiguous prompts.
+- **Cost** — a council run costs N + 1 specialist dispatches plus 1 Heimdall review (7 invocations at N=5). The mode's Council trigger threshold is the safeguard against cost creep: the council runs only when that threshold is met, and never on a clear prompt.
 
 ### Decomposition & Dependency Rules
 
@@ -216,3 +218,4 @@ Per-subtask reviews validate pieces, not the whole. Only this final validation c
 - Involve the user at key decision points and milestones.
 - For complex or sensitive communication, task Bragi to advise on framing and detail level.
 - **Escalation (when Kvasir consultation does not resolve a blocker):** Present the blocker to the user: what is blocked, what was attempted, the advice received, the viable options with a recommendation — and await the user's direction.
+- **Council trigger threshold (high bar):** This mode can ask the user directly at near-zero cost — a direct clarifying question is the default resolution for ambiguity, not the council. Invoke the council only when both signals are strong AND a direct question is unlikely to resolve the ambiguity: the user has already answered and material ambiguity persists, the ambiguity spans latent requirements that questioning would turn into a lengthy interview, or the user explicitly asks for a council run. A high bar is not a prohibition — deep, multi-axis ambiguity on a high-stakes prompt still warrants the council here.
