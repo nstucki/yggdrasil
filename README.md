@@ -143,11 +143,12 @@ Re-running `./setup.sh` after pulling the latest framework updates performs a sa
 
 Yggdrasil ships with a curated set of default skills. **These are starting points, not prescriptions** — each is a Markdown file in the installed `skills/yggdrasil/` directory. Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own.
 
-- **Bragi:** Presentation structuring, Question formulation, Trade-off communication, Council personas (Clarifier, Completer, Empath, Adversary, Constraint — council-dispatch only)
+- **Bragi:** Presentation structuring, Question formulation, Trade-off communication, Council personas (Clarifier, Completer, Empath, Adversary, Constraint; installed unconditionally)
 - **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Memory curation (installed unconditionally), Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
 - **Kvasir:** Approach evaluation, Research decomposition, Risk assessment, Task decomposition
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
+- **Odin:** Research convention
 
 ## Commands
 
@@ -171,11 +172,42 @@ Memory is maintained through the three [commands](#commands) above, each routed 
 
 The full memory convention — promotion pipeline, dream consolidation, forget deletion, and the Recall mechanism — is governed by the same orchestration rules that shape every task: every write is reviewed, every deletion is confirmed, and nothing enters memory without a vetted pipeline. For the canonical entry-schema template, see **[`skills/brokk/brokk-memory-curation/SKILL.md`](./skills/brokk/brokk-memory-curation/SKILL.md)**.
 
-## Extending Yggdrasil
+## Extending Yggdrasil with Tools & Skills
 
-The repo is only needed for the initial install and framework upgrades. Once installed, all custom-capability management happens in the installed location.
+The repo is only needed for the initial install and framework upgrades. Once installed, all extension happens in the installed location, via two paths that end in the same regeneration step: **add a new skill** to a specialist (a Markdown file), or **grant a new tool** to a specialist (a permission + registry entry). Both feed the same generator and surface in the same capability inventory.
 
-**To grant a new tool to a specialist:**
+### Add a New Skill to a Specialist
+
+Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown files discovered from the installed skills tree — no agent definition edits are needed; each specialist's permission allowlist already admits any skill matching its own prefix (e.g., `brokk-*`). Unlike Odin's skills (see [`skills/odin/README.md`](skills/odin/README.md)), they are **not** picked up by planning automatically: after adding one, you must regenerate the capability inventory, or Odin and Kvasir will not know it exists.
+
+1. **Create the skill file** in the installed skills tree:
+
+   ```bash
+   $CONFIG_BASE/skills/yggdrasil/<agent>/<agent>-<name>/SKILL.md
+   ```
+
+   where `<agent>` is one of `mimir`, `brokk`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
+
+   ```yaml
+   ---
+   name: <agent>-<name>
+   description: <one-line, agent-neutral description>
+   ---
+   ```
+
+   The body follows the same five sections as every shipped skill, in this order: `## Purpose`, `## When to Use`, `## Workflow`, `## Quality Criteria`, `## Anti-Patterns`.
+
+2. **Regenerate the capability mirror**:
+
+   ```bash
+   $CONFIG_BASE/yggdrasil/generate-capabilities.sh
+   ```
+
+   This harvests the new skill's frontmatter into `$CONFIG_BASE/skills/yggdrasil/shared/capability-inventory/SKILL.md`, making it visible to Odin and Kvasir. **This step is required and nothing checks it for you** — a skill added without regeneration is invisible to planning. (`setup.sh` reruns the generator on every install and upgrade, so fresh installs are always current.)
+
+For example, `$CONFIG_BASE/skills/yggdrasil/brokk/brokk-shell-scripting/SKILL.md` (frontmatter `name: brokk-shell-scripting`) appears in the inventory under **implementer** as `shell-scripting` after regeneration.
+
+### Grant a New Tool to a Specialist
 
 1. **Grant the tool** in the installed agent definition file:
 
