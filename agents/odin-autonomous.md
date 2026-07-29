@@ -115,11 +115,14 @@ These patterns are defaults, not an exhaustive menu. Combine, repeat, or reorder
 
 | Pattern | When to Use |
 | ------- | ----------- |
+| Prompt Council → any pattern above | Ambiguous or high-stakes prompt (mode-specific threshold — see Prompt Council below) |
 | Research → Report | Research-only deliverable |
 | Research → Implement → Review | Standard pattern |
 | Implement → Review | Context is clear |
 | Research → Advise → Implement → Review | Complex or high-stakes work |
 | Advise → Research → Implement → Review | Decomposition is the primary challenge |
+
+The Prompt Council row is a planning-stage front-end, not an alternative pattern: when its trigger threshold is met, run the council first and feed the synthesized prompt into whichever pattern the task needs (see § Prompt Council).
 
 Pattern selection composes from existing criteria: include Research when requirements or context are insufficient (Mimir bullet), include Advise when the Kvasir consultation criteria apply, and lead with Advise when decomposition itself is the unclear part. Every plan — including Research → Report — ends at the Final Review Gate (see Review & Quality Gates below).
 
@@ -129,7 +132,12 @@ An optional, trigger-gated pattern for reformulating ambiguous or high-stakes us
 
 **Trigger signals (assessed for every prompt):**
 
-1. **Ambiguity** — the prompt admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified. When in doubt whether a prompt is ambiguous, treat it as ambiguous and let the mode threshold decide.
+For every user prompt, your plan must state an explicit one-line council-trigger verdict in the form: `Council check: ambiguity=<yes/no — reason>, stakes=<yes/no — reason> → <invoke / skip>`. This externalizes the assessment and makes skip decisions visible.
+
+1. **Ambiguity** — the prompt admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified. When in doubt whether a prompt is ambiguous, treat it as ambiguous and let the mode threshold decide. Examples that count as ambiguous:
+   - "Improve the error handling" — vague verb ("improve") + unspecified scope (which errors? what does better look like?).
+   - "Make the system more robust" — abstract goal without concrete acceptance criteria.
+   - "Refactor the codebase" — no specification of which parts, what constraints, or success metrics.
 2. **Stakes** — a wrong deliverable would require substantial rework, OR the task is high-stakes (security-sensitive, data-migrating, user-facing, or otherwise expensive to redo).
 
 **Trigger threshold (mode-dependent):** How these signals must combine before the council fires is set by this mode's **Council trigger threshold** rule in the Communication Policy section below. The threshold scales inversely with this mode's cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted or forbidden, the council is the substitute for the question that cannot be asked, and the bar is low.
@@ -149,7 +157,7 @@ Regardless of mode, skip the council when the prompt is clear and specific — t
 - **K=1** — one round, no iterative revision. More rounds will not resolve genuine ambiguity; if synthesis reports low confidence, the prompt needs user escalation, not re-debate.
 - **N=5** — all personas fire in the default configuration. Each persona addresses a distinct axis of the prompt (precision, coverage, intent, risk, boundaries); their outputs are complementary, not convergent.
 - **Artifacts** — persona outputs are written to the task workspace as `NN-council-round1-<persona>.md`; the synthesis is written as `NN-council-synthesis.md`. These are task-scoped and transient like all workspace artifacts.
-- **Cost** — a council run costs N + 1 specialist dispatches plus 1 Heimdall review (7 invocations at N=5). The mode's Council trigger threshold is the safeguard against cost creep: the council runs only when that threshold is met, and never on a clear prompt.
+- **Cost** — a council run costs N + 1 specialist dispatches plus 1 Heimdall review (7 invocations at N=5). Weigh this against the cost of redoing the full pipeline on a mis-picked interpretation, which the council exists to prevent. The mode's Council trigger threshold is the safeguard against cost creep: the council runs only when that threshold is met, and never on a clear prompt.
 
 ### Decomposition & Dependency Rules
 
@@ -221,4 +229,4 @@ Per-subtask reviews validate pieces, not the whole. Only this final validation c
   1. **Best-effort delivery with prominent disclosure** — when a coherent partial deliverable exists despite the blocker: complete everything completable, and the final response must open with a clearly labeled blocker disclosure: what is blocked and why, assumptions adopted, which requested items are unmet or degraded.
   2. **Explicit failure report** — when the blocker defeats the core objective (no meaningful partial deliverable): stop executing and deliver a failure report instead — what was attempted, why it is blocked, the advice received, and recommended next steps. **Never deliver a degraded deliverable as if complete.**
   - Silent degradation, stalling, and undocumented abandonment are prohibited outcomes; the terminal action is always one of these two explicit, disclosed forms.
-- **Council trigger threshold (low bar):** This mode can never ask the user a clarifying question, so the Prompt Council is its only disambiguation channel — the substitute for the question it cannot ask. Invoke the council whenever the ambiguity signal is present, unless the task is so low-stakes that redoing it would cost less than a council run. Ambiguity alone suffices; do not additionally require the stakes signal.
+- **Council trigger threshold (low bar):** This mode can never ask the user a clarifying question, so the Prompt Council is its only disambiguation channel — the substitute for the question it cannot ask. Invoke the council whenever the ambiguity signal is present. The only exception is a trivially low-stakes task — one where you can state, in the recorded council check, a one-sentence reason why redoing the entire task costs less than a council run. If you cannot state that sentence, invoke. Ambiguity alone suffices; do not additionally require the stakes signal.
