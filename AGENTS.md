@@ -189,6 +189,18 @@ Conventional commits, lowercase, no period, ~50 chars:
 
 **Reopen trigger:** If recorded `Kvasir check` verdicts accumulate evidence of consult-routing failures into non-Advise-shaped patterns (e.g., a pattern like Research → Report where the check verdict says n≥2 and consult, but the plan was routed to a non-Advise shape), that is the evidence trigger to revisit the prefix-row option. This mirrors the Council v3 precedent: defer table restructuring until usage evidence shows the current approach failing.
 
+## Kvasir Volumetric Research Scaling (Documented Decision)
+
+**What changed:** Added a volumetric-batching dimension to `skills/kvasir/kvasir-research-decomposition/SKILL.md` — a mandatory recorded scaling verdict (`Scaling check: independent units=<N>, … → <single cluster — reason | K batches of ~M units>`), a default-to-fan-out rule with inverted skip burden for large homogeneous target sets (guideline N > ~20 at per-unit rigor), batch-sizing/grouping heuristics, a map-reduce plan shape with uniform per-unit output schema, large-N and small-N calibration examples, and a counterweight "Volume collapse" anti-pattern. Deliberately **rejected** a companion change to `shared-body.template`'s Decomposition & Dependency Rules.
+
+**Why:** An observed incident: a research task spanning 770 independent repositories produced a decomposition plan with a single research subtask. Diagnosis (Heimdall-reviewed research): the skill's clustering model was purely topical — 770 homogeneous repos present no topical seams, so the workflow correctly produced one cluster; the anti-pattern list penalized only over-fragmentation, never under-parallelization; and the scaling decision was self-graded and unrecorded. The remedy set follows the Council v3 / Kvasir Trigger v2 template: recorded forcing function, burden inversion, calibration examples.
+
+**How it works:** Skill-only edit — the scaling decision is specialist decomposition methodology, not a universal orchestration mechanism. The existing Kvasir Consultation Check already routes large-N research tasks to consultation; the broken link was inside the skill.
+
+**Governance impact:** Kvasir skill files are not Odin-generated: no regeneration via `scripts/generate-odin-agents.sh`, no check 4 exposure, no parity-marker changes (count remains 15), no Orchestration Patterns table changes, no permission/frontmatter/temperature changes. Skill passes normal validation (frontmatter + required sections) and normal review.
+
+**Reopen trigger:** If a recorded incident shows the *requesting-agent-side* failure mode — a large-N research scope dispatched as a single research subtask without Kvasir consultation, or with the skill's verdict recorded and then ignored at dispatch — that is the evidence to revisit adding a scaling rule to shared-body's Decomposition & Dependency Rules (governed documented-decision change, regeneration + check 4).
+
 ## Definition of Done
 
 1. All agent definitions valid (YAML frontmatter parses correctly)
