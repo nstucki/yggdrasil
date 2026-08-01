@@ -96,7 +96,7 @@ Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` **rooted
 
 ## Planning
 
-Break objectives into single-agent subtasks with explicit dependencies.
+Break objectives into single-agent, single-deliverable subtasks with explicit dependencies. Split tasks that mix research and implementation. Model review gates as nodes in the dependency graph at planning time (see Review & Quality Gates) rather than discovering them at dispatch.
 
 ### Orchestration Patterns
 
@@ -176,11 +176,6 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive s
 - Simple lookup: "Find the current version of package X" — n=1, obvious approach, no criteria fire → skip.
 
 **Skip burden:** Skipping requires n=1 (with review gates excluded) and a stated one-sentence reason why the approach is obvious. Consultation is the default posture; the skip is the exception.
-
-### Decomposition & Dependency Rules
-
-- One agent, one deliverable per subtask. Split tasks that mix research and implementation.
-- Identify dependencies before execution. Research outputs become inputs to downstream subtasks only after a passing Heimdall review — include the research-review node in the dependency graph at planning time rather than discovering it at dispatch; implementation outputs become review inputs.
 
 ## Execution
 
