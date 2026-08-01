@@ -102,11 +102,11 @@ check_contains "## Anti-Patterns" "^## Anti-Patterns$" || failures=$((failures +
 
 # (c) Each role section has actual skills (not "(none)")
 echo "Checking role populations..."
-check_contains "researcher role" "^### researcher$" || failures=$((failures + 1))
-check_contains "implementer role" "^### implementer$" || failures=$((failures + 1))
-check_contains "reviewer role" "^### reviewer$" || failures=$((failures + 1))
-check_contains "strategist role" "^### strategist$" || failures=$((failures + 1))
-check_contains "communicator role" "^### communicator$" || failures=$((failures + 1))
+check_contains "researcher role" "^### Researcher$" || failures=$((failures + 1))
+check_contains "implementer role" "^### Implementer$" || failures=$((failures + 1))
+check_contains "reviewer role" "^### Reviewer$" || failures=$((failures + 1))
+check_contains "strategist role" "^### Strategist$" || failures=$((failures + 1))
+check_contains "communicator role" "^### Communicator$" || failures=$((failures + 1))
 
 # Verify at least some skills are listed (look for bullet points).
 if echo "$output" | grep -q "^- \*\*.*\*\*"; then

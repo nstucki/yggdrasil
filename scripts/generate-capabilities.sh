@@ -233,6 +233,33 @@ ${entry}"
   esac
 done < <(find "$SKILLS_DIR" -name SKILL.md -print0 | sort -z)
 
+# --- Step 1.5: Harvest role-purpose descriptions from agent frontmatter ---
+
+# Harvest a one-line description for each role from the corresponding agent
+# file's `description` frontmatter field. Missing files or missing fields
+# leave the variable empty.
+researcher_desc=""
+implementer_desc=""
+reviewer_desc=""
+strategist_desc=""
+communicator_desc=""
+
+for agent in mimir brokk heimdall kvasir bragi; do
+  agent_file="${AGENTS_DIR}/${agent}.md"
+  desc=""
+  if [ -f "$agent_file" ]; then
+    desc=$(frontmatter_value "$agent_file" "description" 2>/dev/null || true)
+  fi
+
+  case "$agent" in
+    mimir) researcher_desc="$desc" ;;
+    brokk) implementer_desc="$desc" ;;
+    heimdall) reviewer_desc="$desc" ;;
+    kvasir) strategist_desc="$desc" ;;
+    bragi) communicator_desc="$desc" ;;
+  esac
+done
+
 # --- Step 2: Harvest custom capabilities from custom-capabilities.yaml ---
 
 custom_inventory=""
@@ -312,8 +339,14 @@ routed to the right role without blind spots.
 
 ## Inventory — Built-In Skills
 
-### researcher
+### Researcher
 EOF
+
+  if [ -n "$researcher_desc" ]; then
+    echo ""
+    echo "$researcher_desc"
+    echo ""
+  fi
 
   if [ -n "$researcher_skills" ]; then
     echo "$researcher_skills"
@@ -323,8 +356,14 @@ EOF
 
   cat <<'EOF'
 
-### implementer
+### Implementer
 EOF
+
+  if [ -n "$implementer_desc" ]; then
+    echo ""
+    echo "$implementer_desc"
+    echo ""
+  fi
 
   if [ -n "$implementer_skills" ]; then
     echo "$implementer_skills"
@@ -334,8 +373,14 @@ EOF
 
   cat <<'EOF'
 
-### reviewer
+### Reviewer
 EOF
+
+  if [ -n "$reviewer_desc" ]; then
+    echo ""
+    echo "$reviewer_desc"
+    echo ""
+  fi
 
   if [ -n "$reviewer_skills" ]; then
     echo "$reviewer_skills"
@@ -345,8 +390,14 @@ EOF
 
   cat <<'EOF'
 
-### strategist
+### Strategist
 EOF
+
+  if [ -n "$strategist_desc" ]; then
+    echo ""
+    echo "$strategist_desc"
+    echo ""
+  fi
 
   if [ -n "$strategist_skills" ]; then
     echo "$strategist_skills"
@@ -356,8 +407,14 @@ EOF
 
   cat <<'EOF'
 
-### communicator
+### Communicator
 EOF
+
+  if [ -n "$communicator_desc" ]; then
+    echo ""
+    echo "$communicator_desc"
+    echo ""
+  fi
 
   if [ -n "$communicator_skills" ]; then
     echo "$communicator_skills"
