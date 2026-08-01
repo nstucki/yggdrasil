@@ -293,8 +293,8 @@ fi
 # ── Check for existing files and prompt ─────────────────────────────────────
 
 # Agents and commands are always copied, so non-empty dirs always trigger the
-# warning. The always-on skills (brokk-memory-curation and the five
-# bragi-council-* persona skills) are also always copied (see the
+# warning. The always-on skills (brokk-memory-curation, odin-memory-system,
+# and the five bragi-council-* persona skills) are also always copied (see the
 # "Install always-on skills" section below), so DST_SKILLS is now checked
 # unconditionally too — even if the user declines the skills prompt, those
 # skills still land there and pre-existing content deserves the same warning.
@@ -449,10 +449,17 @@ ok "Agents installed."
 # are two categories of always-installed skills, each justified by a hard
 # runtime dependency on something that always installs itself:
 #
-#   1. brokk-memory-curation — the three memory commands
-#      (/yggdrasil/remember, /yggdrasil/dream, /yggdrasil/forget), which
-#      always install (see "Install commands" below), depend on this skill
-#      for the canonical entry schema, INDEX.md format, and README template.
+#   1. The memory-commands dependency category — two skills backing the
+#      three memory commands (/yggdrasil/remember, /yggdrasil/dream,
+#      /yggdrasil/forget), which always install (see "Install commands"
+#      below):
+#        a. brokk-memory-curation — governs the write-side implementation
+#           (canonical entry frontmatter schema, INDEX.md format, README
+#           template) used by the implementer dispatched on each command.
+#        b. odin-memory-system — the orchestration doctrine (which agents
+#           to dispatch, review gates, guardrails) for the same three
+#           command-triggered memory operations. The commands are inert
+#           without it.
 #
 #   2. The five bragi-council-* persona skills — Odin's shared body
 #      template embeds the Prompt Council process, which dispatches
@@ -480,6 +487,22 @@ if [ -d "$SRC_MEMORY_SKILL" ]; then
     # identical content (no double-copy conflict, just a redundant overwrite).
     cp -R "${SRC_MEMORY_SKILL}/." "$DST_MEMORY_SKILL/"
     ok "brokk-memory-curation installed."
+fi
+
+SRC_ODIN_MEMORY_SKILL="${SRC_SKILLS}/odin/odin-memory-system"
+DST_ODIN_MEMORY_SKILL="${DST_SKILLS}/odin/odin-memory-system"
+
+if [ -d "$SRC_ODIN_MEMORY_SKILL" ]; then
+    info "Creating skills directory…"
+    mkdir -p "$DST_ODIN_MEMORY_SKILL"
+
+    info "Copying odin-memory-system to ${DST_ODIN_MEMORY_SKILL}…"
+    # Merge copy: copies just this one skill directory unconditionally.
+    # If COPY_SKILLS=true below, the bulk copy will also copy this same
+    # directory from the same source — harmless, since both copies write
+    # identical content (no double-copy conflict, just a redundant overwrite).
+    cp -R "${SRC_ODIN_MEMORY_SKILL}/." "$DST_ODIN_MEMORY_SKILL/"
+    ok "odin-memory-system installed."
 fi
 
 # The five Prompt Council persona skills — always installed so Odin's
@@ -511,9 +534,10 @@ done
 # anyway). If they accepted, all skills install per their own answer and
 # the note is redundant noise.
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: brokk-memory-curation and the five bragi-council-* skills"
-    warn "install unconditionally — the memory commands and Odin's Prompt"
-    warn "Council mechanism depend on them regardless of your answer above."
+    warn "Note: brokk-memory-curation, odin-memory-system, and the five"
+    warn "bragi-council-* skills install unconditionally — the memory commands"
+    warn "and Odin's Prompt Council mechanism depend on them regardless of your"
+    warn "answer above."
 fi
 
 # ── Install skills ─────────────────────────────────────────────────────────
@@ -608,9 +632,10 @@ fi
 # built-in skills and custom capabilities (if the user edited the scaffold).
 # NOTE: The generated file is no longer committed to the repo; it's created fresh
 # at install time. Run unconditionally on every install: the always-on skills
-# (brokk-memory-curation and the bragi-council-* persona skills) always
-# install (see "Install always-on skills" above), so DST_SKILLS is
-# populated on every normal install, even when the user declines the skills prompt.
+# (brokk-memory-curation, odin-memory-system, and the bragi-council-*
+# persona skills) always install (see "Install always-on skills" above), so
+# DST_SKILLS is populated on every normal install, even when the user declines
+# the skills prompt.
 # If regeneration fails — including the abnormal case of a corrupted checkout
 # missing the skills directory entirely — this is FATAL (a silent failure would
 # leave no capability inventory at all, invisibly).

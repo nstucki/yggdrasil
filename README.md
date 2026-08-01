@@ -108,7 +108,7 @@ You'll be prompted for two choices: whether to copy the curated default skills (
 **What gets installed:**
 
 - **Agents** → `~/.config/opencode/agents/yggdrasil/`
-- **Skills** (if accepted; `brokk-memory-curation` and the five `bragi-council-*` persona skills always install — the memory commands and Odin's Prompt Council mechanism depend on them) → `~/.config/opencode/skills/yggdrasil/`
+- **Skills** (if accepted; `odin-memory-system`, `brokk-memory-curation`, and the five `bragi-council-*` persona skills always install — the Memory commands and Odin's Prompt Council mechanism depend on them) → `~/.config/opencode/skills/yggdrasil/`
 - **Commands** → `~/.config/opencode/commands/yggdrasil/`
 - **Capability generator** → `~/.config/opencode/yggdrasil/generate-capabilities.sh`
 - **Custom-capabilities scaffold** → `~/.config/opencode/yggdrasil/custom-capabilities.yaml` (first install only; never overwritten on upgrades)
@@ -143,12 +143,12 @@ Re-running `./setup.sh` after pulling the latest framework updates performs a sa
 
 Yggdrasil ships with a curated set of default skills. **These are starting points, not prescriptions** — each is a Markdown file in the installed `skills/yggdrasil/` directory. Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own.
 
-- **Bragi:** Presentation structuring, Question formulation, Trade-off communication, Council personas (Clarifier, Completer, Empath, Adversary, Constraint; installed unconditionally)
-- **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Memory curation (installed unconditionally), Refactoring, Testing
+- **Bragi:** Council personas (Clarifier, Completer, Empath, Adversary, Constraint; installed unconditionally), Presentation structuring, Question formulation, Trade-off communication
+- **Brokk:** Memory curation (installed unconditionally), API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
 - **Kvasir:** Approach evaluation, Research decomposition, Risk assessment, Task decomposition
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
-- **Odin:** Research convention
+- **Odin:** Memory system (installed unconditionally), Research convention
 
 ## Commands
 
@@ -170,7 +170,7 @@ Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/` **ro
 
 Memory is maintained through the three [commands](#commands) above, each routed through the full reviewed orchestration pipeline — never an instant, unreviewed write. If a project has no `.yggdrasil-memory/` directory, the commands offer to establish it (scaffolded from canonical templates in the `brokk-memory-curation` skill). By default the knowledge base is git-tracked, so git history provides an audit trail and a recovery net for destructive operations.
 
-The full memory convention — promotion pipeline, dream consolidation, forget deletion, and the Recall mechanism — is governed by the same orchestration rules that shape every task: every write is reviewed, every deletion is confirmed, and nothing enters memory without a vetted pipeline. For the canonical entry-schema template, see **[`skills/brokk/brokk-memory-curation/SKILL.md`](./skills/brokk/brokk-memory-curation/SKILL.md)**.
+The full memory convention — promotion pipeline, dream consolidation, forget deletion, and the Recall mechanism — is governed by the same orchestration rules that shape every task: every write is reviewed, every deletion is confirmed, and nothing enters memory without a vetted pipeline. The orchestration doctrine for the three command-triggered operations lives in the **[`skills/odin/odin-memory-system/SKILL.md`](./skills/odin/odin-memory-system/SKILL.md)** skill; the canonical entry-schema template lives in **[`skills/brokk/brokk-memory-curation/SKILL.md`](./skills/brokk/brokk-memory-curation/SKILL.md)**.
 
 ## Extending Yggdrasil with Tools & Skills
 

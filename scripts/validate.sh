@@ -518,7 +518,6 @@ check_parity_markers() {
     "failed-review escalation ladder"
     "single substantive subtask"
     ".yggdrasil-memory/"
-    "macro for a user request"
     "rooted at the current working directory"
     "leads, not ground truth"
     "Council trigger threshold"
@@ -534,7 +533,7 @@ check_parity_markers() {
   done
 
   if [ "$FAIL_PARITY_MARKERS" -eq 0 ]; then
-    pass_msg "all 15 invariant markers present in odin-autonomous.md"
+    pass_msg "all 14 invariant markers present in odin-autonomous.md"
   else
     info_msg "${C_RED}${FAIL_PARITY_MARKERS} invariant marker failure(s)${C_RESET}"
   fi
