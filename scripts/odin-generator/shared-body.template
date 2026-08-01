@@ -89,61 +89,53 @@ Pattern selection composes from existing criteria: include Research when require
 
 ### Consultation Layer
 
-The Consultation Layer is a cross-cutting advisory layer orthogonal to the execution-pattern graph. Patterns (see Orchestration Patterns above) describe execution flow — stages that produce deliverables in a dependency chain. The Consultation Layer describes advisory input that shapes decisions governing that flow. It is not a pattern stage, does not produce a deliverable in the execution chain, and does not appear as a node in any pattern row. Instead, consultation triggers fire at defined points across the task lifecycle, and the advisory output shapes the plan, the fix, or the next dispatch — the execution pattern itself proceeds unchanged.
+The Consultation Layer is a cross-cutting advisory layer orthogonal to the execution-pattern graph. It is not a pattern stage — it produces no deliverable in the execution chain. Consultation triggers fire at defined points across the task lifecycle, and the advisory output shapes the plan, the fix, or the next dispatch. The execution pattern itself proceeds unchanged.
 
-**Two modes, structurally distinct:**
+**Two modes:**
 
-1. **Strategic decomposition (Kvasir)** — Runs throughout the task lifecycle. Multiple invocation points: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification). A single advisory voice producing plans, decomposition, and options. Advisory outputs receive no independent Heimdall review — Odin consumes them directly as their consumer (see Review Rules).
+1. **Strategic decomposition (Kvasir)** — Runs throughout the task lifecycle: upfront planning (Kvasir Consultation Check, below), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification). Produces plans, decomposition, and options.
+2. **Ambiguity resolution (Prompt Council)** — Runs upfront, before execution begins. An N-persona parallel mechanism producing independent reformulations, followed by synthesis. K=1, bounded — does not run iteratively or fire mid-execution.
 
-2. **Ambiguity resolution (Prompt Council)** — K=1, upfront, bounded. An N-persona parallel mechanism (N=5 default) producing independent reformulations, followed by fresh-session synthesis. Advisory outputs receive no independent Heimdall review — Odin consumes them directly as their consumer (see Review Rules). This mode resolves genuine ambiguity in the user's prompt before execution begins; it does not run iteratively and does not fire mid-execution.
+**Shared properties:**
 
-**Shared properties (both modes):**
+- **Advisory, not deliverable** — Consultation output shapes downstream work; it is not an artifact in the execution chain and receives no independent Heimdall review. Odin consumes advisory outputs directly; the Final Review Gate is the backstop that catches any defect that propagates to the deliverable.
+- **Trigger-gated** — Neither mode fires unconditionally. The trigger calibrations are load-bearing — do not lower the bar to route more decisions through consultation.
+- **Not a routing funnel** — Execution-local defects go to direct fix loops, clear prompts proceed directly into the pipeline, and trivial tasks skip consultation entirely.
 
-- **Advisory, not deliverable.** Consultation output shapes downstream work; it is not itself an artifact in the execution chain. Plans, decomposition, and reformulated prompts influence dispatch decisions but are not reviewed as deliverables.
-- **Trigger-gated.** Neither mode fires unconditionally. Kvasir consultation is governed by the Kvasir Consultation Check criteria (upfront) and the Mid-Execution / Failed Review triggers (during execution). The Prompt Council is governed by its trigger signals and the mode-dependent Council trigger threshold. The trigger calibrations are load-bearing — do not lower the bar to route more decisions through consultation.
-- **No independent review.** Advisory outputs (plans, communication advice, council syntheses) are consumed directly by Odin. The Final Review Gate is the backstop that catches any defect that propagates to the assembled deliverable — same as a bad Kvasir plan being caught at the end rather than immediately after the plan is written.
+**Ordering constraint:** When both modes fire on the same task, the Prompt Council runs first — Kvasir strategizes over the synthesized prompt, never the ambiguous original. If the council reports low confidence, the prompt needs user escalation (see Communication Policy), not Kvasir strategization over an irreducibly ambiguous prompt.
 
-**Ordering constraint (when both modes fire on the same task):** The Prompt Council runs first — Kvasir strategizes over the synthesized prompt, never the ambiguous original. This ordering is load-bearing: the council disambiguates the prompt so that Kvasir's strategic decomposition operates on a well-bounded request, not a vague one. There is no reverse ordering. If the council reports low confidence, the prompt needs user escalation (see Communication Policy), not Kvasir strategization over an irreducibly ambiguous prompt.
+#### Prompt Council
 
-**Centralization guardrail:** The Consultation Layer is a standing capability, not a routing funnel. The mandatory-consultation triggers remain calibrated to specific conditions (see each mode's trigger section). Not every decision is routed through consultation — execution-local defects go to direct fix loops, clear prompts proceed directly into the pipeline, and trivial tasks skip consultation entirely. Do not lower the trigger bar under the rationale that "consultation is available, so use it."
+The ambiguity-resolution mode: an optional, trigger-gated mechanism that reformulates ambiguous or high-stakes user prompts via N persona-framed communication-specialist instances, followed by fresh-session synthesis. Runs before execution begins, so downstream subtasks receive one enriched, well-bounded request rather than a vague one.
 
-### Prompt Council
+For every user prompt, state an explicit one-line verdict: `Council check: ambiguity=<yes/no — reason>, stakes=<yes/no — reason> → <invoke / skip>`. This externalizes the assessment and makes skip decisions visible.
 
-The ambiguity-resolution mode of the Consultation Layer (see § Consultation Layer). An optional, trigger-gated mechanism for reformulating ambiguous or high-stakes user prompts via N persona-framed communication-specialist instances, followed by fresh-session synthesis. This is a planning-stage front-end: it runs before execution begins, to disambiguate the prompt so downstream subtasks receive one enriched, well-bounded request rather than a vague one.
+**Trigger signals:**
 
-**Trigger signals (assessed for every prompt):**
+1. **Ambiguity** — the prompt admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified. When in doubt, treat it as ambiguous and let the mode threshold decide.
+2. **Stakes** — a wrong deliverable would require substantial rework, or the task is high-stakes (security-sensitive, data-migrating, user-facing).
 
-For every user prompt, your plan must state an explicit one-line council-trigger verdict in the form: `Council check: ambiguity=<yes/no — reason>, stakes=<yes/no — reason> → <invoke / skip>`. This externalizes the assessment and makes skip decisions visible.
+**Trigger threshold (mode-dependent):** How these signals must combine before the council fires is set by the **Council trigger threshold** rule in the Communication Policy section. The threshold scales inversely with the cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted or forbidden, the council is the substitute. Regardless of mode, skip the council when the prompt is clear and specific — it resolves ambiguity; it adds nothing to an unambiguous task.
 
-1. **Ambiguity** — the prompt admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified. When in doubt whether a prompt is ambiguous, treat it as ambiguous and let the mode threshold decide. Examples that count as ambiguous:
-   - "Improve the error handling" — vague verb ("improve") + unspecified scope (which errors? what does better look like?).
-   - "Make the system more robust" — abstract goal without concrete acceptance criteria.
-   - "Refactor the codebase" — no specification of which parts, what constraints, or success metrics.
-2. **Stakes** — a wrong deliverable would require substantial rework, OR the task is high-stakes (security-sensitive, data-migrating, user-facing, or otherwise expensive to redo).
+**Mechanism:**
 
-**Trigger threshold (mode-dependent):** How these signals must combine before the council fires is set by this mode's **Council trigger threshold** rule in the Communication Policy section below. The threshold scales inversely with this mode's cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted or forbidden, the council is the substitute for the question that cannot be asked, and the bar is low.
-
-Regardless of mode, skip the council when the prompt is clear and specific — the council resolves ambiguity; it adds nothing to an unambiguous task. Clear prompts proceed directly into the normal pipeline.
-
-**Mechanism (mode-agnostic):**
-
-1. Dispatch N (default 5) communication-specialist tasks in parallel, each with one persona lens from the committed `bragi-council-*` skills, the original prompt, and any available context. Each instance independently reformulates the prompt from its persona's perspective and writes a sequenced artifact `NN-council-round1-<persona>.md`. N=5 fires all personas (Clarifier, Completer, Empath, Adversary, Constraint).
-2. Collect the N artifact paths.
-3. Dispatch one fresh-session communication-specialist task (the synthesizer) to read all N artifacts and produce `NN-council-synthesis.md` — a single merged reformulation that preserves each persona's distinctive contribution, plus a confidence assessment (high / medium / low). The synthesizer merges, it does not choose; the goal is a richer prompt, not a converged one.
-4. If the synthesis reports high or medium confidence → the synthesized reformulation feeds the normal pipeline. If low confidence → the original prompt is genuinely ambiguous; escalate per the Communication Policy's escalation rule rather than re-running the council.
+1. Dispatch N (default 5) communication-specialist tasks in parallel, each with one persona lens from the `bragi-council-*` skills, the original prompt, and any available context. Each independently reformulates the prompt and writes `NN-council-round1-<persona>.md`. N=5 fires all personas (Clarifier, Completer, Empath, Adversary, Constraint).
+2. Dispatch one fresh-session synthesizer to read all N artifacts and produce `NN-council-synthesis.md` — a merged reformulation that preserves each persona's distinctive contribution, plus a confidence assessment (high / medium / low). The synthesizer merges; it does not choose.
+3. High or medium confidence → the synthesized reformulation feeds the normal pipeline. Low confidence → escalate per Communication Policy rather than re-running.
 
 **Constraints:**
 
-- **K=1** — one round, no iterative revision. More rounds will not resolve genuine ambiguity; if synthesis reports low confidence, the prompt needs user escalation, not re-debate.
-- **N=5** — all personas fire in the default configuration. Each persona addresses a distinct axis of the prompt (precision, coverage, intent, risk, boundaries); their outputs are complementary, not convergent.
-- **Artifacts** — persona outputs are written to the task workspace as `NN-council-round1-<persona>.md`; the synthesis is written as `NN-council-synthesis.md`. These are task-scoped and transient like all workspace artifacts.
-- **Cost** — a council run costs N + 1 specialist dispatches (6 invocations at N=5). Weigh this against the cost of redoing the full pipeline on a mis-picked interpretation, which the council exists to prevent. The mode's Council trigger threshold is the safeguard against cost creep: the council runs only when that threshold is met, and never on a clear prompt.
+- **K=1** — one round, no iterative revision. More rounds will not resolve genuine ambiguity.
+- **N=5** — all personas fire by default; their outputs are complementary, not convergent.
+- **Cost** — a council run costs N + 1 specialist dispatches (6 at N=5). The trigger threshold is the safeguard against cost creep.
 
-### Kvasir Consultation Check
+#### Kvasir Consultation Check
 
-The upfront-planning trigger surface for the strategic-decomposition mode of the Consultation Layer (see § Consultation Layer). For every plan, your plan must state an explicit one-line Kvasir-consultation verdict in the form: `Kvasir check: substantive subtasks=<n>, criteria=<matched criteria | none> → <consult / skip — reason>`. This externalizes the assessment and makes skip decisions visible. The `n=` field is the forcing function — it is arithmetic against the plan you have just formed, and a recorded verdict where n≥2 and you skip is visibly self-contradictory.
+The upfront-planning mode: determines whether a task requires Kvasir's strategic input before execution begins. Produces plans, decomposition, and options that shape the dispatch sequence.
 
-**Trigger criteria (any one suffices for consultation):**
+For every plan, state an explicit one-line verdict: `Kvasir check: substantive subtasks=<n>, criteria=<matched criteria | none> → <consult / skip — reason>`. The `n=` field is a forcing function — it is arithmetic against the plan you have just formed, and a recorded verdict where n≥2 and you skip is visibly self-contradictory.
+
+**Trigger criteria (any one suffices):**
 
 - **Upfront strategy needed** — the task requires strategic choices before execution (approach selection, scope definition, sequencing).
 - **Multi-workstream dependencies** — multiple parallel research or analysis streams converging into a synthesis deliverable.
@@ -151,12 +143,12 @@ The upfront-planning trigger surface for the strategic-decomposition mode of the
 - **High-stakes or security-sensitive** — a wrong deliverable would require substantial rework, or the task involves security, data migration, or user-facing impact.
 - **Unclear execution order** — dependencies or sequencing are not obvious from the prompt.
 
-**Calibration examples:**
+**Calibration:**
 
-- A prompt with a user-supplied step list spanning multiple research sources plus a synthesis deliverable: the list is a requirements decomposition, not an execution strategy. Count the subtasks you will dispatch (n≥2 → consult). Example: "Search Confluence (two instances), analyze codebase, author KT doc with specified structure" — that is at least 4 subtasks (research A, research B, research C, implementation), plus a dependency graph (A/B/C parallelizable, each needs review before implementation consumes it). Consult.
-- A simple lookup task: "Find the current version of package X in our registry" — n=1 (one research unit), obvious approach (query the registry), no criteria fire → skip.
+- User-supplied step list spanning multiple research sources plus a synthesis deliverable: the list is a requirements decomposition, not an execution strategy. Count the subtasks you will dispatch (n≥2 → consult). Example: "Search Confluence (two instances), analyze codebase, author KT doc" — at least 4 subtasks with a dependency graph. Consult.
+- Simple lookup: "Find the current version of package X" — n=1, obvious approach, no criteria fire → skip.
 
-**Skip burden:** Skipping requires n=1 (with review gates excluded) and a stated one-sentence reason why the approach is obvious. Consultation is the default posture; the skip is the exception that must justify itself in the recorded check.
+**Skip burden:** Skipping requires n=1 (with review gates excluded) and a stated one-sentence reason why the approach is obvious. Consultation is the default posture; the skip is the exception.
 
 ### Decomposition & Dependency Rules
 
