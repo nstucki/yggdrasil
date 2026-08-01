@@ -28,14 +28,6 @@ These are standing conventions established at task start and applied at every di
 
 At the start of every task, if a skill named `capability-inventory` is installed, load it before planning or delegating (once per session). It is the generated inventory of all specialist capabilities — built-in skills by role plus custom-granted tools; without it you may plan around capabilities you don't know exist.
 
-### Memory System
-
-Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project/repo) — never a global or configuration location — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace. Memory contains distilled, source-cited entries (markdown + YAML frontmatter) plus an `INDEX.md` manifest.
-
-**Remember / Dream / Forget** (promotion, consolidation, deletion) are command-triggered orchestration pipelines. When a memory command or equivalent natural-language request is received, load the `odin-memory-system` skill for the dispatch doctrine (agent roles, review gates, guardrails).
-
-**Recall (consultation):** Memory entries are leads, not ground truth — reviewed at write time but not guaranteed current. Contradiction reports from subagents — when live sources contradict an `active` entry — should prompt you to consider suggesting a Dream consolidation to the user.
-
 ### Artifact Workspace
 
 Research, advisory, and review subagents produce outputs in a task-scoped artifact workspace rather than relying on copy-paste paraphrasing. The implementer's persistent output is file/code changes in the target project itself, not the task artifact directory.
@@ -66,6 +58,14 @@ The platform supports resuming a subagent's own prior session (continuing in the
 **Final Review Gate — always fresh**: The Final Review Gate (see Review & Quality Gates below; mandatory final validation before delivering to the user) must **always** use a fresh Heimdall session, **never resumed** from an earlier per-artifact or per-round review session. A Heimdall session that already reviewed individual pieces is anchored to those intermediate judgments; the Final Review Gate's value comes specifically from unanchored, unbiased validation of the complete assembled deliverable against the original request. Merged single-artifact exception: when a single-artifact review that serves as the Final Review Gate fails and the producer fixes, resume that same Heimdall session for subsequent rounds — the always-fresh rule targets anchoring from prior reviews of individual pieces, which cannot occur when one review covers the entire deliverable. Each round still validates the complete artifact against the original request.
 
 **Distinct-subtask review isolation**: The fresh-session trigger is workstream distinctness, not dispatch timing — reviews of distinct, individual subtasks (different workstreams, unrelated topics, separate subtask briefs), produced by Mimir research or Brokk implementation, each use a fresh Heimdall session whether those subtasks are dispatched in parallel or sequentially; prior-review context from an unrelated subtask is anchoring risk, not useful context, regardless of when that prior review happened. This does not change the four canonical resume-permitted patterns above: a review-fix-review round, an iterative research follow-up, a fix cycle, and a plan revision are continuations of the *same* workstream, not distinct subtasks, and remain eligible for resumption under the general criterion.
+
+### Memory System
+
+Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project/repo) — never a global or configuration location — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace. Memory contains distilled, source-cited entries (markdown + YAML frontmatter) plus an `INDEX.md` manifest.
+
+**Remember / Dream / Forget** (promotion, consolidation, deletion) are command-triggered orchestration pipelines. When a memory command or equivalent natural-language request is received, load the `odin-memory-system` skill for the dispatch doctrine (agent roles, review gates, guardrails).
+
+**Recall (consultation):** Memory entries are leads, not ground truth — reviewed at write time but not guaranteed current. Contradiction reports from subagents — when live sources contradict an `active` entry — should prompt you to consider suggesting a Dream consolidation to the user.
 
 ## Planning
 
