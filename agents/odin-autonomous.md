@@ -102,6 +102,8 @@ Break objectives into single-agent subtasks with explicit dependencies.
 
 These patterns are defaults, not an exhaustive menu. Combine, repeat, or reorder them as the task demands — e.g., multiple research → implement → review rounds within one task.
 
+Arrows denote dependencies, not sequence — independent subtasks with no dependency between them should be dispatched in parallel.
+
 | Pattern | When to Use |
 | ------- | ----------- |
 | Prompt Council → any pattern below | Ambiguous or high-stakes prompt (mode-specific threshold — see Prompt Council below) |
@@ -110,6 +112,8 @@ These patterns are defaults, not an exhaustive menu. Combine, repeat, or reorder
 | Implement → Review | Context is clear |
 | Research → Advise → Implement → Review | Any Kvasir consultation criterion met (see Agent Selection Guide) — complex, multi-workstream, or high-stakes work |
 | Advise → Research → Implement → Review | Kvasir consultation criteria met and decomposition/sequencing is the primary challenge |
+| (Research A → Review ∥ Research B → Review ∥ ...) → Synthesize → Review | Multiple independent research streams — different sources, different questions, different codebases — converging into a single synthesis deliverable |
+| (Implement A → Review ∥ Implement B → Review ∥ ...) → Integrate → Review | Multiple independent implementation tasks — different modules, different features, no shared state or dependencies — converging into an integrated deliverable |
 
 The Prompt Council row is a planning-stage front-end, not an alternative pattern: when its trigger threshold is met, run the council first and feed the synthesized prompt into whichever pattern the task needs (see § Prompt Council).
 
