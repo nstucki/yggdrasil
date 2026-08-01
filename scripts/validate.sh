@@ -26,9 +26,10 @@
 #      frontmatter field must not leak any agent name (odin, mimir, brokk, heimdall,
 #      kvasir, bragi — case-insensitive, whole-word match). Also verifies the repo's
 #      custom-capabilities.yaml scaffold remains empty (no real custom tool grants).
-#   7. AGENTS.md ↔ Odin parity markers — a curated list of distinctive strings
-#      (parity markers) must appear in both AGENTS.md and agents/odin-autonomous.md
-#      to guard invariant orchestration rules that must remain synchronized.
+#   7. Odin agent invariant markers (rule strings present in generated agent) —
+#      a curated list of distinctive strings (invariant markers) must appear in
+#      agents/odin-autonomous.md to guard invariant orchestration rules against
+#      accidental drops during template edits.
 #   8. Command file validation — every commands/*.md has required frontmatter
 #      (`description`), valid `agent` field (if present, must be an Odin variant),
 #      valid `subtask` field (if present, must be `false`), and non-empty template body.
@@ -483,32 +484,28 @@ check_capabilities() {
 }
 
 # ---------------------------------------------------------------------------
-# CHECK 7 — AGENTS.md ↔ Odin parity markers.
+# CHECK 7 — Odin agent invariant markers.
 #
-# Verifies that a curated list of distinctive, fixed strings (parity markers)
-# appear in both AGENTS.md and agents/odin-autonomous.md (the other two Odin
-# files are covered transitively by check 4). These markers guard invariant
-# orchestration rules that must remain synchronized between the two sources.
+# Verifies that a curated list of distinctive, fixed strings (invariant markers)
+# appear in agents/odin-autonomous.md (the other two Odin files are covered
+# transitively by check 4). These markers guard invariant orchestration rules
+# against accidental drops during template edits — the generated file is
+# byte-identical to the source template, so a missing marker indicates the
+# template's rule wording changed without a corresponding marker-list update.
 # ---------------------------------------------------------------------------
 check_parity_markers() {
-  heading "Check 7: AGENTS.md ↔ Odin parity markers"
+  heading "Check 7: Odin agent invariant markers"
 
-  local agents_file="$REPO_ROOT/AGENTS.md"
   local odin_file="$AGENTS_DIR/odin-autonomous.md"
   
-  if [ ! -f "$agents_file" ]; then
-    fail_msg "AGENTS.md not found: $agents_file"
-    FAIL_PARITY_MARKERS=$((FAIL_PARITY_MARKERS + 1))
-    return
-  fi
   if [ ! -f "$odin_file" ]; then
     fail_msg "odin-autonomous.md not found: $odin_file"
     FAIL_PARITY_MARKERS=$((FAIL_PARITY_MARKERS + 1))
     return
   fi
 
-  # Parity marker list: each marker must appear (case-insensitive fixed-string match)
-  # in both AGENTS.md and odin-autonomous.md.
+  # Invariant marker list: each marker must appear (case-insensitive fixed-string
+  # match) in odin-autonomous.md.
   local markers=(
     "Mimir artifact is the entire deliverable"
     "verify the research claims against the actual sources"
@@ -529,22 +526,17 @@ check_parity_markers() {
 
   local marker
   for marker in "${markers[@]}"; do
-    # Check AGENTS.md (case-insensitive, fixed-string match)
-    if ! grep -iF "$marker" "$agents_file" >/dev/null 2>&1; then
-      fail_msg "AGENTS.md: missing parity marker: '$marker'"
-      FAIL_PARITY_MARKERS=$((FAIL_PARITY_MARKERS + 1))
-    fi
     # Check odin-autonomous.md (case-insensitive, fixed-string match)
     if ! grep -iF "$marker" "$odin_file" >/dev/null 2>&1; then
-      fail_msg "odin-autonomous.md: missing parity marker: '$marker'"
+      fail_msg "odin-autonomous.md: missing invariant marker: '$marker'"
       FAIL_PARITY_MARKERS=$((FAIL_PARITY_MARKERS + 1))
     fi
   done
 
   if [ "$FAIL_PARITY_MARKERS" -eq 0 ]; then
-    pass_msg "all 15 parity markers present in both AGENTS.md and odin-autonomous.md"
+    pass_msg "all 15 invariant markers present in odin-autonomous.md"
   else
-    info_msg "${C_RED}${FAIL_PARITY_MARKERS} parity marker failure(s)${C_RESET}"
+    info_msg "${C_RED}${FAIL_PARITY_MARKERS} invariant marker failure(s)${C_RESET}"
   fi
 }
 
