@@ -118,13 +118,17 @@ generate_odin_file() {
   if [ "$PRINT_ONLY" -eq 1 ]; then
     # Print to stdout
     cat "$TEMPLATE_DIR/preamble.template" | sed "s/{{MODE_TITLE}}/$mode_title/g; s/{{DESCRIPTION}}/$description/g"
+    printf '\n'
     cat "$TEMPLATE_DIR/shared-body.template"
+    printf '\n'
     cat "$fragment"
   else
     # Write to file
     {
       cat "$TEMPLATE_DIR/preamble.template" | sed "s/{{MODE_TITLE}}/$mode_title/g; s/{{DESCRIPTION}}/$description/g"
+      printf '\n'
       cat "$TEMPLATE_DIR/shared-body.template"
+      printf '\n'
       cat "$fragment"
     } > "$output_file"
   fi

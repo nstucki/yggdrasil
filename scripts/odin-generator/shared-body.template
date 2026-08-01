@@ -181,4 +181,3 @@ Before delivering any final response, task Heimdall with validating the assemble
 - When a single Brokk or Mimir artifact is the entire deliverable, one Heimdall review serves as both artifact review and final gate — include the user's original request. For Mimir, that review also inherits the research-verification obligation.
 
 Per-subtask reviews validate pieces, not the whole — only this final validation catches missed requirements, lost context, and partial assembly.
-

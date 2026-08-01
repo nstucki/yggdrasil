@@ -323,20 +323,23 @@ check_slug_match() {
 }
 
 # ---------------------------------------------------------------------------
-# CHECK 4 — Odin agent freshness.
+# CHECK 4 — Agent freshness (Odin + subagents).
 #
-# The three Odin agent files are generated from a single source (template + fragments).
-# This check regenerates them and verifies they match the committed versions byte-for-byte.
-# Any drift — whether from hand-editing a generated file or failing to regenerate after
-# editing the source — is caught.
-#
-# The generator is located at scripts/generate-odin-agents.sh.
+# The three Odin agent files are generated from templates in scripts/odin-generator/
+# by scripts/generate-odin-agents.sh. The five subagent files are generated from
+# templates in scripts/subagent-generator/ by scripts/generate-subagents.sh.
+# This check regenerates all eight files and verifies they match the committed
+# versions byte-for-byte. Any drift — whether from hand-editing a generated file
+# or failing to regenerate after editing the source — is caught.
 # ---------------------------------------------------------------------------
 ODIN_FILES='odin-autonomous.md odin-guided.md odin-interactive.md'
 ODIN_GENERATOR="$REPO_ROOT/scripts/generate-odin-agents.sh"
+SUBAGENT_GENERATOR="$REPO_ROOT/scripts/generate-subagents.sh"
+SUBAGENT_FILES='bragi.md brokk.md heimdall.md kvasir.md mimir.md'
+SUBAGENT_NAMES='bragi brokk heimdall kvasir mimir'
 
-check_odin_freshness() {
-  heading "Check 4: Odin agent freshness (regenerate and diff)"
+check_agent_freshness() {
+  heading "Check 4: Agent freshness (regenerate and diff)"
 
   # Verify generator exists
   if [ ! -f "$ODIN_GENERATOR" ]; then
@@ -378,8 +381,38 @@ check_odin_freshness() {
     fi
   done
 
+  # --- Subagent freshness ---
+  if [ ! -f "$SUBAGENT_GENERATOR" ]; then
+    fail_msg "subagent generator not found: $SUBAGENT_GENERATOR"
+    FAIL_ODIN_FRESHNESS=$((FAIL_ODIN_FRESHNESS + 1))
+  else
+    local subagent
+    for subagent in $SUBAGENT_NAMES; do
+      local f="$subagent.md"
+      local committed="$AGENTS_DIR/$f"
+      local generated="$tmp/$f"
+
+      if ! "$SUBAGENT_GENERATOR" --agent "$subagent" --print > "$generated" 2>/dev/null; then
+        fail_msg "agents/$f: subagent generator failed"
+        FAIL_ODIN_FRESHNESS=$((FAIL_ODIN_FRESHNESS + 1))
+        continue
+      fi
+
+      if [ ! -f "$committed" ]; then
+        fail_msg "agents/$f: file not found"
+        FAIL_ODIN_FRESHNESS=$((FAIL_ODIN_FRESHNESS + 1))
+        continue
+      fi
+
+      if ! diff -q "$committed" "$generated" >/dev/null 2>&1; then
+        fail_msg "agents/$f: stale (regenerate with: scripts/generate-subagents.sh)"
+        FAIL_ODIN_FRESHNESS=$((FAIL_ODIN_FRESHNESS + 1))
+      fi
+    done
+  fi
+
   if [ "$FAIL_ODIN_FRESHNESS" -eq 0 ]; then
-    pass_msg "all 3 Odin agents match regenerated output (byte-identical)"
+    pass_msg "all 3 Odin agents and 5 subagents match regenerated output (byte-identical)"
   else
     info_msg "${C_RED}${FAIL_ODIN_FRESHNESS} freshness failure(s)${C_RESET}"
   fi
@@ -656,7 +689,7 @@ main() {
   printf '\n'
   check_slug_match
   printf '\n'
-  check_odin_freshness
+  check_agent_freshness
   printf '\n'
   check_isolation
   printf '\n'
@@ -674,7 +707,7 @@ main() {
   printf '  %-34s %s\n' "Frontmatter parse:"        "$(fmt_count "$FAIL_FRONTMATTER")"
   printf '  %-34s %s\n' "Required sections/order:"  "$(fmt_count "$FAIL_SECTIONS")"
   printf '  %-34s %s\n' "Slug/name match:"          "$(fmt_count "$FAIL_SLUG")"
-  printf '  %-34s %s\n' "Odin agent freshness:"   "$(fmt_count "$FAIL_ODIN_FRESHNESS")"
+  printf '  %-34s %s\n' "Agent freshness:"          "$(fmt_count "$FAIL_ODIN_FRESHNESS")"
   printf '  %-34s %s\n' "Subagent isolation:"       "$(fmt_count "$FAIL_ISOLATION")"
   printf '  %-34s %s\n' "Capability mirror:"        "$(fmt_count "$FAIL_CAPABILITIES")"
   printf '  %-34s %s\n' "Parity markers:"           "$(fmt_count "$FAIL_PARITY_MARKERS")"
