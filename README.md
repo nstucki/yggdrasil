@@ -26,7 +26,7 @@ The name is drawn from the immense ash tree of Norse mythology at the center of 
 | ----- | ------------- | ---- | ------ |
 | **Odin** | The All-Father | Orchestrator | Receives the objective, devises the workflow, delegates. Never implements, researches, or reviews directly. |
 | **Mimir** | Well-Keeper of Mímisbrunnr | Researcher | Explores codebases, reads docs, gathers context. Illuminates; does not decide or implement. |
-| **Bragi** | The Skald | Communicator | Advises on communication strategy, drafts and presents information, provides multi-persona prompt council for high-stakes deliberation. |
+| **Bragi** | The Skald | Communicator | Advises on communication strategy, drafts and presents information, provides multi-persona Prompt Council and Deliberation Council for high-stakes decisions. |
 | **Kvasir** | The Wise Counselor | Strategic Advisor | Synthesizes context into plans; decomposition, risk, approach. Consulted proactively by Odin. |
 | **Brokk** | The Smith | Implementer | Transforms requirements into concrete artifacts: code, docs, tests, config. Has write access. |
 | **Heimdall** | The Watchman | Reviewer | Independently validates quality, correctness, completeness. Never implements fixes. |
@@ -108,11 +108,15 @@ You'll be prompted for two choices: whether to copy the curated default skills (
 **What gets installed:**
 
 - **Agents** → `~/.config/opencode/agents/yggdrasil/`
-- **Skills** (if accepted; `odin-memory-system`, `brokk-memory-curation`, and the five `bragi-council-*` persona skills always install — the Memory commands and Odin's Prompt Council mechanism depend on them) → `~/.config/opencode/skills/yggdrasil/`
+- **Prompt Council skills** (the five `bragi-council-prompt-*` persona skills always install — Odin's Prompt Council mechanism depends on them) → `~/.config/opencode/skills/yggdrasil/`
+- **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills always install — Odin's Deliberation Council mechanism depends on them) → `~/.config/opencode/skills/yggdrasil/`
+- **Memory system skill** (`odin-memory-system` always installs — orchestration doctrine for memory promotion, consolidation, and deletion; the Memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/`
+- **Memory curation skill** (`brokk-memory-curation` always installs — distills reviewed findings into a persistent, source-cited knowledge base; the Memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/`
 - **Commands** → `~/.config/opencode/commands/yggdrasil/`
 - **Capability generator** → `~/.config/opencode/yggdrasil/generate-capabilities.sh`
 - **Custom-capabilities scaffold** → `~/.config/opencode/yggdrasil/custom-capabilities.yaml` (first install only; never overwritten on upgrades)
 - **Capability inventory** → `~/.config/opencode/skills/yggdrasil/shared/capability-inventory/SKILL.md` (regenerated automatically on every install)
+- **Default skills** (optional; opt-in — the curated starter skills, installed only if accepted at the prompt) → `~/.config/opencode/skills/yggdrasil/`
 
 ### Advanced installation
 
@@ -143,7 +147,7 @@ Re-running `./setup.sh` after pulling the latest framework updates performs a sa
 
 Yggdrasil ships with a curated set of default skills. **These are starting points, not prescriptions** — each is a Markdown file in the installed `skills/yggdrasil/` directory. Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own.
 
-- **Bragi:** Council personas (Clarifier, Completer, Empath, Adversary, Constraint; installed unconditionally), Presentation structuring, Question formulation, Trade-off communication
+- **Bragi:** Prompt Council personas (Clarifier, Completer, Empath, Adversary, Constraint; installed unconditionally), Deliberation Council perspectives (Foundations, Systems, Adversary, Pragmatist, Humanist; installed unconditionally), Presentation structuring, Question formulation, Trade-off communication
 - **Brokk:** Memory curation (installed unconditionally), API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
 - **Kvasir:** Approach evaluation, Research decomposition, Risk assessment, Task decomposition
@@ -248,15 +252,41 @@ The inventory is assembled from two sources: **built-in skills** (harvested auto
 
 Odin's shared body includes an optional **Prompt Council** — a trigger-gated pattern for reformulating ambiguous or high-stakes prompts before execution begins. When a prompt is *both* genuinely ambiguous *and* expensive to misinterpret (high-stakes, security-sensitive, or costly to redo), Odin may dispatch N (default 5) communication-specialist instances in parallel, each adopting one committed persona lens:
 
-- **Clarifier** — precision (surface vague terms, pin referents)
-- **Completer** — coverage (surface missing requirements, implicit assumptions)
-- **Empath** — user intent (reconstruct the goal behind the literal words)
-- **Adversary** — risk and failure modes (surface edge cases, load-bearing assumptions)
-- **Constraint** — boundaries and scope (surface in/out of scope, non-goals, invariants)
+- **Clarifier** (`bragi-council-prompt-clarifier`) — precision lens, surface vague terms and pin referents.
+- **Completer** (`bragi-council-prompt-completer`) — coverage lens, surface missing requirements and implicit assumptions.
+- **Empath** (`bragi-council-prompt-empath`) — user-intent lens, reconstruct the goal behind the literal words.
+- **Adversary** (`bragi-council-prompt-adversary`) — risk lens, surface edge cases, failure scenarios, and load-bearing assumptions.
+- **Constraint** (`bragi-council-prompt-constraint`) — boundaries lens, surface scope limits, non-goals, and invariants.
 
-A fresh-session synthesizer then merges the five reformulations into one enriched prompt (merging, not forcing consensus — the personas are complementary, not convergent). The enriched prompt feeds the normal pipeline. If synthesis reports low confidence, the original prompt is genuinely ambiguous and Odin escalates per the mode's Communication Policy rather than re-running the council.
+A fresh-session synthesizer then merges the five reformulations into one enriched prompt (merging, not forcing consensus — the personas are complementary, not convergent). The enriched prompt feeds the normal pipeline. If synthesis reports low confidence, the original prompt is genuinely ambiguous and Odin escalates per the mode's Communication Policy rather than re-running the Prompt Council.
 
-The council is capped at **K=1** (one round, no iterative revision), costs N + 1 specialist dispatches, and is advisory output — no independent Heimdall review; defects surface through Failed Review Classification and the Final Review Gate. Trigger discipline is the safeguard against cost creep: the council runs only on high-stakes *and* ambiguous prompts — routine, clear, or low-stakes prompts proceed directly into the normal pipeline.
+The Prompt Council is capped at **K=1** (one round, no iterative revision), costs N + 1 specialist dispatches, and is advisory output — no independent Heimdall review; defects surface through Failed Review Classification and the Final Review Gate. Trigger discipline is the safeguard against cost creep: the Prompt Council runs only on high-stakes *and* ambiguous prompts — routine, clear, or low-stakes prompts proceed directly into the normal pipeline.
+
+### Deliberation Council
+
+Odin's shared body also includes an optional **Deliberation Council** — a trigger-gated mechanism for multi-perspective deliberation that produces a user-facing deliverable. Where the Prompt Council is an advisory input-processing step (reformulating ambiguous or high-stakes prompts before execution begins), the Deliberation Council generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
+
+**Mechanism — a 3-stage pipeline:**
+
+1. Dispatch **N (default 5) Bragi tasks** in parallel, each adopting one perspective lens from the `bragi-council-deliberation-*` skills, the question, and any available context:
+   - **Foundations** (`bragi-council-deliberation-foundations`) — first-principles lens, strip away convention.
+   - **Systems** (`bragi-council-deliberation-systems`) — systems-thinking lens, map relationships and feedback loops.
+   - **Adversary** (`bragi-council-deliberation-adversary`) — adversarial lens, construct the strongest case against.
+   - **Pragmatist** (`bragi-council-deliberation-pragmatist`) — pragmatist lens, test against concrete constraints.
+   - **Humanist** (`bragi-council-deliberation-humanist`) — humanist lens, who is affected and what they value.
+   Each independently analyzes the question from its lens and writes an artifact. Each lens must **argue its case fully without seeking consensus** — convergence is the synthesizer's job.
+2. Dispatch one **Kvasir** task to synthesize: read all N perspective artifacts, weigh and evaluate the competing arguments, and reach a reasoned conclusion written to a synthesis artifact. Kvasir's synthesis is an intermediate analytical artifact, not the deliverable — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
+3. Dispatch one fresh-session **Bragi** task to draft the final user-facing answer from Kvasir's synthesis artifact, then route it through the **Final Review Gate**.
+
+**Triggering (mode-specific):**
+
+- In **Interactive** mode: the `/deliberate` command fires it immediately; explicit multi-perspective/opinions/angles language in the request fires it; an opinion-type question without explicit multi-perspective language prompts a suggest-then-confirm, letting the user choose; factual or executable requests skip it.
+- In **Guided** mode: explicit multi-perspective/opinions/angles language in the request fires it; an opinion-type question without explicit multi-perspective language prompts a suggest-then-confirm, letting the user choose; factual or executable requests skip it. (The `/deliberate` command is unavailable — it targets Interactive mode only.)
+- In **Autonomous** mode: explicit multi-perspective/deliberation language fires it; opinion-type language without an explicit request skips it (suggest-then-confirm requires interaction, which contradicts the autonomous Communication Policy); no opinion-type language skips it.
+
+**Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost: N + 2 specialist dispatches (7 at N=5) plus the Final Review Gate. The Deliberation Council's output is a deliverable, not advisory — it must pass the Final Review Gate.
+
+**Relationship to the Prompt Council:** The two mechanisms are composable. If both fire (ambiguous *and* high-stakes prompt, plus a multi-perspective question), the Prompt Council runs first as input-processing, then the Deliberation Council fires on the refined prompt.
 
 ## Development
 

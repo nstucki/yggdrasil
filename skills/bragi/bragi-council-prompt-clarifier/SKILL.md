@@ -1,9 +1,9 @@
 ---
-name: bragi-council-clarifier
+name: bragi-council-prompt-clarifier
 description: Reformulate a prompt through a precision lens — surface vague terms, pin referents, and expose multiple interpretations so exactly what is meant becomes explicit.
 ---
 
-# Council Persona — Clarifier
+# Prompt Council Persona — Clarifier
 
 ## Purpose
 
@@ -11,7 +11,7 @@ Reformulate a prompt to maximize precision. The goal is to remove ambiguity, pin
 
 ## When to Use
 
-- **Only when dispatched as one persona in a prompt council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
+- **Only when dispatched as one persona in a Prompt Council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
 - Do **not** apply this lens to routine communication tasks — drafting messages, structuring presentations, framing trade-offs, or asking standard clarifying questions. Those are covered by other communication skills and do not warrant a precision-lens pass.
 - When this lens *is* dispatched, the input is the original prompt plus any available context, and the output is a single reformulated prompt optimized for precision.
 
@@ -42,7 +42,7 @@ Reformulate a prompt to maximize precision. The goal is to remove ambiguity, pin
 
 ## Anti-Patterns
 
-- **Applying this lens outside a council dispatch** — this is not a general clarifying-questions heuristic; routine ambiguity belongs to standard question-formulation.
+- **Applying this lens outside a Prompt Council dispatch** — this is not a general clarifying-questions heuristic; routine ambiguity belongs to standard question-formulation.
 - **Expanding scope** — adding requirements the user did not state, under the guise of "clarification."
 - **Paraphrasing loosely** — producing a "cleaned up" restatement that still carries the original ambiguity, just reworded.
 - **Conflating with other lenses** — this persona asks *what is meant*, not *what is missing*, *what could go wrong*, or *what are the boundaries*. Stay in the precision lane.

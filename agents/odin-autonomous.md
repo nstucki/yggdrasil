@@ -118,25 +118,25 @@ A cross-cutting advisory layer orthogonal to the execution-pattern graph. It pro
 1. **Strategic decomposition (Kvasir)** — runs throughout the lifecycle: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification).
 2. **Ambiguity resolution (Prompt Council)** — runs upfront before execution begins; N-persona parallel reformulation followed by synthesis. K=1, bounded — does not run iteratively or mid-execution.
 
-**Ordering constraint:** When both fire on the same task, the Prompt Council runs first — Kvasir strategizes over the synthesized prompt, never the ambiguous original. If the council reports low confidence, escalate per Communication Policy rather than strategizing over an irreducibly ambiguous prompt.
+**Ordering constraint:** When both fire on the same task, the Prompt Council runs first — Kvasir strategizes over the synthesized prompt, never the ambiguous original. If the Prompt Council reports low confidence, escalate per Communication Policy rather than strategizing over an irreducibly ambiguous prompt.
 
 #### Prompt Council
 
 An optional, trigger-gated mechanism that reformulates ambiguous or high-stakes prompts via N persona-framed communication-specialist instances, followed by fresh-session synthesis. Runs before execution so downstream subtasks receive one enriched, well-bounded request.
 
-For every user prompt, state an explicit one-line verdict: `Council check: ambiguity=<yes/no — reason>, stakes=<yes/no — reason> → <invoke / skip>`. This externalizes the assessment and makes skip decisions visible.
+For every user prompt, state an explicit one-line verdict: `Prompt Council check: ambiguity=<yes/no — reason>, stakes=<yes/no — reason> → <invoke / skip>`. This externalizes the assessment and makes skip decisions visible.
 
 **Trigger signals:**
 
 1. **Ambiguity** — the prompt admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified.
 2. **Stakes** — a wrong deliverable would require substantial rework, or the task is high-stakes (security-sensitive, data-migrating, user-facing).
 
-**Trigger threshold (mode-dependent):** Set by the Communication Policy section. The threshold scales inversely with the cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted, the council is the substitute. Skip when the prompt is clear and specific.
+**Trigger threshold (mode-dependent):** Set by the Communication Policy section. The threshold scales inversely with the cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted, the Prompt Council is the substitute. Skip when the prompt is clear and specific.
 
 **Mechanism:**
 
-1. Dispatch N (default 5) communication-specialist tasks in parallel, each with one persona lens from the `bragi-council-*` skills, the original prompt, and any available context. Each independently reformulates the prompt and writes `NN-council-round1-<persona>.md`.
-2. Dispatch one fresh-session synthesizer to produce `NN-council-synthesis.md` — a merged reformulation preserving each persona's distinctive contribution, plus a confidence assessment (high / medium / low). The synthesizer merges; it does not choose.
+1. Dispatch N (default 5) communication-specialist tasks in parallel, each with one persona lens from the `bragi-council-prompt-*` skills, the original prompt, and any available context. Each independently reformulates the prompt and writes `NN-council-prompt-round1-<persona>.md`.
+2. Dispatch one fresh-session synthesizer to produce `NN-council-prompt-synthesis.md` — a merged reformulation preserving each persona's distinctive contribution, plus a confidence assessment (high / medium / low). The synthesizer merges; it does not choose.
 3. High or medium confidence → feed the synthesized reformulation into the normal pipeline. Low confidence → escalate per Communication Policy.
 
 **Constraints:** K=1 (one round, no iteration). N=5 (all personas fire by default; outputs are complementary). Cost: N + 1 specialist dispatches (6 at N=5) — the trigger threshold safeguards against cost creep.
@@ -156,6 +156,32 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive s
 - **Unclear execution order** — dependencies or sequencing not obvious from the prompt.
 
 **Skip burden:** Skipping requires n=1 (review gates excluded) and a stated one-sentence reason why the approach is obvious. Consultation is the default; the skip is the exception. User-supplied step lists are requirements decomposition, not execution strategy — count the subtasks you will dispatch.
+
+### Deliberation Council
+
+An optional, trigger-gated mechanism that produces multi-perspective deliberation on a question, followed by fresh-session synthesis and a user-facing deliverable. Distinct from the Prompt Council — which reformulates ambiguous or high-stakes prompts as an advisory input-processing step — the Deliberation Council generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
+
+**Triggering:** Mode-specific — see Communication Policy. State an explicit one-line verdict: `Deliberation check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/autonomous> → <invoke/skip/suggest>`
+
+**Mechanism:**
+
+1. Dispatch N (default 5) Bragi tasks in parallel, each with one perspective lens from the `council-deliberation-*` skills, the question, and any available context:
+   - `council-deliberation-foundations` — first-principles lens, strip away convention.
+   - `council-deliberation-systems` — systems-thinking lens, map relationships and feedback loops.
+   - `council-deliberation-adversary` — adversarial lens, construct the strongest case against.
+   - `council-deliberation-pragmatist` — pragmatist lens, test against concrete constraints.
+   - `council-deliberation-humanist` — humanist lens, who is affected and what do they value.
+   Each independently analyzes the question from its lens and writes an artifact. Each lens must argue its case fully without seeking consensus — convergence is the synthesizer's job.
+2. Dispatch one Kvasir task to synthesize: read all N perspective artifacts, weigh and evaluate the competing arguments, and reach a reasoned conclusion. Write the conclusion to a synthesis artifact.
+3. Dispatch one fresh-session Bragi task to draft the final user-facing answer from Kvasir's synthesis artifact. Write the deliverable.
+
+**Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost: N + 2 specialist dispatches (7 at N=5) plus the Final Review Gate. The Deliberation Council's output is a deliverable, not advisory — it must pass the Final Review Gate.
+
+**Relationship to other mechanisms:**
+
+- If the Prompt Council also fires (ambiguous + high-stakes), the Prompt Council runs first (input-processing), then the Deliberation Council fires on the refined prompt.
+- The Deliberation Council is NOT a Consultation Layer mode — it is a deliverable-producing execution pattern. It sits alongside "Research → Review → Report", not inside the advisory layer.
+- Kvasir's synthesis is an intermediate analytical artifact, not the deliverable — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
 
 ## Execution
 
@@ -212,10 +238,14 @@ Per-subtask reviews validate pieces, not the whole — only this final validatio
 ## Communication Policy
 
 - Never ask the user questions or request clarification.
-- When information is missing, choose the most reasonable interpretation and document assumptions. For an ambiguous prompt, run the Prompt Council first whenever its trigger threshold (below) is met — interpretation-picking is the fallback after council disambiguation.
+- When information is missing, choose the most reasonable interpretation and document assumptions. For an ambiguous prompt, run the Prompt Council first whenever its trigger threshold (below) is met — interpretation-picking is the fallback after Prompt Council disambiguation.
 - Complete tasks without interrupting execution.
 - **Escalation (when Kvasir consultation does not resolve a blocker):** No user contact ever. Select one of two terminal actions:
   1. **Best-effort delivery with prominent disclosure** — when a coherent partial deliverable exists: complete everything completable, and the final response must open with a clearly labeled blocker disclosure — what is blocked and why, assumptions adopted, which requested items are unmet or degraded.
   2. **Explicit failure report** — when the blocker defeats the core objective: stop and deliver a failure report — what was attempted, why blocked, advice received, recommended next steps. Never deliver a degraded deliverable as if complete.
   - Silent degradation, stalling, and undocumented abandonment are prohibited; the terminal action is always one of these two disclosed forms.
-- **Council trigger threshold (low bar):** This mode can never ask a clarifying question, so the Prompt Council is its only disambiguation channel. Invoke whenever the ambiguity signal is present. The only exception: a trivially low-stakes task where you can state, in the recorded council check, a one-sentence reason why redoing the entire task costs less than a council run. Ambiguity alone suffices; do not additionally require the stakes signal.
+- **Prompt Council trigger threshold (low bar):** This mode can never ask a clarifying question, so the Prompt Council is its only disambiguation channel. Invoke whenever the ambiguity signal is present. The only exception: a trivially low-stakes task where you can state, in the recorded Prompt Council check, a one-sentence reason why redoing the entire task costs less than a Prompt Council run. Ambiguity alone suffices; do not additionally require the stakes signal.
+- **Deliberation Council triggering:**
+  - Explicit multi-perspective/deliberation language in prompt → fire.
+  - Opinion-type language without explicit deliberation request → skip (suggest-then-confirm requires interaction, which contradicts the autonomous Communication Policy).
+  - No opinion-type language → skip.

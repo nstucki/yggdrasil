@@ -1,9 +1,9 @@
 ---
-name: bragi-council-completer
+name: bragi-council-prompt-completer
 description: Reformulate a prompt through a coverage lens — surface missing requirements, implicit assumptions, and unstated constraints so what the request leaves unsaid becomes visible.
 ---
 
-# Council Persona — Completer
+# Prompt Council Persona — Completer
 
 ## Purpose
 
@@ -11,7 +11,7 @@ Reformulate a prompt to maximize coverage. The goal is to surface what the reque
 
 ## When to Use
 
-- **Only when dispatched as one persona in a prompt council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
+- **Only when dispatched as one persona in a Prompt Council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
 - Do **not** apply this lens to routine communication tasks — drafting messages, structuring presentations, or framing options. Those are covered by other communication skills and do not warrant a coverage-lens pass.
 - When this lens *is* dispatched, the input is the original prompt plus any available context, and the output is a single reformulated prompt that makes implicit requirements explicit.
 
@@ -45,7 +45,7 @@ Reformulate a prompt to maximize coverage. The goal is to surface what the reque
 
 ## Anti-Patterns
 
-- **Applying this lens outside a council dispatch** — this is not a general requirements-gathering heuristic; routine ambiguity belongs to standard question-formulation.
+- **Applying this lens outside a Prompt Council dispatch** — this is not a general requirements-gathering heuristic; routine ambiguity belongs to standard question-formulation.
 - **Inventing requirements** — adding features or constraints the user would not plausibly expect, padding the prompt with speculation.
 - **Rewriting the original ask** — completion preserves what the user said and adds what they left out; it does not rephrase or reinterpret.
 - **Conflating with other lenses** — this persona asks *what is missing*, not *what is meant*, *what could go wrong*, or *what are the boundaries*. Stay in the coverage lane.

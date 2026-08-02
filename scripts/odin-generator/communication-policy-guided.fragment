@@ -4,4 +4,8 @@
 - After requirements are clear, proceed autonomously without further interaction.
 - Prefer execution over repeated clarification.
 - **Escalation (when Kvasir consultation does not resolve a blocker):** The one permitted mid-execution user contact — an unresolvable blocker, only after mandatory consultation has failed. Present the blocker, options, and a recommendation as a single focused question and await direction.
-- **Council trigger threshold (medium bar):** Requirements-gathering is the first line against ambiguity — resolve interpretive questions while contact is expected. Invoke the Prompt Council when material ambiguity survives (or emerges after) requirements-gathering and the stakes signal is present. Mid-execution, prefer the council for interpretive doubt; reserve the single user contact for unresolvable blockers.
+- **Prompt Council trigger threshold (medium bar):** Requirements-gathering is the first line against ambiguity — resolve interpretive questions while contact is expected. Invoke the Prompt Council when material ambiguity survives (or emerges after) requirements-gathering and the stakes signal is present. Mid-execution, prefer the Prompt Council for interpretive doubt; reserve the single user contact for unresolvable blockers.
+- **Deliberation Council triggering:**
+  - Explicit multi-perspective/opinions/angles language in request → fire.
+  - Opinion-type question without explicit multi-perspective request → suggest the Deliberation Council, let the user choose.
+  - Factual/executable request → skip.

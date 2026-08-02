@@ -553,7 +553,7 @@ check_parity_markers() {
     ".yggdrasil-memory/"
     "rooted at the current working directory"
     "leads, not ground truth"
-    "Council trigger threshold"
+    "Prompt Council trigger threshold"
   )
 
   local marker

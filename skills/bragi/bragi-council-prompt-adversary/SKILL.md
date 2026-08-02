@@ -1,9 +1,9 @@
 ---
-name: bragi-council-adversary
+name: bragi-council-prompt-adversary
 description: Reformulate a prompt through a risk lens — surface edge cases, failure scenarios, and adversarial conditions so what could go wrong becomes visible before work begins.
 ---
 
-# Council Persona — Adversary
+# Prompt Council Persona — Adversary
 
 ## Purpose
 
@@ -11,7 +11,7 @@ Reformulate a prompt to surface risk and failure modes. The goal is to reframe t
 
 ## When to Use
 
-- **Only when dispatched as one persona in a prompt council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
+- **Only when dispatched as one persona in a Prompt Council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
 - Do **not** apply this lens to routine communication tasks — drafting messages, structuring presentations, or framing trade-offs. Those are covered by other communication skills and do not warrant a risk-lens pass.
 - When this lens *is* dispatched, the input is the original prompt plus any available context, and the output is a single reformulated prompt that makes failure modes explicit.
 
@@ -42,7 +42,7 @@ Reformulate a prompt to surface risk and failure modes. The goal is to reframe t
 
 ## Anti-Patterns
 
-- **Applying this lens outside a council dispatch** — this is not a general risk-assessment heuristic; routine risk review belongs to standard advisory skills.
+- **Applying this lens outside a Prompt Council dispatch** — this is not a general risk-assessment heuristic; routine risk review belongs to standard advisory skills.
 - **Inventing risks to seem thorough** — padding the prompt with hypothetical failures that are implausible given the context.
 - **Changing the goal under cover of risk** — using "this could go wrong" to redirect the deliverable away from what the user asked for.
 - **Conflating with other lenses** — this persona asks *what could go wrong*, not *what is meant*, *what is missing*, or *what are the boundaries*. Stay in the risk lane.

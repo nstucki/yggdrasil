@@ -294,7 +294,7 @@ fi
 
 # Agents and commands are always copied, so non-empty dirs always trigger the
 # warning. The always-on skills (brokk-memory-curation, odin-memory-system,
-# and the five bragi-council-* persona skills) are also always copied (see the
+# and the five bragi-council-prompt-* persona skills) are also always copied (see the
 # "Install always-on skills" section below), so DST_SKILLS is now checked
 # unconditionally too — even if the user declines the skills prompt, those
 # skills still land there and pre-existing content deserves the same warning.
@@ -461,12 +461,20 @@ ok "Agents installed."
 #           command-triggered memory operations. The commands are inert
 #           without it.
 #
-#   2. The five bragi-council-* persona skills — Odin's shared body
+#   2. The five bragi-council-prompt-* persona skills — Odin's shared body
 #      template embeds the Prompt Council process, which dispatches
 #      persona-framed communication-specialist instances expecting these
 #      skills to be present. Without them, a high-stakes ambiguous prompt
-#      would trigger a council dispatch that fails to find the persona
-#      skills. The council mechanism has no fail-safe fallback, so the
+#      would trigger a Prompt Council dispatch that fails to find the persona
+#      skills. The Prompt Council mechanism has no fail-safe fallback, so the
+#      skills must be present on every install.
+#
+#   3. The five bragi-council-deliberation-* perspective skills — Odin's
+#      shared body template embeds the Deliberation Council process, which
+#      dispatches perspective-framed communication-specialist instances
+#      expecting these skills to be present. Without them, a triggered
+#      deliberation dispatch would fail to find the perspective skills.
+#      The deliberation mechanism has no fail-safe fallback, so the
 #      skills must be present on every install.
 #
 # This is a narrow set of hard-dependency exceptions, NOT a general
@@ -506,14 +514,19 @@ if [ -d "$SRC_ODIN_MEMORY_SKILL" ]; then
 fi
 
 # The five Prompt Council persona skills — always installed so Odin's
-# embedded council mechanism works on every install. See the rationale in
+# embedded Prompt Council mechanism works on every install. See the rationale in
 # the block comment above.
 COUNCIL_SKILLS="
-bragi-council-clarifier
-bragi-council-completer
-bragi-council-empath
-bragi-council-adversary
-bragi-council-constraint
+bragi-council-prompt-clarifier
+bragi-council-prompt-completer
+bragi-council-prompt-empath
+bragi-council-prompt-adversary
+bragi-council-prompt-constraint
+bragi-council-deliberation-foundations
+bragi-council-deliberation-systems
+bragi-council-deliberation-adversary
+bragi-council-deliberation-pragmatist
+bragi-council-deliberation-humanist
 "
 for skill_name in $COUNCIL_SKILLS; do
     SRC_COUNCIL_SKILL="${SRC_SKILLS}/bragi/${skill_name}"
@@ -534,9 +547,9 @@ done
 # anyway). If they accepted, all skills install per their own answer and
 # the note is redundant noise.
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: brokk-memory-curation, odin-memory-system, and the five"
-    warn "bragi-council-* skills install unconditionally — the memory commands"
-    warn "and Odin's Prompt Council mechanism depend on them regardless of your"
+    warn "Note: brokk-memory-curation, odin-memory-system, and the ten"
+    warn "bragi-council-prompt-* and bragi-council-deliberation-* skills install unconditionally — the memory commands"
+    warn "and Odin's Prompt and Deliberation Council mechanisms depend on them regardless of your"
     warn "answer above."
 fi
 
@@ -632,7 +645,7 @@ fi
 # built-in skills and custom capabilities (if the user edited the scaffold).
 # NOTE: The generated file is no longer committed to the repo; it's created fresh
 # at install time. Run unconditionally on every install: the always-on skills
-# (brokk-memory-curation, odin-memory-system, and the bragi-council-*
+# (brokk-memory-curation, odin-memory-system, and the bragi-council-prompt-*
 # persona skills) always install (see "Install always-on skills" above), so
 # DST_SKILLS is populated on every normal install, even when the user declines
 # the skills prompt.

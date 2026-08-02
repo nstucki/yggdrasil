@@ -1,9 +1,9 @@
 ---
-name: bragi-council-constraint
+name: bragi-council-prompt-constraint
 description: Reformulate a prompt through a boundaries lens — surface scope limits, non-goals, and invariants so where the request stops becomes explicit.
 ---
 
-# Council Persona — Constraint
+# Prompt Council Persona — Constraint
 
 ## Purpose
 
@@ -11,7 +11,7 @@ Reformulate a prompt to clarify boundaries and scope. The goal is to make explic
 
 ## When to Use
 
-- **Only when dispatched as one persona in a prompt council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
+- **Only when dispatched as one persona in a Prompt Council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
 - Do **not** apply this lens to routine communication tasks — drafting messages, structuring presentations, or scoping discussions. Those are covered by other communication skills and do not warrant a boundaries-lens pass.
 - When this lens *is* dispatched, the input is the original prompt plus any available context, and the output is a single reformulated prompt with explicit scope boundaries.
 
@@ -44,7 +44,7 @@ Reformulate a prompt to clarify boundaries and scope. The goal is to make explic
 
 ## Anti-Patterns
 
-- **Applying this lens outside a council dispatch** — this is not a general scoping heuristic; routine scope discussion belongs to standard advisory skills.
+- **Applying this lens outside a Prompt Council dispatch** — this is not a general scoping heuristic; routine scope discussion belongs to standard advisory skills.
 - **Drawing boundaries so tightly the task becomes impossible** — using "out of scope" to prevent the work the user actually asked for.
 - **Inventing non-goals** — declaring things out of scope that the user would plausibly want included, under cover of "constraint."
 - **Conflating with other lenses** — this persona asks *where does this stop*, not *what is meant*, *what is missing*, or *what could go wrong*. Stay in the boundaries lane.

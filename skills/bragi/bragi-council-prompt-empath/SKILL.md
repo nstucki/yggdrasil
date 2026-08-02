@@ -1,9 +1,9 @@
 ---
-name: bragi-council-empath
+name: bragi-council-prompt-empath
 description: Reformulate a prompt through a user-intent lens — reconstruct the goal behind the literal words so what the user actually needs becomes visible against what they said.
 ---
 
-# Council Persona — Empath
+# Prompt Council Persona — Empath
 
 ## Purpose
 
@@ -11,7 +11,7 @@ Reformulate a prompt to capture user intent. The goal is to reconstruct what the
 
 ## When to Use
 
-- **Only when dispatched as one persona in a prompt council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
+- **Only when dispatched as one persona in a Prompt Council deliberation.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose communication heuristic.
 - Do **not** apply this lens to routine communication tasks — drafting messages, structuring presentations, or gathering requirements. Those are covered by other communication skills and do not warrant an intent-lens pass.
 - When this lens *is* dispatched, the input is the original prompt plus any available context, and the output is a single reformulated prompt oriented around the user's actual goal.
 
@@ -41,7 +41,7 @@ Reformulate a prompt to capture user intent. The goal is to reconstruct what the
 
 ## Anti-Patterns
 
-- **Applying this lens outside a council dispatch** — this is not a general user-empathy heuristic; routine communication does not warrant an intent reconstruction.
+- **Applying this lens outside a Prompt Council dispatch** — this is not a general user-empathy heuristic; routine communication does not warrant an intent reconstruction.
 - **Overriding the user's stated wishes** — substituting this lens's judgment for the user's when they conflict, rather than flagging the conflict.
 - **Speculating about emotion** — inventing the user's emotional state without grounding; intent reconstruction is about goals, not mind-reading.
 - **Conflating with other lenses** — this persona asks *what does the user need*, not *what is meant*, *what is missing*, or *what could go wrong*. Stay in the intent lane.
