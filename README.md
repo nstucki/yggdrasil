@@ -254,9 +254,9 @@ Odin's shared body includes an optional **Prompt Council** — a trigger-gated p
 - **Adversary** — risk and failure modes (surface edge cases, load-bearing assumptions)
 - **Constraint** — boundaries and scope (surface in/out of scope, non-goals, invariants)
 
-A fresh-session synthesizer then merges the five reformulations into one enriched prompt (merging, not forcing consensus — the personas are complementary, not convergent), Heimdall gates the synthesis before any downstream subtask consumes it, and the enriched prompt feeds the normal pipeline. If synthesis reports low confidence, the original prompt is genuinely ambiguous and Odin escalates per the mode's Communication Policy rather than re-running the council.
+A fresh-session synthesizer then merges the five reformulations into one enriched prompt (merging, not forcing consensus — the personas are complementary, not convergent). The enriched prompt feeds the normal pipeline. If synthesis reports low confidence, the original prompt is genuinely ambiguous and Odin escalates per the mode's Communication Policy rather than re-running the council.
 
-The council is capped at **K=1** (one round, no iterative revision) and costs N + 1 specialist dispatches plus one Heimdall review. Trigger discipline is the safeguard against cost creep: the council runs only on high-stakes *and* ambiguous prompts — routine, clear, or low-stakes prompts proceed directly into the normal pipeline.
+The council is capped at **K=1** (one round, no iterative revision), costs N + 1 specialist dispatches, and is advisory output — no independent Heimdall review; defects surface through Failed Review Classification and the Final Review Gate. Trigger discipline is the safeguard against cost creep: the council runs only on high-stakes *and* ambiguous prompts — routine, clear, or low-stakes prompts proceed directly into the normal pipeline.
 
 ## Development
 
@@ -265,12 +265,6 @@ scripts/validate.sh    # or: bash scripts/validate.sh
 ```
 
 The validator is read-only and reports PASS/FAIL per check. It verifies that agent frontmatter parses, that skill frontmatter and required sections are present, that the shared orchestration content in the Odin agent files stays byte-identical to regenerated output, and that subagent prompts and skills never reference other agents by name (subagent isolation).
-
-**AGENTS.md is the authoritative conventions reference** for this repository. For topics beyond validation, consult:
-
-- **[Odin Agent Generation](./AGENTS.md#odin-agent-generation-documented-decision)** — the template/fragment/generator system that produces the three Odin agent files from a single source of truth.
-- **[Boundaries (Hard Rules)](./AGENTS.md#boundaries-hard-rules)** — protected vs. tunable frontmatter governance, subagent isolation rules, and workspace conventions.
-- **[Git Workflow](./AGENTS.md#git-workflow)** — commit message format and branching model.
 
 To test a change to an agent or skill: edit the source file, run `scripts/validate.sh`, and (for Odin files) regenerate via `scripts/generate-odin-agents.sh` before committing.
 
