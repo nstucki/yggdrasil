@@ -108,10 +108,10 @@ You'll be prompted for two choices: whether to copy the curated default skills (
 **What gets installed:**
 
 - **Agents** → `~/.config/opencode/agents/yggdrasil/`
-- **Prompt Council skills** (the five `bragi-council-prompt-*` persona skills always install — Odin's Prompt Council mechanism depends on them) → `~/.config/opencode/skills/yggdrasil/`
-- **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills always install — Odin's Deliberation Council mechanism depends on them) → `~/.config/opencode/skills/yggdrasil/`
-- **Memory system skill** (`odin-memory-system` always installs — orchestration doctrine for memory promotion, consolidation, and deletion; the Memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/`
-- **Memory curation skill** (`brokk-memory-curation` always installs — distills reviewed findings into a persistent, source-cited knowledge base; the Memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/`
+- **Prompt Council skills** (the five `bragi-council-prompt-*` persona skills always install — Odin's Prompt Council mechanism depends on them) → `~/.config/opencode/skills/yggdrasil/bragi/council-prompt/`
+- **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills always install — Odin's Deliberation Council mechanism depends on them) → `~/.config/opencode/skills/yggdrasil/bragi/council-deliberation/`
+- **Memory system skill** (`odin-memory-system` always installs — orchestration doctrine for memory promotion, consolidation, and deletion; the Memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/odin/memory/`
+- **Memory curation skill** (`brokk-memory-curation` always installs — distills reviewed findings into a persistent, source-cited knowledge base; the Memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/brokk/memory/`
 - **Commands** → `~/.config/opencode/commands/yggdrasil/`
 - **Capability generator** → `~/.config/opencode/yggdrasil/generate-capabilities.sh`
 - **Custom-capabilities scaffold** → `~/.config/opencode/yggdrasil/custom-capabilities.yaml` (first install only; never overwritten on upgrades)
@@ -189,6 +189,8 @@ Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown fil
    ```bash
    $CONFIG_BASE/skills/yggdrasil/<agent>/<agent>-<name>/SKILL.md
    ```
+
+   Always-on skills install to a feature subdirectory: `<agent>/<feature>/<agent>-<name>/SKILL.md` (e.g., `bragi/council-prompt/bragi-council-prompt-empath/`, `brokk/memory/brokk-memory-curation/`). Optional skills always install flat at `<agent>/<agent>-<name>/`.
 
    where `<agent>` is one of `mimir`, `brokk`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
 

@@ -150,8 +150,18 @@ strategist_skills=""
 communicator_skills=""
 
 # Iterate sorted skill directories under skills/
-# Extract agent as the first path component after SKILLS_DIR:
-# E.g.: $SKILLS_DIR/mimir/mimir-web-research/SKILL.md → agent is "mimir"
+# Extract agent as the first path component after SKILLS_DIR.
+# Handles both depth-2 and depth-3 paths: the first component is always the
+# agent (or "shared" for non-agent skills). Feature subdirectories (e.g.,
+# bragi/council-prompt/, brokk/memory/) are the second component and are
+# discarded by cut -f1.
+# E.g.:
+#   $SKILLS_DIR/mimir/mimir-web-research/SKILL.md                          → mimir
+#   $SKILLS_DIR/bragi/council-prompt/bragi-council-prompt-empath/SKILL.md   → bragi
+#   $SKILLS_DIR/bragi/council-deliberation/bragi-council-deliberation-foundations/SKILL.md → bragi
+#   $SKILLS_DIR/brokk/memory/brokk-memory-curation/SKILL.md               → brokk
+#   $SKILLS_DIR/odin/memory/odin-memory-system/SKILL.md                    → odin (intentionally excluded from the inventory — see odin) case below)
+#   $SKILLS_DIR/shared/capability-inventory/SKILL.md                      → shared (intentionally excluded — see shared) case below)
 export LC_ALL=C
 while IFS= read -r -d '' skill_file; do
   skill_name=$(frontmatter_value "$skill_file" "name" 2>/dev/null || true)
@@ -178,9 +188,24 @@ while IFS= read -r -d '' skill_file; do
     heimdall) role="reviewer" ;;
     kvasir) role="strategist" ;;
     bragi) role="communicator" ;;
+    # Odin is the orchestrator, not a specialist role. Kvasir (the primary
+    # consumer of this capability inventory) does not need to know about
+    # Odin skills — Odin routes to specialists, never to itself based on
+    # this inventory. Skip silently rather than emitting a warning.
+    odin) continue ;;
+    # `shared` holds cross-role skills (including this generated
+    # capability-inventory itself). These are not owned by a specialist
+    # role and are intentionally excluded from the role-based inventory.
+    # Skip silently to avoid self-referential noise on every regeneration.
+    shared) continue ;;
   esac
   
   if [ -z "$role" ]; then
+    # Warn only on truly unknown agents so misplacements (e.g., a skill under
+    # a typo'd agent directory) surface rather than silently dropping out of
+    # the inventory. Intentionally-excluded agents (odin, shared) are handled
+    # by explicit case branches above and never reach this warning.
+    echo "Warning: skill at $relative_path has unknown agent '$agent'; skipping." >&2
     continue
   fi
   
