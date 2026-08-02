@@ -276,19 +276,26 @@ The Prompt Council is capped at **K=1** (one round, no iterative revision), cost
 
 ### Deliberation Council
 
-Odin's shared body also includes an optional **Deliberation Council** — a trigger-gated mechanism for multi-perspective deliberation that produces a user-facing deliverable. Where the Prompt Council is an advisory input-processing step (reformulating ambiguous or high-stakes prompts before execution begins), the Deliberation Council generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
+Odin's shared body also includes an optional **Deliberation Council** — a trigger-gated mechanism that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. Distinct from the Prompt Council (advisory input-processing), it sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
 
-**Mechanism — a 3-stage pipeline:**
+**Mechanism — a 5-stage pipeline:**
 
-1. Dispatch **N (default 5) Bragi tasks** in parallel, each adopting one perspective lens from the `bragi-council-deliberation-*` skills, the question, and any available context:
+1. **Research gate (conditional Stage 0).** Odin assesses whether the question requires factual substrate the lenses cannot self-provide (Bragi lacks research skills). When in doubt, err toward research. User override is available; if triggered, the user is told with cost. If needed, **Odin decides the approach** before dispatching:
+   - **Single Mimir session** — bounded question, one pass (the common case).
+   - **Multiple Mimir sessions** — distinct factual areas, dispatched in parallel and merged into one substrate.
+   - **Research mechanism** — broad question warranting full Kvasir decomposition; use that mechanism instead.
+
+   Each substrate must be **fact-rich and framing-poor** ("what is the case?", not "what does it mean?") and begins with a **scope-declaration preamble** (what was investigated, what was out-of-scope, and why). If research is not needed (conceptual/values/framing questions), skip this step.
+2. Dispatch **N (default 5) Bragi tasks** in parallel, each adopting one perspective lens from the `bragi-council-deliberation-*` skills, the question, and any available context:
    - **Foundations** (`bragi-council-deliberation-foundations`) — first-principles lens, strip away convention.
    - **Systems** (`bragi-council-deliberation-systems`) — systems-thinking lens, map relationships and feedback loops.
    - **Adversary** (`bragi-council-deliberation-adversary`) — adversarial lens, construct the strongest case against.
    - **Pragmatist** (`bragi-council-deliberation-pragmatist`) — pragmatist lens, test against concrete constraints.
    - **Humanist** (`bragi-council-deliberation-humanist`) — humanist lens, who is affected and what they value.
-   Each independently analyzes the question from its lens and writes an artifact. Each lens must **argue its case fully without seeking consensus** — convergence is the synthesizer's job.
-2. Dispatch one **Kvasir** task to synthesize: read all N perspective artifacts, weigh and evaluate the competing arguments, and reach a reasoned conclusion written to a synthesis artifact. Kvasir's synthesis is an intermediate analytical artifact, not the deliverable — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
-3. Dispatch one fresh-session **Bragi** task to draft the final user-facing answer from Kvasir's synthesis artifact, then route it through the **Final Review Gate**.
+   If a substrate was produced, each lens receives it as input context alongside the question. Each lens must **argue its case fully without seeking consensus** — convergence is the synthesizer's job.
+3. Dispatch one **Kvasir** task to synthesize: read all N perspective artifacts, weigh the competing arguments, and reach a reasoned conclusion written to a synthesis artifact. Kvasir is informed whether a shared research prior was used. Kvasir's synthesis is an intermediate artifact — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
+4. Dispatch one fresh-session **Bragi** task to draft the final user-facing answer from Kvasir's synthesis artifact. The deliverable states whether research was performed.
+5. **Final Review Gate** — a fresh Heimdall session validates the assembled deliverable.
 
 **Triggering (mode-specific):**
 
@@ -296,7 +303,7 @@ Odin's shared body also includes an optional **Deliberation Council** — a trig
 - In **Guided** mode: explicit multi-perspective/opinions/angles language in the request fires it; an opinion-type question without explicit multi-perspective language prompts a suggest-then-confirm, letting the user choose; factual or executable requests skip it. (The `/deliberate` command is unavailable — it targets Interactive mode only.)
 - In **Autonomous** mode: explicit multi-perspective/deliberation language fires it; opinion-type language without an explicit request skips it (suggest-then-confirm requires interaction, which contradicts the autonomous Communication Policy); no opinion-type language skips it.
 
-**Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost: N + 2 specialist dispatches (7 at N=5) plus the Final Review Gate. The Deliberation Council's output is a deliverable, not advisory — it must pass the Final Review Gate.
+**Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost without research: N + 2 (7 at N=5) plus the Final Review Gate. Cost with research: N + 3 (8 at N=5) plus the Final Review Gate, scaling with parallel Mimir sessions. Output is a deliverable — it must pass the Final Review Gate.
 
 **Relationship to the Prompt Council:** The two mechanisms are composable. If both fire (ambiguous *and* high-stakes prompt, plus a multi-perspective question), the Prompt Council runs first as input-processing, then the Deliberation Council fires on the refined prompt.
 

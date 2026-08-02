@@ -159,23 +159,29 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive s
 
 ### Deliberation Council
 
-An optional, trigger-gated mechanism that produces multi-perspective deliberation on a question, followed by fresh-session synthesis and a user-facing deliverable. Distinct from the Prompt Council — which reformulates ambiguous or high-stakes prompts as an advisory input-processing step — the Deliberation Council generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
+An optional, trigger-gated mechanism that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. Distinct from the Prompt Council — which reformulates ambiguous or high-stakes prompts as an advisory input-processing step — the Deliberation Council sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
 
 **Triggering:** Mode-specific — see Communication Policy. State an explicit one-line verdict: `Deliberation check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/autonomous> → <invoke/skip/suggest>`
 
 **Mechanism:**
 
-1. Dispatch N (default 5) Bragi tasks in parallel, each with one perspective lens from the `council-deliberation-*` skills, the question, and any available context:
-   - `council-deliberation-foundations` — first-principles lens, strip away convention.
-   - `council-deliberation-systems` — systems-thinking lens, map relationships and feedback loops.
-   - `council-deliberation-adversary` — adversarial lens, construct the strongest case against.
-   - `council-deliberation-pragmatist` — pragmatist lens, test against concrete constraints.
-   - `council-deliberation-humanist` — humanist lens, who is affected and what do they value.
-   Each independently analyzes the question from its lens and writes an artifact. Each lens must argue its case fully without seeking consensus — convergence is the synthesizer's job.
-2. Dispatch one Kvasir task to synthesize: read all N perspective artifacts, weigh and evaluate the competing arguments, and reach a reasoned conclusion. Write the conclusion to a synthesis artifact.
-3. Dispatch one fresh-session Bragi task to draft the final user-facing answer from Kvasir's synthesis artifact. Write the deliverable.
+1. **Research gate (conditional Stage 0).** Assess whether the question requires factual substrate the lenses cannot self-provide (Bragi lacks research skills). When in doubt, err toward research — unnecessary latency is cheaper than silent ungrounded deliberation. User override is available; if triggered, the user is told with cost. If needed, Odin decides the approach before dispatching:
+   - **Single Mimir session** — bounded question, one pass (the common case).
+   - **Multiple Mimir sessions** — distinct factual areas, dispatched in parallel and merged into one substrate.
+   - **Research mechanism** — broad question warranting full Kvasir decomposition; use that mechanism instead.
+   Each substrate must be **fact-rich and framing-poor**: "what is the case?", not "what does it mean?" (the lenses' job). Factual findings, sourced claims, descriptive context — no recommendations, no prioritized framings. Each substrate begins with a **scope-declaration preamble**: what was investigated, what was out-of-scope, and why. If research is not needed (conceptual, values, or framing questions), skip this step — the lenses fire on the question alone.
+2. Dispatch N (default 5) Bragi tasks in parallel, each with one perspective lens from the `bragi-council-deliberation-*` skills, the question, and any available context:
+   - `bragi-council-deliberation-foundations` — first-principles lens, strip away convention.
+   - `bragi-council-deliberation-systems` — systems-thinking lens, map relationships and feedback loops.
+   - `bragi-council-deliberation-adversary` — adversarial lens, construct the strongest case against.
+   - `bragi-council-deliberation-pragmatist` — pragmatist lens, test against concrete constraints.
+   - `bragi-council-deliberation-humanist` — humanist lens, who is affected and what they value.
+   If a substrate was produced, each lens receives it as input context — treated as factual background, not a framing to react to. Each lens must argue its case fully without seeking consensus — convergence is the synthesizer's job.
+3. Dispatch one Kvasir task to synthesize: read all N perspective artifacts, weigh the competing arguments, and reach a reasoned conclusion. Kvasir is informed whether a shared research prior was used — shared-input agreement is a weaker signal than independently-emergent agreement.
+4. Dispatch one fresh-session Bragi task to draft the final user-facing answer from Kvasir's synthesis artifact. The deliverable states whether research was performed, cites the artifact if so, and notes if the deliberation was conducted on abstraction alone.
+5. **Final Review Gate.** Dispatch a fresh Heimdall session to validate the assembled deliverable against the user's original request.
 
-**Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost: N + 2 specialist dispatches (7 at N=5) plus the Final Review Gate. The Deliberation Council's output is a deliverable, not advisory — it must pass the Final Review Gate.
+**Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost without research: N + 2 (7 at N=5) plus the Final Review Gate. Cost with research: N + 3 (8 at N=5) plus the Final Review Gate, scaling with parallel Mimir sessions. Output is a deliverable — it must pass the Final Review Gate.
 
 **Relationship to other mechanisms:**
 
