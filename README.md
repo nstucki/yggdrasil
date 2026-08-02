@@ -103,20 +103,28 @@ Patterns can be combined, repeated, or reordered as the task demands — for exa
 ./setup.sh
 ```
 
-You'll be prompted for two choices: whether to copy the curated default skills (default: yes), and whether to merge into existing target directories (default: skip; the script merges safely — same-named Yggdrasil files overwritten, new files added, unrelated files preserved, nothing deleted). Pass `-y` to skip both prompts for CI or `curl ... | bash` installs.
+You'll be prompted for two choices: whether to copy the curated optional skills (default: yes), and whether to merge into existing target directories (default: skip; the script merges safely — same-named Yggdrasil files overwritten, new files added, unrelated files preserved, nothing deleted). Pass `-y` to skip both prompts for CI or `curl ... | bash` installs.
 
 **What gets installed:**
 
 - **Agents** → `~/.config/opencode/agents/yggdrasil/`
-- **Prompt Council skills** (the five `bragi-council-prompt-*` persona skills always install — Odin's Prompt Council mechanism depends on them) → `~/.config/opencode/skills/yggdrasil/bragi/council-prompt/`
-- **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills always install — Odin's Deliberation Council mechanism depends on them) → `~/.config/opencode/skills/yggdrasil/bragi/council-deliberation/`
-- **Memory system skill** (`odin-memory-system` always installs — orchestration doctrine for memory promotion, consolidation, and deletion; the Memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/odin/memory/`
-- **Memory curation skill** (`brokk-memory-curation` always installs — distills reviewed findings into a persistent, source-cited knowledge base; the Memory commands depend on it) → `~/.config/opencode/skills/yggdrasil/brokk/memory/`
 - **Commands** → `~/.config/opencode/commands/yggdrasil/`
 - **Capability generator** → `~/.config/opencode/yggdrasil/generate-capabilities.sh`
 - **Custom-capabilities scaffold** → `~/.config/opencode/yggdrasil/custom-capabilities.yaml` (first install only; never overwritten on upgrades)
 - **Capability inventory** → `~/.config/opencode/skills/yggdrasil/shared/capability-inventory/SKILL.md` (regenerated automatically on every install)
-- **Default skills** (optional; opt-in — the curated starter skills, installed only if accepted at the prompt) → `~/.config/opencode/skills/yggdrasil/`
+
+**Skills installed:**
+
+Required (always installed, regardless of the prompt — Odin's council and memory mechanisms depend on them):
+
+- **Prompt Council skills** (the five `bragi-council-prompt-*` persona skills) → `~/.config/opencode/skills/yggdrasil/bragi/council-prompt/`
+- **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/bragi/council-deliberation/`
+- **Memory system skill** (`odin-memory-system`) → `~/.config/opencode/skills/yggdrasil/odin/memory/`
+- **Memory curation skill** (`brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/brokk/memory/`
+
+Optional (the curated starter skills, installed only if accepted at the prompt):
+
+- **Optional skills** → `~/.config/opencode/skills/yggdrasil/<agent>/` subdirectories (see [Optional Skills](#optional-skills) below)
 
 ### Advanced installation
 
@@ -143,16 +151,16 @@ Re-running `./setup.sh` after pulling the latest framework updates performs a sa
 - **Custom-capabilities.yaml** is never touched — your custom tool grants are always preserved.
 - **Capability inventory** is always regenerated to reflect framework updates and any custom capabilities you've added.
 
-#### Default Skills
+#### Optional Skills
 
-Yggdrasil ships with a curated set of default skills. **These are starting points, not prescriptions** — each is a Markdown file in the installed `skills/yggdrasil/` directory. Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own.
+Yggdrasil ships with a curated set of optional skills. **These are starting points, not prescriptions** — each is a Markdown file installed into the respective agent subdirectory under the installed `skills/yggdrasil/` tree (e.g., `skills/yggdrasil/brokk/`, `skills/yggdrasil/mimir/`). Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own. (Installed only if you accept the "Copy optional skills?" prompt at install time.)
 
-- **Bragi:** Prompt Council personas (Clarifier, Completer, Empath, Adversary, Constraint; installed unconditionally), Deliberation Council perspectives (Foundations, Systems, Adversary, Pragmatist, Humanist; installed unconditionally), Presentation structuring, Question formulation, Trade-off communication
-- **Brokk:** Memory curation (installed unconditionally), API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
+- **Bragi:** Presentation structuring, Question formulation, Trade-off communication
+- **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
 - **Kvasir:** Approach evaluation, Research decomposition, Risk assessment, Task decomposition
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
-- **Odin:** Memory system (installed unconditionally), Research convention
+- **Odin:** Research convention
 
 ## Commands
 

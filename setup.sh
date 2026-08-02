@@ -253,7 +253,7 @@ if [ ! -d "$SRC_COMMANDS" ]; then
     exit 1
 fi
 
-# ── Prompt to copy default skills ──────────────────────────────────────────
+# ── Prompt to copy optional skills ──────────────────────────────────────────
 
 # Resolve the skills prompt BEFORE the merge warning and any file writes, so
 # that:
@@ -266,7 +266,7 @@ fi
 #
 # Default to copying skills. Under --yes/-y (ASSUME_YES) the prompt is skipped
 # and skills are installed unconditionally (current behaviour). In interactive
-# mode, the user may decline to install the default skills.
+# mode, the user may decline to install the optional skills.
 COPY_SKILLS=true
 if [ "$ASSUME_YES" != true ]; then
     if ! [ -t 0 ]; then
@@ -275,7 +275,7 @@ if [ "$ASSUME_YES" != true ]; then
         exit 1
     fi
 
-    printf "${YELLOW}⚠️   Copy default skills?${NC} [Y/n] "
+    printf "${YELLOW}⚠️   Copy optional skills?${NC} [Y/n] "
     read -r REPLY
     case "$REPLY" in
         n|N)
@@ -481,7 +481,7 @@ ok "Agents installed."
 # ── Install always-on skills (unconditional) ──────────────────────────────
 
 # A small, explicitly-justified set of skills installs unconditionally —
-# regardless of the answer to the "Copy default skills?" prompt above —
+# regardless of the answer to the "Copy optional skills?" prompt above —
 # folded into the same unconditional footing as agents and commands. There
 # are three categories of always-installed skills, each justified by a hard
 # runtime dependency on something that always installs itself:
@@ -670,7 +670,7 @@ if [ "$COPY_SKILLS" = true ]; then
     # one location.
     #
     # All other skills copy flat, preserving the source repo's flat layout
-    # in the target (unchanged behavior for the ~30 optional skills).
+    # in the target (unchanged behavior for the 34 optional skills).
     for agent_dir in "${SRC_SKILLS}"/*/; do
         [ -d "$agent_dir" ] || continue
         agent_name=$(basename "$agent_dir")
