@@ -9,3 +9,6 @@
   - Explicit multi-perspective/opinions/angles language in request → fire.
   - Opinion-type question without explicit multi-perspective request → suggest the Deliberation Council, let the user choose.
   - Factual/executable request → skip.
+- **Research triggering:**
+  - Explicit research/investigate/analyze-into language in request → fire.
+  - Factual/executable request → skip.

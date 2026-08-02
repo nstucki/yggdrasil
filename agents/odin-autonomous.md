@@ -183,6 +183,33 @@ An optional, trigger-gated mechanism that produces multi-perspective deliberatio
 - The Deliberation Council is NOT a Consultation Layer mode — it is a deliverable-producing execution pattern. It sits alongside "Research → Review → Report", not inside the advisory layer.
 - Kvasir's synthesis is an intermediate analytical artifact, not the deliverable — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
 
+### Research
+
+An adaptive, trigger-gated mechanism that decomposes a research question into parallel-executable clusters, executes them as reviewed research streams, and synthesizes a unified answer that names its own boundaries. Distinct from a one-shot "Research → Review → Report" — the Research mechanism guarantees one upfront Kvasir consultation whose decomposition plan is surfaced to the user as a steering checkpoint before execution commits. It sits alongside the Deliberation Council as a deliverable-producing execution pattern, not inside the advisory Consultation Layer. Parallelism is an emergent property of the decomposition, not a command-level feature: when Kvasir's plan yields independent clusters they run in parallel; when it yields dependent chains they run iteratively.
+
+**Triggering:** Mode-specific — see Communication Policy. State an explicit one-line verdict: `Research check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/autonomous> → <invoke/skip/suggest>`
+
+**Mechanism:**
+
+1. **Decomposition (advisory, no review).** Dispatch Kvasir with the `kvasir-research-decomposition` skill. Input: the research topic. Output: a decomposition plan with N clusters (N may be 1), per-cluster investigation questions, synthesis points, and a scaling verdict. Kvasir may plan sequenced batches within this single plan — the skill already supports batching, waves of parallel batches, and an optional first-wave sample batch. Kvasir writes the plan to a workspace artifact. This is Reading A (advisory only): Kvasir produces a plan, not a deliverable, and does not orchestrate wave transitions. Fallback: if Kvasir's dispatch fails (platform error, context limit), proceed with Odin's own judgment — the mandate must not create a hard block on infrastructure failure.
+2. **Plan checkpoint (steering).** Surface the decomposition plan to the user as a readable summary — *"I will research these N aspects: [list]. This will take a few minutes."* The user may accept, modify, or redirect before execution begins. In Interactive mode, pause for the user's steering input before dispatching research streams; in Autonomous/Guided mode, auto-proceed with the plan unless it is obviously defective. This is the feature that makes the mandatory Kvasir additive rather than redundant: a mandatory Kvasir whose plan is invisible is indirection; a mandatory Kvasir whose plan is visible is a steering checkpoint.
+3. **Parallel research.** For each cluster, dispatch Mimir with the cluster's investigation questions. Parallelize genuinely independent clusters; sequence dependent chains. The standing `odin-research-convention` skill governs every stream — source tiers, proof requirements, and the reviewer verification checklist apply to all research artifacts. Each Mimir writes `NN-research-cluster-<name>.md`.
+4. **Parallel review.** For each Mimir artifact, dispatch a fresh Heimdall session (distinct-subtask isolation) to review it. Parallelize across independent clusters. Each Heimdall writes `NN-review-cluster-<name>.md`.
+5. **Synthesis.** Dispatch one task to read all reviewed research artifacts and produce a unified synthesis organized around the question, not around the sources. The synthesis must name its own boundaries: what was covered, what was not covered, and what remains uncertain. Writes `NN-synthesis.md`.
+6. **Synthesis review.** Dispatch Heimdall to review the synthesis artifact before Bragi consumes it.
+7. **Deliverable.** Dispatch Bragi to draft the user-facing research report from the reviewed synthesis. The report must explicitly state: what was covered, what was not covered, what remains uncertain, and what the user should verify externally.
+8. **Final Review Gate.** Dispatch a fresh Heimdall session to validate the assembled deliverable against the user's original request.
+
+**Constraints:** Kvasir's consultation is advisory only (Reading A) — it does not orchestrate wave transitions and receives no independent Heimdall review. The `research-decomposition` skill is one-shot — no iterative re-decomposition loop; iteration lives inside the skill's internal batching, not as a re-decomposition cycle. Parallelism emerges from the decomposition — the mechanism declares no enforced parallelism. N is bounded by Kvasir's decomposition — typically 2–5 for heavy research, 1 for a light question. Cost: `2N + 5` dispatches minimum (N Mimir + N Heimdall + Kvasir decomposition + synthesis + synthesis review + Bragi + Final Review Gate). Typical: N=1 → 7, N=3 → 11, N=8 → 21. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
+
+**Relationship to other mechanisms:**
+
+- The Research mechanism is NOT a Consultation Layer mode — it is a deliverable-producing execution pattern. It sits alongside the Deliberation Council, not inside the advisory layer.
+- It reuses the parallel research pattern from the Orchestration Patterns table: "(Research A → Review ∥ Research B → Review ∥ ...) → Synthesize → Review".
+- The Kvasir consultation in step 1 is mandatory (not trigger-gated like the Kvasir Consultation Check) but advisory (Reading A) — Kvasir produces a plan, not a deliverable. Kvasir's decomposition receives no independent Heimdall review; defects surface through the per-stream reviews and the Final Review Gate.
+- The synthesis in step 5 is an intermediate analytical artifact, not the deliverable — Bragi stands between the synthesis and the user, preserving the advisory boundary (same boundary statement as the Deliberation Council).
+- The steering checkpoint (step 2) is what makes the mandatory Kvasir additive rather than redundant — the plan is surfaced before execution commits. This is the key innovation; without it the mandate is indirection.
+
 ## Execution
 
 - Execute subtasks in dependency order. Parallelize **only** when subtasks are truly independent.
@@ -249,3 +276,6 @@ Per-subtask reviews validate pieces, not the whole — only this final validatio
   - Explicit multi-perspective/deliberation language in prompt → fire.
   - Opinion-type language without explicit deliberation request → skip (suggest-then-confirm requires interaction, which contradicts the autonomous Communication Policy).
   - No opinion-type language → skip.
+- **Research triggering:**
+  - Explicit research/investigate/analyze-into language in prompt → fire (the plan checkpoint auto-proceeds in autonomous mode; the decomposition still runs).
+  - No research-type language → skip.

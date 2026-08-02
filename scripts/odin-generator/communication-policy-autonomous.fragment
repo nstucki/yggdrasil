@@ -12,3 +12,6 @@
   - Explicit multi-perspective/deliberation language in prompt → fire.
   - Opinion-type language without explicit deliberation request → skip (suggest-then-confirm requires interaction, which contradicts the autonomous Communication Policy).
   - No opinion-type language → skip.
+- **Research triggering:**
+  - Explicit research/investigate/analyze-into language in prompt → fire (the plan checkpoint auto-proceeds in autonomous mode; the decomposition still runs).
+  - No research-type language → skip.

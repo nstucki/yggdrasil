@@ -158,8 +158,10 @@ Yggdrasil ships with a curated set of default skills. **These are starting point
 
 Commands are **macros for user requests to Odin** — equivalent to stating the same request in natural language. Natural-language invocation remains fully valid; commands are shortcuts, not the only door. This ensures commands always flow through the full orchestration pipeline with proper review gates — never bypassing specialist review.
 
-Yggdrasil provides three globally-installed slash-commands, available in every project once installed:
+Yggdrasil provides five globally-installed slash-commands, available in every project once installed:
 
+- **`/yggdrasil/deliberate <question>`** — Run the Deliberation Council: five perspective lenses analyze the question in parallel, Kvasir synthesizes the competing arguments, and Bragi delivers the reasoned conclusion. Multi-dispatch and deliverable-producing (7 specialist dispatches plus the Final Review Gate); expect to wait.
+- **`/yggdrasil/research <topic>`** — Decompose the topic via Kvasir, surface the plan as a steering checkpoint, then run parallel research streams with independent review, synthesis, and a Bragi-delivered report. Adaptive and multi-dispatch (minimum ~7, typical ~11, may reach ~21 for genuinely multi-faceted topics); expect to wait.
 - **`/yggdrasil/remember [topic]`** — Promote reviewed findings to the project knowledge base. Runs the reviewed promotion pipeline (orchestrated, not an instant write). The only way promotion is initiated; never automatic at task wrap-up.
 - **`/yggdrasil/dream [scope]`** — Consolidate and audit the knowledge base for duplicates, contradictions, and staleness. Orchestrated maintenance; may prune by judgment but never silently performs a forget.
 - **`/yggdrasil/forget <scope>`** — Delete entries from the knowledge base. Destructive and always confirmed before dispatch; invocation is intent, not confirmation. Working-tree only; full wipe requires a second confirmation.
@@ -289,6 +291,31 @@ Odin's shared body also includes an optional **Deliberation Council** — a trig
 **Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost: N + 2 specialist dispatches (7 at N=5) plus the Final Review Gate. The Deliberation Council's output is a deliverable, not advisory — it must pass the Final Review Gate.
 
 **Relationship to the Prompt Council:** The two mechanisms are composable. If both fire (ambiguous *and* high-stakes prompt, plus a multi-perspective question), the Prompt Council runs first as input-processing, then the Deliberation Council fires on the refined prompt.
+
+### Research
+
+Odin's shared body also includes a **Research mechanism** — a trigger-gated, deliverable-producing execution pattern that orchestrates heavy research tasks through strategic decomposition and parallelized investigation. Like the Deliberation Council, it produces a user-facing deliverable (not advisory output) and routes through the Final Review Gate. Two distinctions set it apart: it is **adaptive** — the number of research streams N is determined by Kvasir's one-shot decomposition of the topic, not fixed at a default — and it is the only mechanism with a **mandatory user-visible steering checkpoint** between planning and execution, which is what makes the mandatory Kvasir consultation additive rather than redundant.
+
+**Mechanism — an 8-step arc:**
+
+1. Dispatch one **Kvasir** task with the `kvasir-research-decomposition` skill to decompose the research question into independent research clusters. The decomposition plan is written to a plan artifact. Kvasir is advisory here (Reading A) — no independent Heimdall review of the decomposition itself.
+2. **Plan checkpoint** — surface the decomposition plan to the user as a steering checkpoint before committing to execution; pause for redirect. This is the key innovation: the mandatory Kvasir consultation is additive because the plan is visible and steerable, not a hidden internal step.
+3. Dispatch **N parallel Mimir research streams** — one per cluster from the decomposition — each grounding its investigation in live sources per the `odin-research-convention` skill and writing a `NN-research-cluster-<name>.md` artifact. Parallelism is emergent from the decomposition (independent clusters run in parallel), not enforced where clusters depend on each other.
+4. Dispatch **N parallel fresh-session Heimdall reviews** — one per Mimir artifact — each writing a `NN-review-cluster-<name>.md` artifact.
+5. Dispatch one **synthesis** task: read all reviewed cluster artifacts and organize the findings around the original question, **naming its own boundaries** — what was covered, what was not, and what remains uncertain — in a synthesis artifact.
+6. Dispatch one **Heimdall** task to review the synthesis.
+7. Dispatch one fresh-session **Bragi** task to draft the final user-facing deliverable from the reviewed synthesis. Bragi stands between the synthesis and the user, preserving Kvasir's advisory boundary.
+8. Route the assembled deliverable through the **Final Review Gate** (a fresh Heimdall session) validating it against the original request.
+
+**Triggering (mode-specific):**
+
+- In **Interactive** mode: the `/research` command fires it immediately; explicit research/investigate/analyze-into language in the request fires it; factual or executable requests skip it.
+- In **Guided** mode: explicit research/investigate/analyze-into language in the request fires it; factual or executable requests skip it. (The `/research` command is unavailable — it targets Interactive mode only.)
+- In **Autonomous** mode: explicit research/investigate/analyze-into language in the prompt fires it (the plan checkpoint auto-proceeds; the decomposition still runs); no research-type language skips it. (Suggest-then-confirm is unavailable — it requires interaction, which contradicts the autonomous Communication Policy.)
+
+**Constraints:** K=1 (one decomposition pass, no re-decomposition loop — iteration is handled internally by the `kvasir-research-decomposition` skill's batching/waves). N is the cluster count from Kvasir's decomposition (adaptive; no fixed default — typically 1 for light questions, 2-5 for heavy research). Cost: `2N + 5` dispatches (7 at N=1, 11 at N=3, 21 at N=8) plus the Final Review Gate. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
+
+**Relationship to other mechanisms:** Composable with the Prompt Council: if the topic prompt is ambiguous and high-stakes, the Prompt Council runs first as input-processing, then the Research mechanism fires on the refined prompt (same composability as the Deliberation Council). Kvasir's decomposition (step 1) is advisory and does not receive independent Heimdall review (Consultation Layer doctrine) — but unlike the ordinary Consultation Check, the consultation here is mandatory, not trigger-gated; the steering checkpoint (step 2) is what makes that mandatory consultation additive. Sibling to the Deliberation Council — both are deliverable-producing execution patterns in the shared orchestration body. The Final Review Gate applies as normal.
 
 ## Development
 
