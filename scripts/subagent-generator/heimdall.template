@@ -13,6 +13,12 @@ permission:
     "npm test*": allow
     "npm run test*": allow
     "pytest*": allow
+    # verification scripts
+    "npm run*": allow
+    # release-class scripts
+    "npm run publish*": deny
+    "npm run deploy*": deny
+    "npm run release*": deny
     # linters & checkers
     "shellcheck*": allow
     "yamllint*": allow

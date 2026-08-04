@@ -29,12 +29,6 @@ permission:
     "git rev-parse*": allow
     "git show*": allow
     "git status*": allow
-    # development workflows
-    "cargo test*": allow
-    "go test*": allow
-    "npm run*": allow
-    "npm test*": allow
-    "pytest*": allow
   edit:
     "*": deny
     ".yggdrasil-workspace/**": allow
