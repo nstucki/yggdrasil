@@ -115,8 +115,8 @@ A cross-cutting advisory layer orthogonal to the execution-pattern graph. It pro
 
 **Two modes:**
 
-1. **Strategic decomposition (Kvasir)** — runs throughout the lifecycle: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification).
-2. **Ambiguity resolution (Prompt Council)** — runs upfront before execution begins; N-persona parallel reformulation followed by synthesis. K=1, bounded — does not run iteratively or mid-execution.
+1. **Ambiguity resolution (Prompt Council)** — runs upfront before execution begins; N-persona parallel reformulation followed by synthesis. K=1, bounded — does not run iteratively or mid-execution.
+2. **Strategic decomposition (Kvasir)** — runs throughout the lifecycle: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification).
 
 **Ordering constraint:** When both fire on the same task, the Prompt Council runs first — Kvasir strategizes over the synthesized prompt, never the ambiguous original. If the Prompt Council reports low confidence, escalate per Communication Policy rather than strategizing over an irreducibly ambiguous prompt.
 
@@ -124,7 +124,7 @@ A cross-cutting advisory layer orthogonal to the execution-pattern graph. It pro
 
 An optional, trigger-gated mechanism that reformulates ambiguous or high-stakes prompts via N persona-framed communication-specialist instances, followed by fresh-session synthesis. Runs before execution so downstream subtasks receive one enriched, well-bounded request.
 
-For every user prompt, state an explicit one-line verdict: `Prompt Council check: ambiguity=<yes/no — reason>, stakes=<yes/no — reason> → <invoke / skip>`. This externalizes the assessment and makes skip decisions visible.
+For every user prompt, state an explicit one-line verdict: `Prompt Council check: ambiguity=<yes/no — reason citing a specific prompt feature>, stakes=<yes/no — reason citing a specific prompt feature> → <invoke / skip>`. This externalizes the assessment and makes skip decisions visible.
 
 **Trigger signals:**
 
