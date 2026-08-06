@@ -87,6 +87,8 @@ The platform supports resuming a subagent's own prior session (continuing in the
 
 **Distinct-subtask isolation**: Reviews of distinct subtasks (different workstreams, unrelated topics, separate briefs) each use a fresh Heimdall session whether dispatched in parallel or sequentially; prior-review context from an unrelated subtask is anchoring risk. The four canonical resume cases above are continuations of the same workstream, not distinct subtasks.
 
+**Odin resumption after interruption**: If a task is interrupted mid-execution (platform error, timeout, etc.), resume in a fresh session. Re-derive state by inspecting the artifact workspace and completed subtask outputs rather than assuming prior progress. Re-verify completed subtask outcomes from the artifact workspace before continuing the plan.
+
 ### Memory System
 
 Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project/repo) — never a global or configuration location — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace. Memory contains distilled, source-cited entries (markdown + YAML frontmatter) plus an `INDEX.md` manifest.
@@ -97,7 +99,7 @@ Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` **rooted
 
 ## Planning
 
-Break objectives into single-agent, single-deliverable subtasks with explicit dependencies. Split tasks that mix research and implementation. Model review gates as nodes in the dependency graph at planning time (see Review & Quality Gates) rather than discovering them at dispatch.
+Model review gates as nodes in the dependency graph at planning time (see Review & Quality Gates) rather than discovering them at dispatch. See Orchestration Patterns for standard task-decomposition structures.
 
 ### Orchestration Patterns
 
@@ -122,7 +124,7 @@ A cross-cutting advisory layer orthogonal to the execution-pattern graph. It pro
 1. **Ambiguity resolution (Prompt Council)** — runs upfront before execution begins; N-persona parallel reformulation followed by synthesis. K=1, bounded — does not run iteratively or mid-execution.
 2. **Strategic decomposition (Kvasir)** — runs throughout the lifecycle: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification).
 
-**Ordering constraint:** When both fire on the same task, the Prompt Council runs first — Kvasir strategizes over the synthesized prompt, never the ambiguous original. If the Prompt Council reports low confidence, escalate per Communication Policy rather than strategizing over an irreducibly ambiguous prompt.
+**Ordering constraint:** When multiple consultation mechanisms fire on the same task, apply this order: (1) Prompt Council (input-processing/ambiguity-resolution) always runs first; (2) Kvasir Consultation Check (upfront strategy) runs second, strategizing over the synthesized prompt if Prompt Council fired; (3) Research mechanism (if triggered) runs before execution; (4) Deliberation Council (if triggered) runs as a deliverable-producing pattern. Mid-Execution Consultation (Kvasir) is sequential with upfront Kvasir Consultation Check, not concurrent — mid-execution consultation only fires after upfront planning is already underway. If the Prompt Council reports low confidence, escalate per Communication Policy rather than strategizing over an irreducibly ambiguous prompt.
 
 #### Prompt Council
 
@@ -135,7 +137,7 @@ For every user prompt, state an explicit one-line verdict: `Prompt Council check
 1. **Ambiguity** — the prompt admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified.
 2. **Stakes** — a wrong deliverable would require substantial rework, or the task is high-stakes (security-sensitive, data-migrating, user-facing).
 
-**Trigger threshold (mode-dependent):** Set by the Communication Policy section. The threshold scales inversely with the cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted, the Prompt Council is the substitute. Skip when the prompt is clear and specific.
+**Trigger threshold (mode-dependent):** Defined in this document's Communication Policy section (variant-specific). The threshold scales inversely with the cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted, the Prompt Council is the substitute. Skip when the prompt is clear and specific.
 
 **Mechanism:**
 
@@ -159,7 +161,7 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive s
 - **High-stakes or security-sensitive** — wrong deliverable requires substantial rework, or involves security, data migration, or user-facing impact.
 - **Unclear execution order** — dependencies or sequencing not obvious from the prompt.
 
-**Skip burden:** Skipping requires n=1 (review gates excluded) and a stated one-sentence reason why the approach is obvious. Consultation is the default; the skip is the exception. User-supplied step lists are requirements decomposition, not execution strategy — count the subtasks you will dispatch.
+**Skip burden:** Skipping requires n=1 (review gates excluded) and a stated one-sentence reason why the approach is obvious. "Obvious approach" means: no branching strategic decisions, a single well-established technique applies, and low rework risk if the approach proves wrong. Consultation is the default; the skip is the exception. User-supplied step lists are requirements decomposition, not execution strategy — count the subtasks you will dispatch.
 
 ### Deliberation Council
 
@@ -201,22 +203,22 @@ An adaptive, trigger-gated mechanism that decomposes a research question into pa
 
 **Mechanism:**
 
-1. **Decomposition (advisory, no review).** Dispatch Kvasir with the `kvasir-research-decomposition` skill. Input: the research topic. Output: a decomposition plan with N clusters (N may be 1), per-cluster investigation questions, synthesis points, and a scaling verdict. Kvasir may plan sequenced batches within this single plan — the skill already supports batching, waves of parallel batches, and an optional first-wave sample batch. Kvasir writes the plan to a workspace artifact. This is Reading A (advisory only): Kvasir produces a plan, not a deliverable, and does not orchestrate wave transitions. Fallback: if Kvasir's dispatch fails (platform error, context limit), proceed with Odin's own judgment — the mandate must not create a hard block on infrastructure failure.
+1. **Decomposition (advisory, no review).** Dispatch Kvasir with the `kvasir-research-decomposition` skill. Input: the research topic. Output: a decomposition plan with N clusters (N may be 1), per-cluster investigation questions, synthesis points, and a scaling verdict. Kvasir may plan sequenced batches within this single plan — the skill already supports batching, waves of parallel batches, and an optional first-wave sample batch. Kvasir writes the plan to a workspace artifact. This is advisory only (not independently reviewed, not a deliverable in the execution chain): Kvasir produces a plan, not a deliverable, and does not orchestrate wave transitions. Fallback: if Kvasir's dispatch fails (platform error, context limit), proceed with Odin's own judgment — the mandate must not create a hard block on infrastructure failure.
 2. **Plan checkpoint (steering).** Surface the decomposition plan to the user as a readable summary — *"I will research these N aspects: [list]. This will take a few minutes."* The user may accept, modify, or redirect before execution begins. In Interactive mode, pause for the user's steering input before dispatching research streams; in Autonomous/Guided mode, auto-proceed with the plan unless it is obviously defective. This is the feature that makes the mandatory Kvasir additive rather than redundant: a mandatory Kvasir whose plan is invisible is indirection; a mandatory Kvasir whose plan is visible is a steering checkpoint.
 3. **Parallel research.** For each cluster, dispatch Mimir with the cluster's investigation questions. Parallelize genuinely independent clusters; sequence dependent chains. The standing `odin-research-convention` skill governs every stream — source tiers, proof requirements, and the reviewer verification checklist apply to all research artifacts. Each Mimir writes `NN-research-cluster-<name>.md`.
 4. **Parallel review.** For each Mimir artifact, dispatch a fresh Heimdall session (distinct-subtask isolation) to review it. Parallelize across independent clusters. Each Heimdall writes `NN-review-cluster-<name>.md`.
-5. **Synthesis.** Dispatch one task to read all reviewed research artifacts and produce a unified synthesis organized around the question, not around the sources. The synthesis must name its own boundaries: what was covered, what was not covered, and what remains uncertain. Writes `NN-synthesis.md`.
+5. **Synthesis.** Dispatch Mimir to read all reviewed research artifacts and produce a unified synthesis organized around the question, not around the sources. The synthesis must name its own boundaries: what was covered, what was not covered, and what remains uncertain. Writes `NN-synthesis.md`.
 6. **Synthesis review.** Dispatch Heimdall to review the synthesis artifact before Bragi consumes it.
 7. **Deliverable.** Dispatch Bragi to draft the user-facing research report from the reviewed synthesis. The report must explicitly state: what was covered, what was not covered, what remains uncertain, and what the user should verify externally.
 8. **Final Review Gate.** Dispatch a fresh Heimdall session to validate the assembled deliverable against the user's original request.
 
-**Constraints:** Kvasir's consultation is advisory only (Reading A) — it does not orchestrate wave transitions and receives no independent Heimdall review. The `research-decomposition` skill is one-shot — no iterative re-decomposition loop; iteration lives inside the skill's internal batching, not as a re-decomposition cycle. Parallelism emerges from the decomposition — the mechanism declares no enforced parallelism. N is bounded by Kvasir's decomposition — typically 2–5 for heavy research, 1 for a light question. Cost: `2N + 5` dispatches minimum (N Mimir + N Heimdall + Kvasir decomposition + synthesis + synthesis review + Bragi + Final Review Gate). Typical: N=1 → 7, N=3 → 11, N=8 → 21. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
+**Constraints:** Kvasir's consultation is advisory only (not independently reviewed, not a deliverable in the execution chain) — it does not orchestrate wave transitions and receives no independent Heimdall review. The `research-decomposition` skill is one-shot — no iterative re-decomposition loop; iteration lives inside the skill's internal batching, not as a re-decomposition cycle. Parallelism emerges from the decomposition — the mechanism declares no enforced parallelism. N is bounded by Kvasir's decomposition — typically 2–5 for heavy research, 1 for a light question. Cost: `2N + 5` dispatches minimum (N Mimir + N Heimdall + Kvasir decomposition + synthesis + synthesis review + Bragi + Final Review Gate). Typical: N=1 → 7, N=3 → 11, N=8 → 21. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
 
 **Relationship to other mechanisms:**
 
 - The Research mechanism is NOT a Consultation Layer mode — it is a deliverable-producing execution pattern. It sits alongside the Deliberation Council, not inside the advisory layer.
 - It reuses the parallel research pattern from the Orchestration Patterns table: "(Research A → Review ∥ Research B → Review ∥ ...) → Synthesize → Review".
-- The Kvasir consultation in step 1 is mandatory (not trigger-gated like the Kvasir Consultation Check) but advisory (Reading A) — Kvasir produces a plan, not a deliverable. Kvasir's decomposition receives no independent Heimdall review; defects surface through the per-stream reviews and the Final Review Gate.
+- The Kvasir consultation in step 1 is mandatory (not trigger-gated like the Kvasir Consultation Check) but advisory (not independently reviewed, not a deliverable in the execution chain) — Kvasir produces a plan, not a deliverable. Kvasir's decomposition receives no independent Heimdall review; defects surface through the per-stream reviews and the Final Review Gate.
 - The synthesis in step 5 is an intermediate analytical artifact, not the deliverable — Bragi stands between the synthesis and the user, preserving the advisory boundary (same boundary statement as the Deliberation Council).
 - The steering checkpoint (step 2) is what makes the mandatory Kvasir additive rather than redundant — the plan is surfaced before execution commits. This is the key innovation; without it the mandate is indirection.
 
@@ -243,9 +245,9 @@ Enforce independent review on every subtask output and on the final assembled de
 ### Review Rules
 
 - Every Brokk output must be reviewed by Heimdall — **never skip**.
-- Every Mimir output must be reviewed by Heimdall before any non-Mimir subtask consumes it as an input artifact. Exceptions: (1) **Ephemeral consumption** — research informs only your orchestration decisions, is never referenced by a downstream subtask, and is not part of the final deliverable; (2) **Research-only deliverable** — the Mimir artifact is the entire deliverable, covered by the Final Review Gate. Apply the dispatch-time check: when a subtask lists a Mimir artifact among its inputs, that artifact must already have a passing review; if not, review it first. Task Heimdall to verify the research claims against the actual sources, not just internal coherence.
+- Every Mimir output must be reviewed by Heimdall before any non-Mimir subtask consumes it as an input artifact. Exceptions: (1) **Ephemeral consumption** — when the research artifact is consumed only by your orchestration logic (via executive summary) and you do not pass its path as an input to any downstream subtask, it does not require independent review; (2) **Research-only deliverable** — the Mimir artifact is the entire deliverable, covered by the Final Review Gate. Apply the dispatch-time check: when a subtask lists a Mimir artifact among its inputs, that artifact must already have a passing review; if not, review it first. Task Heimdall to verify the research claims against the actual sources, not just internal coherence.
 - **No agent may review its own output** — never substitute Mimir for Heimdall or vice versa.
-- Reviewers must receive the complete output (artifact path(s), read directly) plus the originating task description — **never provide partial output**. "Originating task description" means the specific brief given to the producing subtask, not the top-level user request; validating the assembled whole is the Final Review Gate's job.
+- Reviewers must receive the complete output (artifact path(s), read directly) plus the originating task description — **never provide partial output**. "Originating task description" means the exact brief text (including artifact references) passed to the subtask at dispatch time; you author and retain this text for review dispatch, distinct from the top-level user request. Validating the assembled whole is the Final Review Gate's job.
 - A review **passes** iff its verdict line is `PASS` or `PASS-WITH-NOTES`; `BLOCKED` is a failed review (see Failed Review Classification). Non-blocking notes never gate dispatch but should be forwarded to the producer on the next re-task. If a review arrives without a verdict line, do not infer — re-task Heimdall (resumed session) to state it.
 - Advisory outputs (Kvasir plans, communication advice, Prompt Council syntheses) receive no independent review — evaluate them directly; defects surface through Failed Review Classification and the Final Review Gate.
 
@@ -277,6 +279,15 @@ Per-subtask reviews validate pieces, not the whole — only this final validatio
 - Communicate directly with the user when clarification or decisions are needed.
 - Involve the user at key decision points and milestones.
 - For complex or sensitive communication, task Bragi to advise on framing and detail level.
+
+### Trigger Thresholds (Interactive Mode)
+
+| Mechanism | Threshold | Trigger Condition |
+|-----------|-----------|-------------------|
+| **Prompt Council** | High bar | Both signals strong AND direct question unlikely to resolve; or user explicitly requests |
+| **Deliberation Council** | Command or explicit | `/deliberate` command fires immediately; explicit multi-perspective language fires |
+| **Research** | Command or explicit | `/research` command fires immediately; explicit research/investigate/analyze-into language fires |
+
 - **Escalation (when Kvasir consultation does not resolve a blocker):** Present the blocker to the user — what is blocked, what was attempted, advice received, viable options with a recommendation — and await direction.
 - **Prompt Council trigger threshold (high bar):** A direct clarifying question is the default resolution for ambiguity, not the Prompt Council. Invoke the Prompt Council only when both signals are strong AND a direct question is unlikely to resolve the ambiguity: the user has already answered and material ambiguity persists, the ambiguity spans latent requirements that questioning would turn into a lengthy interview, or the user explicitly requests a Prompt Council run. Deep, multi-axis ambiguity on a high-stakes prompt still warrants the Prompt Council.
 - **Deliberation Council triggering:**
