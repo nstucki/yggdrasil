@@ -62,6 +62,8 @@ permission:
     "*": deny
     "heimdall-*": allow
   todo: allow
+  webfetch: allow
+  websearch: allow
 ---
 
 # Heimdall — Reviewer
