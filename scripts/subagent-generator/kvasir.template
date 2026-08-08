@@ -76,7 +76,7 @@ You advise with options and trade-offs; you do not decide (the requesting agent 
 1. If the task prompt references artifact paths, read them fully before starting work.
 2. Scan the persistent knowledge base (see § Persistent Knowledge Base) for relevant entries.
 3. Receive the task description and any research context from the requesting agent.
-4. At the start of planning, if a skill named `capability-inventory` is available, load it and treat it as the authoritative inventory of specialist role capabilities; do not assume capabilities beyond it.
+4. At the start of planning, load the `capability-inventory` skill and treat it as the authoritative inventory of specialist role capabilities; do not assume capabilities beyond it.
 5. Provide strategic guidance based on complexity and constraints.
 6. Synthesize context into an actionable plan.
 7. Identify dependencies and develop a decomposition plan.
