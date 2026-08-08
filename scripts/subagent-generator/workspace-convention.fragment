@@ -1,3 +1,6 @@
-## Task Artifact Workspace Convention
+## Yggdrasil Workspace
 
-All task artifacts live in a task-scoped directory under `.yggdrasil-workspace/` **rooted at the current working directory of the session** — never any global or configuration location. The requesting agent provides the task-scoped directory path relative to the session working directory (e.g., `.yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/`); resolve all artifact paths relative to that directory. **Always use relative paths** — never absolute paths — because write permissions are granted via relative path globs; an absolute path will not match and the write will fail. Write outputs there using sequenced, self-describing filenames (e.g., `01-research-<topic>.md`). The workspace is transient and gitignored — never commit it, and never treat it as a persistent deliverable location.
+The requesting agent provides your task-scoped workspace directory, rooted at the session working directory (e.g., `.yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/`).
+
+- **Paths**: Resolve all artifact paths relative to that directory. Always use relative paths — never absolute — they stay portable and consistent with the briefs you receive.
+- **Filenames**: Sequenced and self-describing (e.g., `01-research-<topic>.md`).

@@ -39,7 +39,7 @@ Generates the five subagent files (bragi, brokk, heimdall, kvasir, mimir) from p
 **Templates:**
 - `subagent-generator/{agent}.template` — Agent-specific definition (one per agent)
 - `subagent-generator/knowledge-base.fragment` — Shared Persistent Knowledge Base section (used by all agents)
-- `subagent-generator/workspace-convention.fragment` — Shared Task Artifact Workspace Convention section (used by all agents except Brokk)
+- `subagent-generator/workspace-convention.fragment` — Shared Yggdrasil Workspace section (used by all agents except Brokk)
 
 **Usage:**
 ```bash
@@ -133,7 +133,7 @@ Both exit with code 0 on success, non-zero on failure.
 1. Identify which template/fragment to edit:
    - Agent-specific content → `subagent-generator/{agent}.template`
    - Shared Persistent Knowledge Base section → `subagent-generator/knowledge-base.fragment` (affects all agents)
-   - Shared Workspace Convention section → `subagent-generator/workspace-convention.fragment` (affects all agents except Brokk)
+    - Shared Yggdrasil Workspace section → `subagent-generator/workspace-convention.fragment` (affects all agents except Brokk)
 
 2. Edit the template/fragment
 
@@ -155,7 +155,7 @@ Both exit with code 0 on success, non-zero on failure.
 Both generators are pure concatenation scripts:
 
 - **Odin:** `preamble.template` (with sed substitution) + newline + `shared-body.template` + newline + `communication-policy-{mode}.fragment`
-- **Subagents:** `{agent}.template` + newline + `knowledge-base.fragment` + (newline + `workspace-convention.fragment` if agent ≠ brokk)
+- **Subagents:** `{agent}.template` + newline + (newline + `workspace-convention.fragment` if agent ≠ brokk) + newline + `knowledge-base.fragment`
 
 No complex logic — just `cat` and `sed`. This makes the generators transparent and the parity checks deterministic.
 

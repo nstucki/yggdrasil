@@ -178,7 +178,7 @@ Each command routes through the full orchestration pipeline — reviewed at ever
 
 ## Memory System
 
-Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project) — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace.
+Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project) — recommended to be git-tracked — distinct from the transient, gitignored Yggdrasil Workspace (`.yggdrasil-workspace/`).
 
 **What it contains:** verified facts with file/line citations, decisions and rationale, and hard-won findings (root causes, dependency quirks, performance characteristics). Not task narratives, review verdicts, transient state, or anything reproducible in seconds by reading one file.
 
@@ -360,7 +360,7 @@ To test a change to an agent or skill: edit the source file, run `scripts/valida
    - Edit the source templates in `scripts/subagent-generator/`:
      - `{agent}.template` — agent-specific definition (frontmatter, Role, Responsibilities, Boundaries, Role Discipline, Workflow, etc.)
      - `knowledge-base.fragment` — shared Persistent Knowledge Base section (used by all agents)
-     - `workspace-convention.fragment` — shared Task Artifact Workspace Convention section (used by all agents except Brokk)
+      - `workspace-convention.fragment` — shared Yggdrasil Workspace section (used by all agents except Brokk)
    - Regenerate: `scripts/generate-subagents.sh`
    - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-subagent-generator.sh`
 

@@ -8,5 +8,5 @@ Thumbs.db
 *.swp
 *~
 
-# Task artifact workspace
+# Yggdrasil Workspace
 .yggdrasil-workspace/

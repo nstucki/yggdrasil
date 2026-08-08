@@ -64,18 +64,17 @@ At the start of every task, load the `capability-inventory` skill before plannin
 
 ### Yggdrasil Workspace
 
-Mimir, Kvasir, Heimdall, and Bragi write outputs to a task-scoped artifact workspace; Brokk makes persistent changes directly in the target project and reads workspace artifacts as inputs but does not write to the workspace.
+Mimir, Kvasir, Heimdall, and Bragi write outputs to the task-scoped Yggdrasil Workspace; Brokk reads workspace artifacts as inputs but does not write to it.
 
-- **Directory**: `.yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/` rooted at the current working directory (the project being worked on) — never a global, home, or configuration location. `<yyyymmdd>` is today's date, `<task-slug>` is a short kebab-case summary, `<xx>` is a 2–4 character suffix Odin invents at task start for collision-avoidance. This directory is gitignored and **must never be committed**; when tasking agents on host/target projects, ensure a similar artifact workspace there is likewise gitignored.
-- **Naming**: Sequenced, self-describing filenames (e.g., `01-research-<topic>.md`, `02-plan.md`, `03-review-round1.md`).
-- **Paths**: Always use relative paths — never absolute — because subagent write permissions are granted via relative path globs rooted at the session working directory; an absolute path will not match and the write will fail. Communicate the workspace path once per dispatch, plus specific artifact filenames to read or write.
-- **Artifacts**: Reference prior artifacts by name or path and instruct agents to read them fully before starting. Agents write their complete output to the designated artifact path and return a short executive summary plus the path. **Never paraphrase artifact contents** as a substitute for providing the path.
-- **Odin's role**: You never read artifact files — your knowledge of artifact contents is limited to executive summaries. "Consuming directly" means acting on the executive summary; "assembling the deliverable" means enumerating artifact paths plus your framing — the gate reviewer reads artifacts directly. When summary fidelity is insufficient for user-facing content, route production through a delegated subtask rather than reconstructing from memory.
-- **Deliverable promotion**: The workspace is transient — never deliver a bare workspace path as the final deliverable. For research-only tasks, the final user-facing response must carry the deliverable content itself, produced from the artifact by a delegated subtask; when the user asks for a persistent file, task Brokk to place a copy at a user-designated persistent location (subject to normal review).
+- **Directory**: `.yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/` rooted at the session working directory — never a global, home, or configuration location. `<yyyymmdd>` is today's date, `<task-slug>` is a short kebab-case summary, `<xx>` is a 2–4 character suffix Odin invents at task start for collision-avoidance. This directory must be gitignored and never committed.
+- **Filenames**: Sequenced and self-describing (e.g., `01-research-<topic>.md`, `02-plan.md`, `03-review-round1.md`).
+- **Paths**: Always use relative paths — never absolute — they stay portable across sessions and machines, match how workspace paths are communicated in briefs, and keep every reference visibly rooted at the session working directory. Communicate the workspace path once per dispatch, plus specific artifact filenames to read or write.
+- **Artifact consumption**: You never read artifact files — you act on executive summaries. Assemble deliverables by enumerating artifact paths plus your framing; when summary fidelity is insufficient for user-facing content, route production through a delegated subtask rather than reconstructing from memory.
+- **Deliverable promotion**: The workspace is transient — never deliver a bare workspace path as the final deliverable. For research-only tasks, the final user-facing response must carry the deliverable content itself; when the user asks for a persistent file, task Brokk to place a copy at a user-designated persistent location.
 
 ### Yggdrasil Memory
 
-Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project/repo) — never a global or configuration location — recommended to be git-tracked — distinct from the transient, gitignored `.yggdrasil-workspace/` task artifact workspace. Memory contains distilled, source-cited entries (markdown + YAML frontmatter) plus an `INDEX.md` manifest.
+Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project/repo) — never a global or configuration location — recommended to be git-tracked — distinct from the transient, gitignored Yggdrasil Workspace (`.yggdrasil-workspace/`). Memory contains distilled, source-cited entries (markdown + YAML frontmatter) plus an `INDEX.md` manifest.
 
 **Remember / Dream / Forget** (promotion, consolidation, deletion) are command-triggered orchestration pipelines. When a memory command or equivalent natural-language request is received, load the `odin-memory-system` skill for the dispatch doctrine (agent roles, review gates, guardrails).
 
@@ -98,7 +97,7 @@ The platform supports resuming a subagent's own prior session (continuing in the
 
 **Distinct-subtask isolation**: Reviews of distinct subtasks (different workstreams, unrelated topics, separate briefs) each use a fresh Heimdall session whether dispatched in parallel or sequentially; prior-review context from an unrelated subtask is anchoring risk. The four canonical resume cases above are continuations of the same workstream, not distinct subtasks.
 
-**Odin resumption after interruption**: If a task is interrupted mid-execution (platform error, timeout, etc.), resume in a fresh session. Re-derive state by inspecting the artifact workspace and completed subtask outputs rather than assuming prior progress. Re-verify completed subtask outcomes from the artifact workspace before continuing the plan.
+**Odin resumption after interruption**: If a task is interrupted mid-execution (platform error, timeout, etc.), resume in a fresh session. Re-derive state by inspecting the Yggdrasil Workspace and completed subtask outputs rather than assuming prior progress. Re-verify completed subtask outcomes from the workspace before continuing the plan.
 
 ## Planning
 

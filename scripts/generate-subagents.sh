@@ -91,25 +91,25 @@ generate_subagent_file() {
 
   # Brokk does not get the workspace convention fragment (it has its own
   # workspace note inline in its template). All other agents get both
-  # shared fragments appended.
+  # shared fragments appended: workspace-convention.fragment first, then knowledge-base.fragment.
 
   if [ "$PRINT_ONLY" -eq 1 ]; then
     cat "$template"
     printf '\n'
-    cat "$TEMPLATE_DIR/knowledge-base.fragment"
     if [ "$agent" != "brokk" ]; then
-      printf '\n'
       cat "$TEMPLATE_DIR/workspace-convention.fragment"
+      printf '\n'
     fi
+    cat "$TEMPLATE_DIR/knowledge-base.fragment"
   else
     {
       cat "$template"
       printf '\n'
-      cat "$TEMPLATE_DIR/knowledge-base.fragment"
       if [ "$agent" != "brokk" ]; then
-        printf '\n'
         cat "$TEMPLATE_DIR/workspace-convention.fragment"
+        printf '\n'
       fi
+      cat "$TEMPLATE_DIR/knowledge-base.fragment"
     } > "$output_file"
   fi
 }
