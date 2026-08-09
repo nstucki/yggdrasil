@@ -539,21 +539,28 @@ check_parity_markers() {
 
   # Invariant marker list: each marker must appear (case-insensitive fixed-string
   # match) in odin-autonomous.md.
+  #
+  # Selection principle: markers should be stable tokens (path templates, verdict
+  # grammar, fixed hard-rule fragments) that are never legitimately reworded —
+  # not doctrinal prose, which changes as the prompts evolve. Any deliberate edit
+  # to marked content must update this list in the same commit.
   local markers=(
     "Mimir artifact is the entire deliverable"
     "verify the research claims against the actual sources"
     "fresh Heimdall session"
-    "paraphrase artifact contents"
+    "read artifact files or paraphrase their contents"
     "documented blocker"
     ".yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/"
     "may review its own output"
     "PASS-WITH-NOTES"
     "failed-review escalation ladder"
-    "single substantive subtask"
+    "substantive subtasks="
     ".yggdrasil-memory/"
-    "rooted at the current working directory"
+    "rooted at the session working directory"
     "leads, not ground truth"
     "Prompt Council trigger threshold"
+    "never skip"
+    "No deliverable reaches the user without passing"
   )
 
   local marker
@@ -566,7 +573,7 @@ check_parity_markers() {
   done
 
   if [ "$FAIL_PARITY_MARKERS" -eq 0 ]; then
-    pass_msg "all 14 invariant markers present in odin-autonomous.md"
+    pass_msg "all 16 invariant markers present in odin-autonomous.md"
   else
     info_msg "${C_RED}${FAIL_PARITY_MARKERS} invariant marker failure(s)${C_RESET}"
   fi

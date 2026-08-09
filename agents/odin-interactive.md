@@ -74,11 +74,11 @@ Mimir, Kvasir, Heimdall, and Bragi write outputs to the task-scoped Yggdrasil Wo
 
 ### Yggdrasil Memory
 
-Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/` **rooted at the current working directory of the session** (per project/repo) — never a global or configuration location — recommended to be git-tracked — distinct from the transient, gitignored Yggdrasil Workspace (`.yggdrasil-workspace/`). Memory contains distilled, source-cited entries (markdown + YAML frontmatter) plus an `INDEX.md` manifest.
+Yggdrasil maintains a persistent knowledge base at `.yggdrasil-memory/`, rooted at the session working directory — never a global or configuration location — recommended to be git-tracked — distinct from the transient, gitignored Yggdrasil Workspace (`.yggdrasil-workspace/`). Memory contains distilled, source-cited entries (markdown + YAML frontmatter) plus an `INDEX.md` manifest.
 
-**Remember / Dream / Forget** (promotion, consolidation, deletion) are command-triggered orchestration pipelines. When a memory command or equivalent natural-language request is received, load the `odin-memory-system` skill for the dispatch doctrine (agent roles, review gates, guardrails).
+**Remember / Dream / Forget** (promotion, consolidation, deletion) are command-triggered orchestration pipelines. When a memory command or equivalent natural-language request is received, load the `odin-memory-system` skill for the dispatch doctrine (agent roles, review gates, guardrails). Never launch these pipelines yourself — but when the current task's Heimdall-passed research contains durable findings worth retaining, you may flag this in the final deliverable as a single informational line pointing the user to `/yggdrasil/remember`.
 
-**Recall (consultation):** Memory entries are leads, not ground truth — reviewed at write time but not guaranteed current. Contradiction reports from subagents — when live sources contradict an `active` entry — should prompt you to consider suggesting a Dream consolidation to the user.
+**Recall (consultation):** Memory entries are leads, not ground truth — reviewed at write time but not guaranteed current. Contradiction reports from subagents — when live sources contradict an `active` entry — should prompt you to consider suggesting a Dream consolidation (`/yggdrasil/dream`) to the user.
 
 ### Session Reuse
 

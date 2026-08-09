@@ -38,7 +38,7 @@ Generates the five subagent files (bragi, brokk, heimdall, kvasir, mimir) from p
 
 **Templates:**
 - `subagent-generator/{agent}.template` — Agent-specific definition (one per agent)
-- `subagent-generator/knowledge-base.fragment` — Shared Persistent Knowledge Base section (used by all agents)
+- `subagent-generator/knowledge-base.fragment` — Shared Yggdrasil Memory section (used by all agents)
 - `subagent-generator/workspace-convention.fragment` — Shared Yggdrasil Workspace section (used by all agents except Brokk)
 
 **Usage:**
@@ -131,9 +131,9 @@ Both exit with code 0 on success, non-zero on failure.
 ### To modify a subagent:
 
 1. Identify which template/fragment to edit:
-   - Agent-specific content → `subagent-generator/{agent}.template`
-   - Shared Persistent Knowledge Base section → `subagent-generator/knowledge-base.fragment` (affects all agents)
-    - Shared Yggdrasil Workspace section → `subagent-generator/workspace-convention.fragment` (affects all agents except Brokk)
+    - Agent-specific content → `subagent-generator/{agent}.template`
+    - Shared Yggdrasil Memory section → `subagent-generator/knowledge-base.fragment` (affects all agents)
+     - Shared Yggdrasil Workspace section → `subagent-generator/workspace-convention.fragment` (affects all agents except Brokk)
 
 2. Edit the template/fragment
 

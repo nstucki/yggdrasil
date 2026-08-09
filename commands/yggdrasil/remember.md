@@ -10,4 +10,4 @@ Memory promotion request (orchestrated, reviewed pipeline — not an instant wri
 
 Subject: $ARGUMENTS
 
-Load the `odin-memory-system` skill and execute the memory-promotion pattern defined there, passing the subject above (empty = identify durable findings from the current task's reviewed research and propose the promotion list to the user first).
+Load the `odin-memory-system` skill and execute the Remember (promotion) workflow defined there, passing the subject above (an empty subject is valid — the skill defines the empty-subject flow).

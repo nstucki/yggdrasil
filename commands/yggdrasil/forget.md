@@ -10,4 +10,4 @@ Memory deletion request (destructive; runs the confirmed, reviewed deletion pipe
 
 Requested scope: $ARGUMENTS
 
-Load the `odin-memory-system` skill and execute the forget pattern defined there, using the scope above. The skill's guardrails (explicit-scope requirement, confirmation before deletion, never commit) are non-negotiable.
+Load the `odin-memory-system` skill and execute the Forget (deletion) workflow defined there, using the scope above. The skill's guardrails are non-negotiable.
