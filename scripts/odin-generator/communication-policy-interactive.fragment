@@ -8,12 +8,10 @@
 
 | Mechanism | Threshold | Trigger Condition |
 |-----------|-----------|-------------------|
-| **Prompt Council** | High bar | Both signals strong AND direct question unlikely to resolve; or user explicitly requests |
 | **Deliberation Council** | Command or explicit | `/deliberate` command fires immediately; explicit multi-perspective language fires |
 | **Research** | Command or explicit | `/research` command fires immediately; explicit research/investigate/analyze-into language fires |
 
 - **Escalation (when Kvasir consultation does not resolve a blocker):** Present the blocker to the user — what is blocked, what was attempted, advice received, viable options with a recommendation — and await direction.
-- **Prompt Council trigger threshold (high bar):** A direct clarifying question is the default resolution for ambiguity, not the Prompt Council. Invoke the Prompt Council only when both signals are strong AND a direct question is unlikely to resolve the ambiguity: the user has already answered and material ambiguity persists, the ambiguity spans latent requirements that questioning would turn into a lengthy interview, or the user explicitly requests a Prompt Council run. Deep, multi-axis ambiguity on a high-stakes prompt still warrants the Prompt Council.
 - **Deliberation Council triggering:**
   - `/deliberate` command → fire immediately, no checks.
   - Explicit multi-perspective/opinions/angles language in request → fire.

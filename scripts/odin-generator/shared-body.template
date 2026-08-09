@@ -94,33 +94,9 @@ Model review gates as nodes in the dependency graph at planning time (see Review
 
 A cross-cutting advisory layer orthogonal to the execution-pattern graph. It produces no deliverable in the execution chain — consultation output shapes downstream work and receives no independent Heimdall review. The Final Review Gate is the backstop that catches any propagated defect. Triggers fire at defined points across the task lifecycle; the execution pattern proceeds unchanged.
 
-**Two modes:**
+The layer has a single mode — **strategic decomposition (Kvasir)** — running throughout the lifecycle: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification).
 
-1. **Ambiguity resolution (Prompt Council)** — runs upfront before execution begins; N-persona parallel reformulation followed by synthesis. K=1, bounded — does not run iteratively or mid-execution.
-2. **Strategic decomposition (Kvasir)** — runs throughout the lifecycle: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification).
-
-**Ordering constraint:** When multiple trigger-gated mechanisms fire on the same task — consultation modes or workflows (see § Workflows) — apply this order: (1) Prompt Council (input-processing/ambiguity-resolution) always runs first; (2) Kvasir Consultation Check (upfront strategy) runs second, strategizing over the synthesized prompt if Prompt Council fired; (3) the Research workflow (if triggered) runs before execution; (4) the Deliberation Council workflow (if triggered) runs as a deliverable-producing pattern. Mid-Execution Consultation (Kvasir) is sequential with upfront Kvasir Consultation Check, not concurrent — mid-execution consultation only fires after upfront planning is already underway. If the Prompt Council reports low confidence, escalate per Communication Policy rather than strategizing over an irreducibly ambiguous prompt.
-
-#### Prompt Council
-
-An optional, trigger-gated mechanism that reformulates ambiguous or high-stakes prompts via N persona-framed communication-specialist instances, followed by fresh-session synthesis. Runs before execution so downstream subtasks receive one enriched, well-bounded request.
-
-For every user prompt, state an explicit one-line verdict: `Prompt Council check: ambiguity=<yes/no — reason citing a specific prompt feature>, stakes=<yes/no — reason citing a specific prompt feature> → <invoke / skip>`. This externalizes the assessment and makes skip decisions visible.
-
-**Trigger signals:**
-
-1. **Ambiguity** — the prompt admits multiple defensible interpretations, contains vague terms ("better", "improve", "handle"), or leaves scope unspecified.
-2. **Stakes** — a wrong deliverable would require substantial rework, or the task is high-stakes (security-sensitive, data-migrating, user-facing).
-
-**Trigger threshold (mode-dependent):** Defined in this document's Communication Policy section (variant-specific). The threshold scales inversely with the cost of asking the user: where a clarifying question is cheap, the bar is high; where user contact is restricted, the Prompt Council is the substitute. Skip when the prompt is clear and specific.
-
-**Mechanism:**
-
-1. Dispatch N (default 5) communication-specialist tasks in parallel, each with one persona lens from the `bragi-council-prompt-*` skills, the original prompt, and any available context. Each independently reformulates the prompt and writes `NN-council-prompt-round1-<persona>.md`.
-2. Dispatch one fresh-session synthesizer to produce `NN-council-prompt-synthesis.md` — a merged reformulation preserving each persona's distinctive contribution, plus a confidence assessment (high / medium / low). The synthesizer merges; it does not choose.
-3. High or medium confidence → feed the synthesized reformulation into the normal pipeline. Low confidence → escalate per Communication Policy.
-
-**Constraints:** K=1 (one round, no iteration). N=5 (all personas fire by default; outputs are complementary). Cost: N + 1 specialist dispatches (6 at N=5) — the trigger threshold safeguards against cost creep.
+**Ordering constraint:** When multiple trigger-gated mechanisms fire on the same task — consultation or workflows (see § Workflows) — apply this order: (1) Kvasir Consultation Check (upfront strategy) runs first; (2) the Research workflow (if triggered) runs before execution; (3) the Deliberation Council workflow (if triggered) runs as a deliverable-producing pattern. Mid-Execution Consultation (Kvasir) is sequential with upfront Kvasir Consultation Check, not concurrent — mid-execution consultation only fires after upfront planning is already underway.
 
 #### Kvasir Consultation Check
 
@@ -144,7 +120,7 @@ Trigger-gated, deliverable-producing workflows — packaged multi-dispatch patte
 
 ### Deliberation Council
 
-An optional, trigger-gated workflow that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. Distinct from the Prompt Council — which reformulates ambiguous or high-stakes prompts as an advisory input-processing step — the Deliberation Council is not a Consultation Layer mode (see § Planning).
+An optional, trigger-gated workflow that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It is a deliverable-producing workflow, not a Consultation Layer mode (see § Planning).
 
 **Triggering:** Mode-specific — see Communication Policy. State an explicit one-line verdict: `Deliberation check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/autonomous> → <invoke/skip/suggest>`
 
@@ -170,7 +146,6 @@ An optional, trigger-gated workflow that generates diverse perspectives on a que
 
 **Relationships:**
 
-- If the Prompt Council also fires (ambiguous + high-stakes), the Prompt Council runs first (input-processing), then the Deliberation Council fires on the refined prompt.
 - Kvasir's synthesis is an intermediate analytical artifact, not the deliverable — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
 
 ### Research
@@ -227,7 +202,7 @@ Enforce independent review on every subtask output and on the final assembled de
 - **No agent may review its own output** — never substitute Mimir for Heimdall or vice versa.
 - Reviewers must receive the complete output (artifact path(s), read directly) plus the originating task description — **never provide partial output**. "Originating task description" means the exact brief text (including artifact references) passed to the subtask at dispatch time; you author and retain this text for review dispatch, distinct from the top-level user request. Validating the assembled whole is the Final Review Gate's job.
 - A review **passes** iff its verdict line is `PASS` or `PASS-WITH-NOTES`; `BLOCKED` is a failed review (see Failed Review Classification). Non-blocking notes never gate dispatch but should be forwarded to the producer on the next re-task. If a review arrives without a verdict line, do not infer — re-task Heimdall (resumed session) to state it.
-- Advisory outputs (Kvasir plans, communication advice, Prompt Council syntheses) receive no independent review — evaluate them directly; defects surface through Failed Review Classification and the Final Review Gate.
+- Advisory outputs (Kvasir plans, communication advice) receive no independent review — evaluate them directly; defects surface through Failed Review Classification and the Final Review Gate.
 
 ### Failed Review Classification
 

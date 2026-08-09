@@ -294,7 +294,7 @@ fi
 
 # Agents and commands are always copied, so non-empty dirs always trigger the
 # warning. The always-on skills (brokk-memory-curation, odin-memory-system,
-# and the ten bragi-council-prompt-* and bragi-council-deliberation-* skills)
+# and the five bragi-council-deliberation-* skills)
 # are also always copied to feature subdirectories under DST_SKILLS (see the
 # "Install always-on skills" section below), so DST_SKILLS is now checked
 # unconditionally too — even if the user declines the skills prompt, those
@@ -429,7 +429,7 @@ backup_differing_agents() {
 # ── Feature-subdir routing for always-on skills (single source of truth) ────
 
 # Return the feature subdirectory for an always-on skill, or fail (return 1)
-# if the skill is not one of the 12 always-on nested skills.
+# if the skill is not one of the 7 always-on nested skills.
 #
 # This is the SINGLE source of truth consumed by:
 #   - the always-on install blocks (target path construction),
@@ -442,13 +442,9 @@ backup_differing_agents() {
 # Bash 3.2-safe: only `case` + `printf` + `return`. No associative arrays.
 # Patterns are exact `agent/skill_name` literals (not prefix globs), so a
 # future `bragi-council-observer` would NOT accidentally route to
-# `council-prompt/`.
+# `council-deliberation/`.
 nested_subdir_for() {
     case "$1/$2" in
-        bragi/bragi-council-prompt-clarifier|bragi/bragi-council-prompt-completer|\
-        bragi/bragi-council-prompt-empath|bragi/bragi-council-prompt-adversary|\
-        bragi/bragi-council-prompt-constraint)
-            printf 'council-prompt\n' ;;
         bragi/bragi-council-deliberation-foundations|bragi/bragi-council-deliberation-systems|\
         bragi/bragi-council-deliberation-adversary|bragi/bragi-council-deliberation-pragmatist|\
         bragi/bragi-council-deliberation-humanist)
@@ -499,16 +495,7 @@ ok "Agents installed."
 #           command-triggered memory operations. The commands are inert
 #           without it. Installs to odin/memory/odin-memory-system/.
 #
-#   2. The five bragi-council-prompt-* persona skills — Odin's shared body
-#      template embeds the Prompt Council process, which dispatches
-#      persona-framed communication-specialist instances expecting these
-#      skills to be present. Without them, a high-stakes ambiguous prompt
-#      would trigger a Prompt Council dispatch that fails to find the persona
-#      skills. The Prompt Council mechanism has no fail-safe fallback, so the
-#      skills must be present on every install. Installs to
-#      bragi/council-prompt/bragi-council-prompt-*/.
-#
-#   3. The five bragi-council-deliberation-* perspective skills — Odin's
+#   2. The five bragi-council-deliberation-* perspective skills — Odin's
 #      shared body template embeds the Deliberation Council process, which
 #      dispatches perspective-framed communication-specialist instances
 #      expecting these skills to be present. Without them, a triggered
@@ -517,11 +504,11 @@ ok "Agents installed."
 #      skills must be present on every install. Installs to
 #      bragi/council-deliberation/bragi-council-deliberation-*/.
 #
-# These 12 always-on skills install to feature subdirectories
-# (bragi/council-prompt/, bragi/council-deliberation/, brokk/memory/,
+# These 7 always-on skills install to feature subdirectories
+# (bragi/council-deliberation/, brokk/memory/,
 # odin/memory/) — a target-only nesting; the source repo stays flat.
 # The routing is governed by nested_subdir_for() above (single source of
-# truth), which the bulk copy below also consults to SKIP these 12 skills
+# truth), which the bulk copy below also consults to SKIP these 7 skills
 # (they are written exclusively by the always-on blocks here, never by the
 # bulk copy — restoring the single-write-path invariant).
 #
@@ -530,7 +517,7 @@ ok "Agents installed."
 # COPY_SKILLS exactly as before.
 
 # ── Orphan cleanup: remove legacy flat-layout always-on skills ──
-# All 12 always-on skills now install to feature subdirectories (see above).
+# All 7 always-on skills now install to feature subdirectories (see above).
 # On upgrade from a prior flat layout, the old flat copies at
 # <agent>/<skill_name>/ would remain (the merge copy never deletes),
 # causing silent duplication: generate-capabilities.sh's recursive find
@@ -555,8 +542,22 @@ if [ -d "$DST_SKILLS" ]; then
                 info "Removing legacy flat copy of ${agent_name}/${skill_name} (migrated to feature subdir)…"
                 rm -rf "$skill_dir"
             fi
-        done
-    done
+     done
+ done
+fi
+
+# ── Orphan cleanup: remove retired Prompt Council skills ──
+# The Prompt Council mechanism was removed from Odin's shared body, and its
+# five bragi-council-prompt-* persona skills no longer exist in the source
+# repo. On upgrade, previously installed copies under bragi/council-prompt/
+# would linger (the merge copy never deletes) and generate-capabilities.sh's
+# recursive find would re-list the retired skills in the capability
+# inventory. Remove the entire retired feature subdirectory — it was written
+# exclusively by the (now removed) always-on install block, never by users.
+# On a fresh install the directory doesn't exist, so this is a no-op.
+if [ -d "${DST_SKILLS}/bragi/council-prompt" ]; then
+    info "Removing retired Prompt Council skills (bragi/council-prompt/)…"
+    rm -rf "${DST_SKILLS}/bragi/council-prompt"
 fi
 
 SRC_MEMORY_SKILL="${SRC_SKILLS}/brokk/brokk-memory-curation"
@@ -591,30 +592,6 @@ if [ -d "$SRC_ODIN_MEMORY_SKILL" ]; then
     ok "odin-memory-system installed."
 fi
 
-# Prompt Council skills → bragi/council-prompt/
-# Always installed so Odin's embedded Prompt Council mechanism works on every
-# install. See the rationale in the block comment above.
-COUNCIL_PROMPT_SKILLS="
-bragi-council-prompt-clarifier
-bragi-council-prompt-completer
-bragi-council-prompt-empath
-bragi-council-prompt-adversary
-bragi-council-prompt-constraint
-"
-for skill_name in $COUNCIL_PROMPT_SKILLS; do
-    SRC_COUNCIL_SKILL="${SRC_SKILLS}/bragi/${skill_name}"
-    DST_COUNCIL_SKILL="${DST_SKILLS}/bragi/council-prompt/${skill_name}"
-    if [ -d "$SRC_COUNCIL_SKILL" ]; then
-        info "Creating skills directory…"
-        mkdir -p "$DST_COUNCIL_SKILL"
-        info "Copying ${skill_name} to ${DST_COUNCIL_SKILL}…"
-        # Merge copy to the council-prompt feature subdirectory. The bulk copy
-        # below SKIPS this skill via nested_subdir_for — single write path.
-        cp -R "${SRC_COUNCIL_SKILL}/." "$DST_COUNCIL_SKILL/"
-        ok "${skill_name} installed."
-    fi
-done
-
 # Deliberation Council skills → bragi/council-deliberation/
 # Always installed so Odin's embedded Deliberation Council mechanism works on
 # every install. See the rationale in the block comment above.
@@ -644,9 +621,9 @@ done
 # anyway). If they accepted, all skills install per their own answer and
 # the note is redundant noise.
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: brokk-memory-curation, odin-memory-system, and the ten"
-    warn "bragi-council-prompt-* and bragi-council-deliberation-* skills install unconditionally — the memory commands"
-    warn "and Odin's Prompt and Deliberation Council mechanisms depend on them regardless of your"
+    warn "Note: brokk-memory-curation, odin-memory-system, and the five"
+    warn "bragi-council-deliberation-* skills install unconditionally — the memory commands"
+    warn "and Odin's Deliberation Council mechanism depend on them regardless of your"
     warn "answer above."
 fi
 
@@ -659,9 +636,9 @@ if [ "$COPY_SKILLS" = true ]; then
     info "Copying skills to ${DST_SKILLS}…"
     # Per-skill merge copy (replaces the former bulk `cp -R`).
     #
-    # The 12 always-on skills are SKIPPED here: they are installed
-    # unconditionally to feature subdirectories (bragi/council-prompt/,
-    # bragi/council-deliberation/, brokk/memory/, odin/memory/) by the
+    # The 7 always-on skills are SKIPPED here: they are installed
+    # unconditionally to feature subdirectories (bragi/council-deliberation/,
+    # brokk/memory/, odin/memory/) by the
     # always-on blocks above. Copying them here too would land them flat
     # at <agent>/<skill_name>/ — a second, duplicate copy that fractures
     # the single-write-path invariant and corrupts the capability
@@ -771,8 +748,8 @@ fi
 # built-in skills and custom capabilities (if the user edited the scaffold).
 # NOTE: The generated file is no longer committed to the repo; it's created fresh
 # at install time. Run unconditionally on every install: the always-on skills
-# (brokk-memory-curation, odin-memory-system, and the ten
-# bragi-council-prompt-* and bragi-council-deliberation-* skills) always
+# (brokk-memory-curation, odin-memory-system, and the five
+# bragi-council-deliberation-* skills) always
 # install to feature subdirectories (see "Install always-on skills" above), so
 # DST_SKILLS is populated on every normal install, even when the user declines
 # the skills prompt.

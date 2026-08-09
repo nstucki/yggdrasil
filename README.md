@@ -26,7 +26,7 @@ The name is drawn from the immense ash tree of Norse mythology at the center of 
 | ----- | ------------- | ---- | ------ |
 | **Odin** | The All-Father | Orchestrator | Receives the objective, devises the workflow, delegates. Never implements, researches, or reviews directly. |
 | **Mimir** | Well-Keeper of Mímisbrunnr | Researcher | Explores codebases, reads docs, gathers context. Illuminates; does not decide or implement. |
-| **Bragi** | The Skald | Communicator | Advises on communication strategy, drafts and presents information, provides multi-persona Prompt Council and Deliberation Council for high-stakes decisions. |
+| **Bragi** | The Skald | Communicator | Advises on communication strategy, drafts and presents information, provides the multi-persona Deliberation Council for high-stakes decisions. |
 | **Kvasir** | The Wise Counselor | Strategic Advisor | Synthesizes context into plans; decomposition, risk, approach. Consulted proactively by Odin. |
 | **Brokk** | The Smith | Implementer | Transforms requirements into concrete artifacts: code, docs, tests, config. Has write access. |
 | **Heimdall** | The Watchman | Reviewer | Independently validates quality, correctness, completeness. Never implements fixes. |
@@ -117,7 +117,6 @@ You'll be prompted for two choices: whether to copy the curated optional skills 
 
 Required (always installed, regardless of the prompt — Odin's council and memory mechanisms depend on them):
 
-- **Prompt Council skills** (the five `bragi-council-prompt-*` persona skills) → `~/.config/opencode/skills/yggdrasil/bragi/council-prompt/`
 - **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/bragi/council-deliberation/`
 - **Memory system skill** (`odin-memory-system`) → `~/.config/opencode/skills/yggdrasil/odin/memory/`
 - **Memory curation skill** (`brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/brokk/memory/`
@@ -200,7 +199,7 @@ Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown fil
    $CONFIG_BASE/skills/yggdrasil/<agent>/<agent>-<name>/SKILL.md
    ```
 
-   Always-on skills install to a feature subdirectory: `<agent>/<feature>/<agent>-<name>/SKILL.md` (e.g., `bragi/council-prompt/bragi-council-prompt-empath/`, `brokk/memory/brokk-memory-curation/`). Optional skills always install flat at `<agent>/<agent>-<name>/`.
+    Always-on skills install to a feature subdirectory: `<agent>/<feature>/<agent>-<name>/SKILL.md` (e.g., `bragi/council-deliberation/bragi-council-deliberation-foundations/`, `brokk/memory/brokk-memory-curation/`). Optional skills always install flat at `<agent>/<agent>-<name>/`.
 
    where `<agent>` is one of `mimir`, `brokk`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
 
@@ -260,23 +259,9 @@ Both Odin and Kvasir maintain awareness of all available capabilities — built-
 
 The inventory is assembled from two sources: **built-in skills** (harvested automatically from agent and skill frontmatter) and **custom capabilities** (read from `custom-capabilities.yaml`). The generator is created at install time and can be re-run after adding custom tools. Custom tool grants are managed post-install in `$CONFIG_BASE/yggdrasil/custom-capabilities.yaml` and `$CONFIG_BASE/agents/yggdrasil/`, never in the repo.
 
-### Prompt Council
-
-Odin's shared body includes an optional **Prompt Council** — a trigger-gated pattern for reformulating ambiguous or high-stakes prompts before execution begins. When a prompt is *both* genuinely ambiguous *and* expensive to misinterpret (high-stakes, security-sensitive, or costly to redo), Odin may dispatch N (default 5) communication-specialist instances in parallel, each adopting one committed persona lens:
-
-- **Clarifier** (`bragi-council-prompt-clarifier`) — precision lens, surface vague terms and pin referents.
-- **Completer** (`bragi-council-prompt-completer`) — coverage lens, surface missing requirements and implicit assumptions.
-- **Empath** (`bragi-council-prompt-empath`) — user-intent lens, reconstruct the goal behind the literal words.
-- **Adversary** (`bragi-council-prompt-adversary`) — risk lens, surface edge cases, failure scenarios, and load-bearing assumptions.
-- **Constraint** (`bragi-council-prompt-constraint`) — boundaries lens, surface scope limits, non-goals, and invariants.
-
-A fresh-session synthesizer then merges the five reformulations into one enriched prompt (merging, not forcing consensus — the personas are complementary, not convergent). The enriched prompt feeds the normal pipeline. If synthesis reports low confidence, the original prompt is genuinely ambiguous and Odin escalates per the mode's Communication Policy rather than re-running the Prompt Council.
-
-The Prompt Council is capped at **K=1** (one round, no iterative revision), costs N + 1 specialist dispatches, and is advisory output — no independent Heimdall review; defects surface through Failed Review Classification and the Final Review Gate. Trigger discipline is the safeguard against cost creep: the Prompt Council runs only on high-stakes *and* ambiguous prompts — routine, clear, or low-stakes prompts proceed directly into the normal pipeline.
-
 ### Deliberation Council
 
-Odin's shared body also includes an optional **Deliberation Council** — a trigger-gated mechanism that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. Distinct from the Prompt Council (advisory input-processing), it sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
+Odin's shared body includes an optional **Deliberation Council** — a trigger-gated mechanism that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
 
 **Mechanism — a 5-stage pipeline:**
 
@@ -305,8 +290,6 @@ Odin's shared body also includes an optional **Deliberation Council** — a trig
 
 **Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost without research: N + 2 (7 at N=5) plus the Final Review Gate. Cost with research: N + 3 (8 at N=5) plus the Final Review Gate, scaling with parallel Mimir sessions. Output is a deliverable — it must pass the Final Review Gate.
 
-**Relationship to the Prompt Council:** The two mechanisms are composable. If both fire (ambiguous *and* high-stakes prompt, plus a multi-perspective question), the Prompt Council runs first as input-processing, then the Deliberation Council fires on the refined prompt.
-
 ### Research
 
 Odin's shared body also includes a **Research mechanism** — a trigger-gated, deliverable-producing execution pattern that orchestrates heavy research tasks through strategic decomposition and parallelized investigation. Like the Deliberation Council, it produces a user-facing deliverable (not advisory output) and routes through the Final Review Gate. Two distinctions set it apart: it is **adaptive** — the number of research streams N is determined by Kvasir's one-shot decomposition of the topic, not fixed at a default — and it is the only mechanism with a **mandatory user-visible steering checkpoint** between planning and execution, which is what makes the mandatory Kvasir consultation additive rather than redundant.
@@ -330,7 +313,7 @@ Odin's shared body also includes a **Research mechanism** — a trigger-gated, d
 
 **Constraints:** K=1 (one decomposition pass, no re-decomposition loop — iteration is handled internally by the `kvasir-research-decomposition` skill's batching/waves). N is the cluster count from Kvasir's decomposition (adaptive; no fixed default — typically 1 for light questions, 2-5 for heavy research). Cost: `2N + 5` dispatches (7 at N=1, 11 at N=3, 21 at N=8) plus the Final Review Gate. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
 
-**Relationship to other mechanisms:** Composable with the Prompt Council: if the topic prompt is ambiguous and high-stakes, the Prompt Council runs first as input-processing, then the Research mechanism fires on the refined prompt (same composability as the Deliberation Council). Kvasir's decomposition (step 1) is advisory and does not receive independent Heimdall review (Consultation Layer doctrine) — but unlike the ordinary Consultation Check, the consultation here is mandatory, not trigger-gated; the steering checkpoint (step 2) is what makes that mandatory consultation additive. Sibling to the Deliberation Council — both are deliverable-producing execution patterns in the shared orchestration body. The Final Review Gate applies as normal.
+**Relationship to other mechanisms:** Kvasir's decomposition (step 1) is advisory and does not receive independent Heimdall review (Consultation Layer doctrine) — but unlike the ordinary Consultation Check, the consultation here is mandatory, not trigger-gated; the steering checkpoint (step 2) is what makes that mandatory consultation additive. Sibling to the Deliberation Council — both are deliverable-producing execution patterns in the shared orchestration body. The Final Review Gate applies as normal.
 
 ## Development
 

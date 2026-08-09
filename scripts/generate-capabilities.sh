@@ -153,12 +153,12 @@ communicator_skills=""
 # Extract agent as the first path component after SKILLS_DIR.
 # Handles both depth-2 and depth-3 paths: the first component is always the
 # agent (or "shared" for non-agent skills). Feature subdirectories (e.g.,
-# bragi/council-prompt/, brokk/memory/) are the second component and are
+# bragi/council-deliberation/, brokk/memory/) are the second component and are
 # discarded by cut -f1.
 # E.g.:
 #   $SKILLS_DIR/mimir/mimir-web-research/SKILL.md                          → mimir
-#   $SKILLS_DIR/bragi/council-prompt/bragi-council-prompt-empath/SKILL.md   → bragi
-#   $SKILLS_DIR/bragi/council-deliberation/bragi-council-deliberation-foundations/SKILL.md → bragi
+#   $SKILLS_DIR/bragi/council-deliberation/bragi-council-deliberation-foundations/SKILL.md   → bragi
+#   $SKILLS_DIR/bragi/council-deliberation/bragi-council-deliberation-systems/SKILL.md       → bragi
 #   $SKILLS_DIR/brokk/memory/brokk-memory-curation/SKILL.md               → brokk
 #   $SKILLS_DIR/odin/memory/odin-memory-system/SKILL.md                    → odin (intentionally excluded from the inventory — see odin) case below)
 #   $SKILLS_DIR/shared/capability-inventory/SKILL.md                      → shared (intentionally excluded — see shared) case below)
