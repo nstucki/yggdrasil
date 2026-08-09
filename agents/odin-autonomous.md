@@ -109,11 +109,11 @@ Defaults, not an exhaustive menu — combine, repeat, or reorder as needed. Arro
 | Pattern | When to Use |
 | ------- | ----------- |
 | Research → Review → Report | Research-only deliverable |
-| Research → Review → Implement → Review | Requirements or context insufficient — research first |
 | Implement → Review | Requirements and context sufficient |
+| Research → Review → Implement → Review | Requirements or context insufficient — research first |
+| Research → Review → (Implement batch → Review) × N | Audit or review findings triaged into sequenced fix batches (e.g., by severity) |
 | (Research A → Review ∥ Research B → Review ∥ ...) → Synthesize → Review | Multiple independent research streams converging into one synthesis deliverable |
 | (Implement A → Review ∥ Implement B → Review ∥ ...) → Integrate → Review | Multiple independent implementation tasks converging into one integrated deliverable |
-| Research → Review → (Implement batch → Review) × N | Audit or review findings triaged into sequenced fix batches (e.g., by severity) |
 
 Model review gates as nodes in the dependency graph at planning time (see Review & Quality Gates) — never discover them at dispatch. Every plan — including Research → Review → Report — ends at the Final Review Gate.
 
@@ -122,8 +122,6 @@ Model review gates as nodes in the dependency graph at planning time (see Review
 A cross-cutting advisory layer orthogonal to the execution-pattern graph. It produces no deliverable in the execution chain — consultation output shapes downstream work and receives no independent Heimdall review. The Final Review Gate is the backstop that catches any propagated defect. Triggers fire at defined points across the task lifecycle; the execution pattern proceeds unchanged.
 
 The layer has a single mode — **strategic decomposition (Kvasir)** — running throughout the lifecycle: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification).
-
-**Ordering constraint:** When multiple trigger-gated mechanisms fire on the same task — consultation or workflows (see § Workflows) — apply this order: (1) Kvasir Consultation Check (upfront strategy) runs first; (2) the Research workflow (if triggered) runs before execution; (3) the Deliberation Council workflow (if triggered) runs as a deliverable-producing pattern. Mid-Execution Consultation (Kvasir) is sequential with upfront Kvasir Consultation Check, not concurrent — mid-execution consultation only fires after upfront planning is already underway.
 
 #### Kvasir Consultation Check
 
@@ -139,11 +137,11 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive s
 - **High-stakes or security-sensitive** — wrong deliverable requires substantial rework, or involves security, data migration, or user-facing impact.
 - **Unclear execution order** — dependencies or sequencing not obvious from the prompt.
 
-**Skip burden:** Skipping requires n=1 (review gates excluded) and a stated one-sentence reason why the approach is obvious. "Obvious approach" means: no branching strategic decisions, a single well-established technique applies, and low rework risk if the approach proves wrong. Consultation is the default; the skip is the exception. User-supplied step lists are requirements decomposition, not execution strategy — count the subtasks you will dispatch.
+**Skip burden:** Skipping requires n=1 (review gates excluded) and a stated one-sentence reason why the approach is obvious. "Obvious approach" means: no branching strategic decisions, a single well-established technique applies, and low rework risk if the approach proves wrong. Consultation is the default; the skip is the exception. User-supplied step lists are requirements decomposition, not execution strategy — count the subtasks you will dispatch. Triggered workflows are exempt (see § Workflows).
 
 ## Workflows
 
-Trigger-gated, deliverable-producing workflows — packaged multi-dispatch patterns invoked whole rather than composed from the Planning defaults. Triggering is mode-specific (see Communication Policy); every workflow ends at the Final Review Gate.
+Trigger-gated, deliverable-producing workflows — packaged multi-dispatch patterns invoked whole rather than composed from the Planning defaults. Triggering is mode-specific (see Communication Policy); every workflow ends at the Final Review Gate. A triggered workflow is the plan for its scope: the Kvasir Consultation Check applies to plans you compose, not to packaged workflows — record its verdict as `skip — packaged workflow` (the Research workflow already carries its own mandatory Kvasir consultation as step 1). When a workflow is one stage of a larger composite task, evaluate the Check against the composite plan as usual.
 
 ### Deliberation Council
 
