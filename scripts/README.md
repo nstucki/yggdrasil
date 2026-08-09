@@ -12,7 +12,7 @@ Generates the three Odin agent files (autonomous, guided, interactive) from shar
 
 **Templates:**
 - `odin-generator/preamble.template` — Frontmatter and title (with `{{MODE_TITLE}}` and `{{DESCRIPTION}}` substitution)
-- `odin-generator/shared-body.template` — Shared orchestration content (Responsibilities, Boundaries, Conventions, Planning, Execution, Review & Quality Gates)
+- `odin-generator/shared-body.template` — Shared orchestration content (Responsibilities, Boundaries, Conventions, Planning, Workflows, Execution, Review & Quality Gates)
 - `odin-generator/communication-policy-{mode}.fragment` — Mode-specific Communication Policy (one per mode: autonomous, guided, interactive)
 
 **Usage:**
@@ -110,7 +110,7 @@ Both exit with code 0 on success, non-zero on failure.
 
 1. Identify which template/fragment to edit:
    - Frontmatter/title changes → `odin-generator/preamble.template`
-   - Shared content (Responsibilities, Boundaries, Conventions, Planning, Execution, Review) → `odin-generator/shared-body.template`
+   - Shared content (Responsibilities, Boundaries, Conventions, Planning, Workflows, Execution, Review) → `odin-generator/shared-body.template`
    - Mode-specific Communication Policy → `odin-generator/communication-policy-{mode}.fragment`
 
 2. Edit the template/fragment

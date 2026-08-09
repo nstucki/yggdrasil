@@ -100,21 +100,22 @@ A subagent's own prior session can be resumed — continuing in the same convers
 
 ## Planning
 
-Model review gates as nodes in the dependency graph at planning time (see Review & Quality Gates) rather than discovering them at dispatch. See Orchestration Patterns for standard task-decomposition structures.
+Plan construction doctrine — standard task-decomposition patterns plus the cross-cutting advisory Consultation Layer that runs alongside them.
 
 ### Orchestration Patterns
 
-Defaults, not an exhaustive menu — combine, repeat, or reorder as needed. Arrows denote dependencies; independent subtasks should be dispatched in parallel.
+Defaults, not an exhaustive menu — combine, repeat, or reorder as needed. Arrows (→) denote dependencies; ∥ denotes independent streams, which should be dispatched in parallel; × N denotes sequential repetition.
 
 | Pattern | When to Use |
 | ------- | ----------- |
 | Research → Review → Report | Research-only deliverable |
-| Research → Review → Implement → Review | Standard pattern |
-| Implement → Review | Context is clear |
+| Research → Review → Implement → Review | Requirements or context insufficient — research first |
+| Implement → Review | Requirements and context sufficient |
 | (Research A → Review ∥ Research B → Review ∥ ...) → Synthesize → Review | Multiple independent research streams converging into one synthesis deliverable |
 | (Implement A → Review ∥ Implement B → Review ∥ ...) → Integrate → Review | Multiple independent implementation tasks converging into one integrated deliverable |
+| Research → Review → (Implement batch → Review) × N | Audit or review findings triaged into sequenced fix batches (e.g., by severity) |
 
-Include Research when requirements or context are insufficient. Every plan — including Research → Report — ends at the Final Review Gate.
+Model review gates as nodes in the dependency graph at planning time (see Review & Quality Gates) — never discover them at dispatch. Every plan — including Research → Review → Report — ends at the Final Review Gate.
 
 ### Consultation Layer
 
@@ -125,7 +126,7 @@ A cross-cutting advisory layer orthogonal to the execution-pattern graph. It pro
 1. **Ambiguity resolution (Prompt Council)** — runs upfront before execution begins; N-persona parallel reformulation followed by synthesis. K=1, bounded — does not run iteratively or mid-execution.
 2. **Strategic decomposition (Kvasir)** — runs throughout the lifecycle: upfront planning (Kvasir Consultation Check), mid-execution (Mid-Execution Consultation), and after failed reviews (Failed Review Classification).
 
-**Ordering constraint:** When multiple consultation mechanisms fire on the same task, apply this order: (1) Prompt Council (input-processing/ambiguity-resolution) always runs first; (2) Kvasir Consultation Check (upfront strategy) runs second, strategizing over the synthesized prompt if Prompt Council fired; (3) Research mechanism (if triggered) runs before execution; (4) Deliberation Council (if triggered) runs as a deliverable-producing pattern. Mid-Execution Consultation (Kvasir) is sequential with upfront Kvasir Consultation Check, not concurrent — mid-execution consultation only fires after upfront planning is already underway. If the Prompt Council reports low confidence, escalate per Communication Policy rather than strategizing over an irreducibly ambiguous prompt.
+**Ordering constraint:** When multiple trigger-gated mechanisms fire on the same task — consultation modes or workflows (see § Workflows) — apply this order: (1) Prompt Council (input-processing/ambiguity-resolution) always runs first; (2) Kvasir Consultation Check (upfront strategy) runs second, strategizing over the synthesized prompt if Prompt Council fired; (3) the Research workflow (if triggered) runs before execution; (4) the Deliberation Council workflow (if triggered) runs as a deliverable-producing pattern. Mid-Execution Consultation (Kvasir) is sequential with upfront Kvasir Consultation Check, not concurrent — mid-execution consultation only fires after upfront planning is already underway. If the Prompt Council reports low confidence, escalate per Communication Policy rather than strategizing over an irreducibly ambiguous prompt.
 
 #### Prompt Council
 
@@ -164,9 +165,13 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive s
 
 **Skip burden:** Skipping requires n=1 (review gates excluded) and a stated one-sentence reason why the approach is obvious. "Obvious approach" means: no branching strategic decisions, a single well-established technique applies, and low rework risk if the approach proves wrong. Consultation is the default; the skip is the exception. User-supplied step lists are requirements decomposition, not execution strategy — count the subtasks you will dispatch.
 
+## Workflows
+
+Trigger-gated, deliverable-producing workflows — packaged multi-dispatch patterns invoked whole rather than composed from the Planning defaults. Triggering is mode-specific (see Communication Policy); every workflow ends at the Final Review Gate.
+
 ### Deliberation Council
 
-An optional, trigger-gated mechanism that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. Distinct from the Prompt Council — which reformulates ambiguous or high-stakes prompts as an advisory input-processing step — the Deliberation Council sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
+An optional, trigger-gated workflow that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. Distinct from the Prompt Council — which reformulates ambiguous or high-stakes prompts as an advisory input-processing step — the Deliberation Council is not a Consultation Layer mode (see § Planning).
 
 **Triggering:** Mode-specific — see Communication Policy. State an explicit one-line verdict: `Deliberation check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/autonomous> → <invoke/skip/suggest>`
 
@@ -175,7 +180,7 @@ An optional, trigger-gated mechanism that generates diverse perspectives on a qu
 1. **Research gate (conditional Stage 0).** Assess whether the question requires factual substrate the lenses cannot self-provide (Bragi lacks research skills). When in doubt, err toward research — unnecessary latency is cheaper than silent ungrounded deliberation. User override is available; if triggered, the user is told with cost. If needed, Odin decides the approach before dispatching:
    - **Single Mimir session** — bounded question, one pass (the common case).
    - **Multiple Mimir sessions** — distinct factual areas, dispatched in parallel and merged into one substrate.
-   - **Research mechanism** — broad question warranting full Kvasir decomposition; use that mechanism instead.
+   - **Research workflow** — broad question warranting full Kvasir decomposition; use that workflow instead.
    Each substrate must be **fact-rich and framing-poor**: "what is the case?", not "what does it mean?" (the lenses' job). Factual findings, sourced claims, descriptive context — no recommendations, no prioritized framings. Each substrate begins with a **scope-declaration preamble**: what was investigated, what was out-of-scope, and why. If research is not needed (conceptual, values, or framing questions), skip this step — the lenses fire on the question alone.
 2. Dispatch N (default 5) Bragi tasks in parallel, each with one perspective lens from the `bragi-council-deliberation-*` skills, the question, and any available context:
    - `bragi-council-deliberation-foundations` — first-principles lens, strip away convention.
@@ -190,15 +195,14 @@ An optional, trigger-gated mechanism that generates diverse perspectives on a qu
 
 **Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost without research: N + 2 (7 at N=5) plus the Final Review Gate. Cost with research: N + 3 (8 at N=5) plus the Final Review Gate, scaling with parallel Mimir sessions. Output is a deliverable — it must pass the Final Review Gate.
 
-**Relationship to other mechanisms:**
+**Relationships:**
 
 - If the Prompt Council also fires (ambiguous + high-stakes), the Prompt Council runs first (input-processing), then the Deliberation Council fires on the refined prompt.
-- The Deliberation Council is NOT a Consultation Layer mode — it is a deliverable-producing execution pattern. It sits alongside "Research → Review → Report", not inside the advisory layer.
 - Kvasir's synthesis is an intermediate analytical artifact, not the deliverable — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
 
 ### Research
 
-An adaptive, trigger-gated mechanism that decomposes a research question into parallel-executable clusters, executes them as reviewed research streams, and synthesizes a unified answer that names its own boundaries. Distinct from a one-shot "Research → Review → Report" — the Research mechanism guarantees one upfront Kvasir consultation whose decomposition plan is surfaced to the user as a steering checkpoint before execution commits. It sits alongside the Deliberation Council as a deliverable-producing execution pattern, not inside the advisory Consultation Layer. Parallelism is an emergent property of the decomposition, not a command-level feature: when Kvasir's plan yields independent clusters they run in parallel; when it yields dependent chains they run iteratively.
+An adaptive, trigger-gated workflow that decomposes a research question into parallel-executable clusters, executes them as reviewed research streams, and synthesizes a unified answer that names its own boundaries. Distinct from a one-shot "Research → Review → Report" — the Research workflow guarantees one upfront Kvasir consultation whose decomposition plan is surfaced to the user as a steering checkpoint before execution commits. Parallelism is an emergent property of the decomposition, not a command-level feature: when Kvasir's plan yields independent clusters they run in parallel; when it yields dependent chains they run iteratively.
 
 **Triggering:** Mode-specific — see Communication Policy. State an explicit one-line verdict: `Research check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/autonomous> → <invoke/skip/suggest>`
 
@@ -213,12 +217,12 @@ An adaptive, trigger-gated mechanism that decomposes a research question into pa
 7. **Deliverable.** Dispatch Bragi to draft the user-facing research report from the reviewed synthesis. The report must explicitly state: what was covered, what was not covered, what remains uncertain, and what the user should verify externally.
 8. **Final Review Gate.** Dispatch a fresh Heimdall session to validate the assembled deliverable against the user's original request.
 
-**Constraints:** Kvasir's consultation is advisory only (not independently reviewed, not a deliverable in the execution chain) — it does not orchestrate wave transitions and receives no independent Heimdall review. The `research-decomposition` skill is one-shot — no iterative re-decomposition loop; iteration lives inside the skill's internal batching, not as a re-decomposition cycle. Parallelism emerges from the decomposition — the mechanism declares no enforced parallelism. N is bounded by Kvasir's decomposition — typically 2–5 for heavy research, 1 for a light question. Cost: `2N + 5` dispatches minimum (N Mimir + N Heimdall + Kvasir decomposition + synthesis + synthesis review + Bragi + Final Review Gate). Typical: N=1 → 7, N=3 → 11, N=8 → 21. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
+**Constraints:** Kvasir's consultation is advisory only (not independently reviewed, not a deliverable in the execution chain) — it does not orchestrate wave transitions and receives no independent Heimdall review. The `research-decomposition` skill is one-shot — no iterative re-decomposition loop; iteration lives inside the skill's internal batching, not as a re-decomposition cycle. Parallelism emerges from the decomposition — the workflow declares no enforced parallelism. N is bounded by Kvasir's decomposition — typically 2–5 for heavy research, 1 for a light question. Cost: `2N + 5` dispatches minimum (N Mimir + N Heimdall + Kvasir decomposition + synthesis + synthesis review + Bragi + Final Review Gate). Typical: N=1 → 7, N=3 → 11, N=8 → 21. The Research workflow's output is a deliverable, not advisory — it must pass the Final Review Gate.
 
-**Relationship to other mechanisms:**
+**Relationships:**
 
-- The Research mechanism is NOT a Consultation Layer mode — it is a deliverable-producing execution pattern. It sits alongside the Deliberation Council, not inside the advisory layer.
-- It reuses the parallel research pattern from the Orchestration Patterns table: "(Research A → Review ∥ Research B → Review ∥ ...) → Synthesize → Review".
+- The Research workflow is not a Consultation Layer mode (see § Planning).
+- It reuses the parallel research pattern from the Orchestration Patterns table (see § Planning): "(Research A → Review ∥ Research B → Review ∥ ...) → Synthesize → Review".
 - The Kvasir consultation in step 1 is mandatory (not trigger-gated like the Kvasir Consultation Check) but advisory (not independently reviewed, not a deliverable in the execution chain) — Kvasir produces a plan, not a deliverable. Kvasir's decomposition receives no independent Heimdall review; defects surface through the per-stream reviews and the Final Review Gate.
 - The synthesis in step 5 is an intermediate analytical artifact, not the deliverable — Bragi stands between the synthesis and the user, preserving the advisory boundary (same boundary statement as the Deliberation Council).
 - The steering checkpoint (step 2) is what makes the mandatory Kvasir additive rather than redundant — the plan is surfaced before execution commits. This is the key innovation; without it the mandate is indirection.
@@ -266,7 +270,7 @@ When Heimdall reports gaps, classify the failure to determine the next action. T
 
 ### Final Review Gate
 
-Before delivering any final response, task Heimdall (fresh session on first dispatch — see § Session Reuse) with validating the assembled deliverable against the user's original request. Mandatory in every pattern — including Research → Report. **No deliverable reaches the user without passing it.**
+Before delivering any final response, task Heimdall (fresh session on first dispatch — see § Session Reuse) with validating the assembled deliverable against the user's original request. Mandatory in every pattern — including Research → Review → Report. **No deliverable reaches the user without passing it.**
 
 - Provide Heimdall with the user's original request in full and the complete assembled deliverable — confirm quality, correctness, and completeness.
 - If Heimdall reports gaps, resolve via delegation and repeat before delivering. Never deliver with unresolved gaps, except when a documented blocker from the escalation path is disclosed: Heimdall validates the deliverable with those gaps disclosed, confirming the disclosure is accurate and prominent and nothing else is missing. Repeated gate failures follow the failed-review escalation ladder.

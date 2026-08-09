@@ -10,4 +10,4 @@ Multi-perspective deliberation request (orchestrated Deliberation Council — fi
 
 Question: $ARGUMENTS
 
-Load the Deliberation Council mechanism defined in your shared orchestration body and fire it on the question above: dispatch the five `council-deliberation-*` perspective tasks in parallel, synthesize via Kvasir, and deliver the final reasoned answer via Bragi.
+Load the Deliberation Council workflow defined in your shared orchestration body and fire it on the question above: dispatch the five `council-deliberation-*` perspective tasks in parallel, synthesize via Kvasir, and deliver the final reasoned answer via Bragi.
