@@ -293,8 +293,7 @@ fi
 # ── Check for existing files and prompt ─────────────────────────────────────
 
 # Agents and commands are always copied, so non-empty dirs always trigger the
-# warning. The always-on skills (brokk-memory-curation, odin-memory-system,
-# and the five bragi-council-deliberation-* skills)
+# warning. The always-on skills (brokk-memory-curation, odin-memory-system, odin-deliberation-council, odin-research-workflow, and the five bragi-council-deliberation-* skills)
 # are also always copied to feature subdirectories under DST_SKILLS (see the
 # "Install always-on skills" section below), so DST_SKILLS is now checked
 # unconditionally too — even if the user declines the skills prompt, those
@@ -429,7 +428,7 @@ backup_differing_agents() {
 # ── Feature-subdir routing for always-on skills (single source of truth) ────
 
 # Return the feature subdirectory for an always-on skill, or fail (return 1)
-# if the skill is not one of the 7 always-on nested skills.
+# if the skill is not one of the 9 always-on nested skills.
 #
 # This is the SINGLE source of truth consumed by:
 #   - the always-on install blocks (target path construction),
@@ -453,6 +452,8 @@ nested_subdir_for() {
             printf 'memory\n' ;;
         odin/odin-memory-system)
             printf 'memory\n' ;;
+        odin/odin-deliberation-council|odin/odin-research-workflow)
+            printf 'workflows\n' ;;
         *)
             return 1 ;;
     esac
@@ -496,19 +497,25 @@ ok "Agents installed."
 #           without it. Installs to odin/memory/odin-memory-system/.
 #
 #   2. The five bragi-council-deliberation-* perspective skills — Odin's
-#      shared body template embeds the Deliberation Council process, which
-#      dispatches perspective-framed communication-specialist instances
+#      Deliberation Council workflow (odin-deliberation-council skill) dispatches perspective-framed communication-specialist instances
 #      expecting these skills to be present. Without them, a triggered
 #      deliberation dispatch would fail to find the perspective skills.
 #      The deliberation mechanism has no fail-safe fallback, so the
 #      skills must be present on every install. Installs to
 #      bragi/council-deliberation/bragi-council-deliberation-*/.
 #
-# These 7 always-on skills install to feature subdirectories
-# (bragi/council-deliberation/, brokk/memory/,
-# odin/memory/) — a target-only nesting; the source repo stays flat.
+#   3. The two workflow-doctrine skills — odin-deliberation-council and
+#      odin-research-workflow — backing the two trigger-gated workflows in
+#      Odin's shared body and their commands (/yggdrasil/deliberate,
+#      /yggdrasil/research), which always install. The lean Workflows
+#      section instructs Odin to load these skills on invoke; the
+#      workflows (and both commands) are inert without them. Install to
+#      odin/workflows/<skill-name>/.
+#
+# These 9 always-on skills install to feature subdirectories
+# (bragi/council-deliberation/, brokk/memory/, odin/memory/, odin/workflows/) — a target-only nesting; the source repo stays flat.
 # The routing is governed by nested_subdir_for() above (single source of
-# truth), which the bulk copy below also consults to SKIP these 7 skills
+# truth), which the bulk copy below also consults to SKIP these 9 skills
 # (they are written exclusively by the always-on blocks here, never by the
 # bulk copy — restoring the single-write-path invariant).
 #
@@ -517,7 +524,7 @@ ok "Agents installed."
 # COPY_SKILLS exactly as before.
 
 # ── Orphan cleanup: remove legacy flat-layout always-on skills ──
-# All 7 always-on skills now install to feature subdirectories (see above).
+# All 9 always-on skills now install to feature subdirectories (see above).
 # On upgrade from a prior flat layout, the old flat copies at
 # <agent>/<skill_name>/ would remain (the merge copy never deletes),
 # causing silent duplication: generate-capabilities.sh's recursive find
@@ -592,6 +599,42 @@ if [ -d "$SRC_ODIN_MEMORY_SKILL" ]; then
     ok "odin-memory-system installed."
 fi
 
+# Workflow-doctrine skills → odin/workflows/
+# Always installed so the two trigger-gated workflows in Odin's shared body
+# (and the /yggdrasil/deliberate and /yggdrasil/research commands) work on
+# every install. See category 3 in the rationale block above.
+SRC_ODIN_DELIBERATION_SKILL="${SRC_SKILLS}/odin/odin-deliberation-council"
+DST_ODIN_DELIBERATION_SKILL="${DST_SKILLS}/odin/workflows/odin-deliberation-council"
+
+if [ -d "$SRC_ODIN_DELIBERATION_SKILL" ]; then
+    info "Creating skills directory…"
+    mkdir -p "$DST_ODIN_DELIBERATION_SKILL"
+
+    info "Copying odin-deliberation-council to ${DST_ODIN_DELIBERATION_SKILL}…"
+    # Merge copy: copies just this one skill directory unconditionally to its
+    # feature subdirectory (odin/workflows/). The bulk copy below SKIPS this
+    # skill via nested_subdir_for, so there is no redundant overwrite —
+    # single write path (the nested location).
+    cp -R "${SRC_ODIN_DELIBERATION_SKILL}/." "$DST_ODIN_DELIBERATION_SKILL/"
+    ok "odin-deliberation-council installed."
+fi
+
+SRC_ODIN_RESEARCH_WF_SKILL="${SRC_SKILLS}/odin/odin-research-workflow"
+DST_ODIN_RESEARCH_WF_SKILL="${DST_SKILLS}/odin/workflows/odin-research-workflow"
+
+if [ -d "$SRC_ODIN_RESEARCH_WF_SKILL" ]; then
+    info "Creating skills directory…"
+    mkdir -p "$DST_ODIN_RESEARCH_WF_SKILL"
+
+    info "Copying odin-research-workflow to ${DST_ODIN_RESEARCH_WF_SKILL}…"
+    # Merge copy: copies just this one skill directory unconditionally to its
+    # feature subdirectory (odin/workflows/). The bulk copy below SKIPS this
+    # skill via nested_subdir_for, so there is no redundant overwrite —
+    # single write path (the nested location).
+    cp -R "${SRC_ODIN_RESEARCH_WF_SKILL}/." "$DST_ODIN_RESEARCH_WF_SKILL/"
+    ok "odin-research-workflow installed."
+fi
+
 # Deliberation Council skills → bragi/council-deliberation/
 # Always installed so Odin's embedded Deliberation Council mechanism works on
 # every install. See the rationale in the block comment above.
@@ -621,10 +664,10 @@ done
 # anyway). If they accepted, all skills install per their own answer and
 # the note is redundant noise.
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: brokk-memory-curation, odin-memory-system, and the five"
-    warn "bragi-council-deliberation-* skills install unconditionally — the memory commands"
-    warn "and Odin's Deliberation Council mechanism depend on them regardless of your"
-    warn "answer above."
+    warn "Note: brokk-memory-curation, odin-memory-system, odin-deliberation-council,"
+    warn "odin-research-workflow, and the five bragi-council-deliberation-* skills install"
+    warn "unconditionally — the memory commands and Odin's Deliberation Council and"
+    warn "Research workflows depend on them regardless of your answer above."
 fi
 
 # ── Install skills ─────────────────────────────────────────────────────────
@@ -636,9 +679,9 @@ if [ "$COPY_SKILLS" = true ]; then
     info "Copying skills to ${DST_SKILLS}…"
     # Per-skill merge copy (replaces the former bulk `cp -R`).
     #
-    # The 7 always-on skills are SKIPPED here: they are installed
+    # The 9 always-on skills are SKIPPED here: they are installed
     # unconditionally to feature subdirectories (bragi/council-deliberation/,
-    # brokk/memory/, odin/memory/) by the
+    # brokk/memory/, odin/memory/, odin/workflows/) by the
     # always-on blocks above. Copying them here too would land them flat
     # at <agent>/<skill_name>/ — a second, duplicate copy that fractures
     # the single-write-path invariant and corrupts the capability
@@ -647,7 +690,7 @@ if [ "$COPY_SKILLS" = true ]; then
     # one location.
     #
     # All other skills copy flat, preserving the source repo's flat layout
-    # in the target (unchanged behavior for the 34 optional skills).
+    # in the target (unchanged behavior for the 36 optional skills).
     for agent_dir in "${SRC_SKILLS}"/*/; do
         [ -d "$agent_dir" ] || continue
         agent_name=$(basename "$agent_dir")
@@ -748,7 +791,7 @@ fi
 # built-in skills and custom capabilities (if the user edited the scaffold).
 # NOTE: The generated file is no longer committed to the repo; it's created fresh
 # at install time. Run unconditionally on every install: the always-on skills
-# (brokk-memory-curation, odin-memory-system, and the five
+# (brokk-memory-curation, odin-memory-system, odin-deliberation-council, odin-research-workflow, and the five
 # bragi-council-deliberation-* skills) always
 # install to feature subdirectories (see "Install always-on skills" above), so
 # DST_SKILLS is populated on every normal install, even when the user declines

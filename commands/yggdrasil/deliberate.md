@@ -6,8 +6,8 @@ subtask: false
 
 # Deliberate
 
-Multi-perspective deliberation request (orchestrated Deliberation Council — five perspective lenses, synthesis, deliverable; this may take several delegation rounds).
+Multi-perspective deliberation request (orchestrated Deliberation Council workflow — multi-dispatch; expect to wait).
 
 Question: $ARGUMENTS
 
-Load the Deliberation Council workflow defined in your shared orchestration body and fire it on the question above: dispatch the five `council-deliberation-*` perspective tasks in parallel, synthesize via Kvasir, and deliver the final reasoned answer via Bragi.
+Load the `odin-deliberation-council` skill and execute the Deliberation Council workflow defined there on the question above.

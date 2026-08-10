@@ -20,4 +20,5 @@
 - **Research triggering:**
   - `/research` command → fire immediately, no checks.
   - Explicit research/investigate/analyze-into language in request → fire.
+  - Plan checkpoint: pause for the user's steering input before dispatching research streams.
   - Factual/executable request → skip.

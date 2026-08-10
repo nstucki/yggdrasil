@@ -115,11 +115,11 @@ You'll be prompted for two choices: whether to copy the curated optional skills 
 
 **Skills installed:**
 
-Required (always installed, regardless of the prompt — Odin's council and memory mechanisms depend on them):
+Required (always installed, regardless of the prompt — Odin's workflow and memory mechanisms depend on them):
 
+- **Memory skills** (`odin-memory-system` → `~/.config/opencode/skills/yggdrasil/odin/memory/`, `brokk-memory-curation` → `~/.config/opencode/skills/yggdrasil/brokk/memory/`)
 - **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/bragi/council-deliberation/`
-- **Memory system skill** (`odin-memory-system`) → `~/.config/opencode/skills/yggdrasil/odin/memory/`
-- **Memory curation skill** (`brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/brokk/memory/`
+- **Workflow skills** (`odin-deliberation-council`, `odin-research-workflow`) → `~/.config/opencode/skills/yggdrasil/odin/workflows/`
 
 Optional (the curated starter skills, installed only if accepted at the prompt):
 
@@ -261,14 +261,14 @@ The inventory is assembled from two sources: **built-in skills** (harvested auto
 
 ### Deliberation Council
 
-Odin's shared body includes an optional **Deliberation Council** — a trigger-gated mechanism that generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer.
+Odin provides an optional **Deliberation Council** workflow — trigger-gated, deliverable-producing: it generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/odin/odin-deliberation-council/SKILL.md`](./skills/odin/odin-deliberation-council/SKILL.md)** skill, which Odin loads on invoke.
 
 **Mechanism — a 5-stage pipeline:**
 
 1. **Research gate (conditional Stage 0).** Odin assesses whether the question requires factual substrate the lenses cannot self-provide (Bragi lacks research skills). When in doubt, err toward research. User override is available; if triggered, the user is told with cost. If needed, **Odin decides the approach** before dispatching:
-   - **Single Mimir session** — bounded question, one pass (the common case).
-   - **Multiple Mimir sessions** — distinct factual areas, dispatched in parallel and merged into one substrate.
-   - **Research mechanism** — broad question warranting full Kvasir decomposition; use that mechanism instead.
+    - **Single Mimir session** — bounded question, one pass (the common case).
+    - **Multiple Mimir sessions** — distinct factual areas, dispatched in parallel and merged into one substrate.
+    - **Research workflow** — broad question warranting full Kvasir decomposition; use that workflow instead.
 
    Each substrate must be **fact-rich and framing-poor** ("what is the case?", not "what does it mean?") and begins with a **scope-declaration preamble** (what was investigated, what was out-of-scope, and why). If research is not needed (conceptual/values/framing questions), skip this step.
 2. Dispatch **N (default 5) Bragi tasks** in parallel, each adopting one perspective lens from the `bragi-council-deliberation-*` skills, the question, and any available context:
@@ -292,7 +292,7 @@ Odin's shared body includes an optional **Deliberation Council** — a trigger-g
 
 ### Research
 
-Odin's shared body also includes a **Research mechanism** — a trigger-gated, deliverable-producing execution pattern that orchestrates heavy research tasks through strategic decomposition and parallelized investigation. Like the Deliberation Council, it produces a user-facing deliverable (not advisory output) and routes through the Final Review Gate. Two distinctions set it apart: it is **adaptive** — the number of research streams N is determined by Kvasir's one-shot decomposition of the topic, not fixed at a default — and it is the only mechanism with a **mandatory user-visible steering checkpoint** between planning and execution, which is what makes the mandatory Kvasir consultation additive rather than redundant.
+Odin also provides a **Research workflow** — trigger-gated and deliverable-producing, orchestrating heavy research tasks through strategic decomposition and parallelized investigation. Like the Deliberation Council, it produces a user-facing deliverable (not advisory output) and routes through the Final Review Gate. Two distinctions set it apart: it is **adaptive** — the number of research streams N is determined by Kvasir's one-shot decomposition of the topic, not fixed at a default — and it is the only workflow with a **mandatory user-visible steering checkpoint** between planning and execution, which is what makes the mandatory Kvasir consultation additive rather than redundant. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/odin/odin-research-workflow/SKILL.md`](./skills/odin/odin-research-workflow/SKILL.md)** skill, which Odin loads on invoke.
 
 **Mechanism — an 8-step arc:**
 
@@ -313,7 +313,7 @@ Odin's shared body also includes a **Research mechanism** — a trigger-gated, d
 
 **Constraints:** K=1 (one decomposition pass, no re-decomposition loop — iteration is handled internally by the `kvasir-research-decomposition` skill's batching/waves). N is the cluster count from Kvasir's decomposition (adaptive; no fixed default — typically 1 for light questions, 2-5 for heavy research). Cost: `2N + 5` dispatches (7 at N=1, 11 at N=3, 21 at N=8) plus the Final Review Gate. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
 
-**Relationship to other mechanisms:** Kvasir's decomposition (step 1) is advisory and does not receive independent Heimdall review (Consultation Layer doctrine) — but unlike the ordinary Consultation Check, the consultation here is mandatory, not trigger-gated; the steering checkpoint (step 2) is what makes that mandatory consultation additive. Sibling to the Deliberation Council — both are deliverable-producing execution patterns in the shared orchestration body. The Final Review Gate applies as normal.
+**Relationship to other mechanisms:** Kvasir's decomposition (step 1) is advisory and does not receive independent Heimdall review (Consultation Layer doctrine) — but unlike the ordinary Consultation Check, the consultation here is mandatory, not trigger-gated; the steering checkpoint (step 2) is what makes that mandatory consultation additive. Sibling to the Deliberation Council — both are deliverable-producing workflows, skill-packaged and loaded on invoke. The Final Review Gate applies as normal.
 
 ## Development
 
