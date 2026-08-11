@@ -561,26 +561,38 @@ check_parity_markers() {
   # Invariant marker list: each marker must appear (case-insensitive fixed-string
   # match) in odin-autonomous.md.
   #
-  # Selection principle: markers should be stable tokens (path templates, verdict
-  # grammar, fixed hard-rule fragments) that are never legitimately reworded —
-  # not doctrinal prose, which changes as the prompts evolve. Any deliberate edit
-  # to marked content must update this list in the same commit.
+  # Selection principle: markers are stable tokens (path templates, verdict
+  # grammar, named hard-rule identifiers) that are never legitimately reworded —
+  # not doctrinal prose, which changes as the prompts evolve. Any deliberate
+  # edit to marked content must update this list in the same commit.
+  # Listed in document order of agents/odin-autonomous.md.
   local markers=(
-    "Mimir artifact is the entire deliverable"
-    "verify the research claims against the actual sources"
-    "fresh Heimdall session"
+    # Boundaries — artifact-routing discipline
     "read artifact files or paraphrase their contents"
-    "documented blocker"
+    # Workspace / memory canonical path templates
     ".yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/"
-    "may review its own output"
-    "PASS-WITH-NOTES"
-    "failed-review escalation ladder"
-    "substantive subtasks="
     ".yggdrasil-memory/"
-    "rooted at the session working directory"
+    # Memory trust discipline
     "leads, not ground truth"
-    "never skip"
+    # Session-reuse: Final Review Gate independence
+    "fresh Heimdall session"
+    # Kvasir Consultation Check verdict grammar
+    "substantive subtasks="
+    # Review Rules — mandatory producer review, self-review ban,
+    # baseline pinning, verdict grammar
+    "must be reviewed by Heimdall"
+    "may review its own output"
+    "Pin the review baseline"
+    "PASS-WITH-NOTES"
+    # Failed Review Classification — disputed-findings hard rule,
+    # baseline-error doctrine
+    "no bypassing specialist review"
+    "Baseline error"
+    # Final Review Gate — delivery hard rule, research verification
     "No deliverable reaches the user without passing"
+    "research-verification obligation"
+    # Communication Policy — no silent degradation
+    "undocumented abandonment"
   )
 
   local marker
@@ -593,7 +605,7 @@ check_parity_markers() {
   done
 
   if [ "$FAIL_PARITY_MARKERS" -eq 0 ]; then
-    pass_msg "all 15 invariant markers present in odin-autonomous.md"
+    pass_msg "all ${#markers[@]} invariant markers present in odin-autonomous.md"
   else
     info_msg "${C_RED}${FAIL_PARITY_MARKERS} invariant marker failure(s)${C_RESET}"
   fi
