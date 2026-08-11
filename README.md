@@ -117,10 +117,9 @@ You'll be prompted for two choices: whether to copy the curated optional skills 
 
 Required (always installed, regardless of the prompt — Odin's workflow and memory mechanisms depend on them):
 
-- **Memory skills** (`odin-memory-system` → `~/.config/opencode/skills/yggdrasil/odin/memory/`, `brokk-memory-curation` → `~/.config/opencode/skills/yggdrasil/brokk/memory/`)
-- **Workflow skills** (`odin-deliberation-council`, `odin-research-workflow`) → `~/.config/opencode/skills/yggdrasil/odin/workflows/`
-- **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/bragi/council-deliberation/`
-- **Research family skills** (`kvasir-research-decomposition` → `~/.config/opencode/skills/yggdrasil/kvasir/research/`, `mimir-research-convention` → `~/.config/opencode/skills/yggdrasil/mimir/research/`, `heimdall-research-review` → `~/.config/opencode/skills/yggdrasil/heimdall/research/`)
+- **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`) → `~/.config/opencode/skills/yggdrasil/research/`
+- **Memory skills** (`odin-memory-system`, `brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/memories/`
+- **Deliberation skills** (`odin-deliberation-council` and the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/deliberation/`
 
 Optional (the curated starter skills, installed only if accepted at the prompt):
 
@@ -150,6 +149,16 @@ Re-running `./setup.sh` after pulling the latest framework updates performs a sa
 - **Skill files** are overwritten if they match the current version; they're never backed up.
 - **Custom-capabilities.yaml** is never touched — your custom tool grants are always preserved.
 - **Capability inventory** is always regenerated to reflect framework updates and any custom capabilities you've added.
+- **Nothing is ever deleted.** `setup.sh` only adds and overwrites — it never removes files from your installed tree. When a framework update moves, renames, or retires skills, the old installed copies remain behind as stale orphans (visible as duplicate or outdated entries in the capability inventory after regeneration) and must be removed manually.
+
+> **One-time cleanup — 2026-08 restructuring:** mandatory skills moved from agent-nested paths into the feature folders (`research/`, `memories/`, `deliberation/`). If you installed before this change, remove the now-stale copies (this touches only old framework paths — optional skills and your own additions are untouched):
+>
+> ```bash
+> cd ~/.config/opencode/skills/yggdrasil
+> rm -rf odin/memory odin/workflows odin/odin-research-convention \
+>        brokk/memory kvasir/research mimir/research heimdall/research \
+>        bragi/council-deliberation bragi/council-prompt
+> ```
 
 #### Optional Skills
 
@@ -183,7 +192,7 @@ Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/`, roo
 
 Memory is maintained through the three [commands](#commands) above, each routed through the full reviewed orchestration pipeline — never an instant, unreviewed write. If a project has no `.yggdrasil-memory/` directory, the commands offer to establish it (scaffolded from canonical templates in the `brokk-memory-curation` skill). By default the knowledge base is git-tracked, so git history provides an audit trail and a recovery net for destructive operations.
 
-The full memory convention — promotion pipeline, dream consolidation, forget deletion, and the Recall mechanism — is governed by the same orchestration rules that shape every task: every write is reviewed, every deletion is confirmed, and nothing enters memory without a vetted pipeline. The orchestration doctrine for the three command-triggered operations lives in the **[`skills/odin/odin-memory-system/SKILL.md`](./skills/odin/odin-memory-system/SKILL.md)** skill; the canonical entry-schema template lives in **[`skills/brokk/brokk-memory-curation/SKILL.md`](./skills/brokk/brokk-memory-curation/SKILL.md)**.
+The full memory convention — promotion pipeline, dream consolidation, forget deletion, and the Recall mechanism — is governed by the same orchestration rules that shape every task: every write is reviewed, every deletion is confirmed, and nothing enters memory without a vetted pipeline. The orchestration doctrine for the three command-triggered operations lives in the **[`skills/memories/odin-memory-system/SKILL.md`](./skills/memories/odin-memory-system/SKILL.md)** skill; the canonical entry-schema template lives in **[`skills/memories/brokk-memory-curation/SKILL.md`](./skills/memories/brokk-memory-curation/SKILL.md)**.
 
 ## Extending Yggdrasil with Tools & Skills
 
@@ -191,7 +200,7 @@ The repo is only needed for the initial install and framework upgrades. Once ins
 
 ### Add a New Skill to a Specialist
 
-Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown files discovered from the installed skills tree — no agent definition edits are needed; each specialist's permission allowlist already admits any skill matching its own prefix (e.g., `brokk-*`). Unlike Odin's skills (see [`skills/odin/README.md`](skills/odin/README.md)), they are **not** picked up by planning automatically: after adding one, you must regenerate the capability inventory, or Odin and Kvasir will not know it exists.
+Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown files discovered from the installed skills tree — no agent definition edits are needed; each specialist's permission allowlist already admits any skill matching its own prefix (e.g., `brokk-*`). Unlike Odin's skills, they are **not** picked up by planning automatically: after adding one, you must regenerate the capability inventory, or Odin and Kvasir will not know it exists.
 
 1. **Create the skill file** in the installed skills tree:
 
@@ -199,7 +208,7 @@ Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown fil
    $CONFIG_BASE/skills/yggdrasil/<agent>/<agent>-<name>/SKILL.md
    ```
 
-    Always-on skills install to a feature subdirectory: `<agent>/<feature>/<agent>-<name>/SKILL.md` (e.g., `bragi/council-deliberation/bragi-council-deliberation-foundations/`, `brokk/memory/brokk-memory-curation/`). Optional skills always install flat at `<agent>/<agent>-<name>/`.
+    Mandatory skills live in the feature directories `research/`, `memories/`, and `deliberation/`; optional skills install flat at `<agent>/<agent>-<name>/`.
 
    where `<agent>` is one of `mimir`, `brokk`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
 
@@ -261,7 +270,7 @@ The inventory is assembled from two sources: **built-in skills** (harvested auto
 
 ### Deliberation Council
 
-Odin provides an optional **Deliberation Council** workflow — trigger-gated, deliverable-producing: it generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/odin/odin-deliberation-council/SKILL.md`](./skills/odin/odin-deliberation-council/SKILL.md)** skill, which Odin loads on invoke.
+Odin provides an optional **Deliberation Council** workflow — trigger-gated, deliverable-producing: it generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/deliberation/odin-deliberation-council/SKILL.md`](./skills/deliberation/odin-deliberation-council/SKILL.md)** skill, which Odin loads on invoke.
 
 **Mechanism — a 5-stage pipeline:**
 
@@ -292,7 +301,7 @@ Odin provides an optional **Deliberation Council** workflow — trigger-gated, d
 
 ### Research
 
-Odin also provides a **Research workflow** — trigger-gated and deliverable-producing, orchestrating heavy research tasks through strategic decomposition and parallelized investigation. Like the Deliberation Council, it produces a user-facing deliverable (not advisory output) and routes through the Final Review Gate. Two distinctions set it apart: it is **adaptive** — the number of research streams N is determined by Kvasir's one-shot decomposition of the topic, not fixed at a default — and it is the only workflow with a **mandatory user-visible steering checkpoint** between planning and execution, which is what makes the mandatory Kvasir consultation additive rather than redundant. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/odin/odin-research-workflow/SKILL.md`](./skills/odin/odin-research-workflow/SKILL.md)** skill, which Odin loads on invoke.
+Odin also provides a **Research workflow** — trigger-gated and deliverable-producing, orchestrating heavy research tasks through strategic decomposition and parallelized investigation. Like the Deliberation Council, it produces a user-facing deliverable (not advisory output) and routes through the Final Review Gate. Two distinctions set it apart: it is **adaptive** — the number of research streams N is determined by Kvasir's one-shot decomposition of the topic, not fixed at a default — and it is the only workflow with a **mandatory user-visible steering checkpoint** between planning and execution, which is what makes the mandatory Kvasir consultation additive rather than redundant. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/research/odin-research-workflow/SKILL.md`](./skills/research/odin-research-workflow/SKILL.md)** skill, which Odin loads on invoke.
 
 **Mechanism — an 8-step arc:**
 

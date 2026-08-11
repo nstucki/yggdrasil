@@ -18,8 +18,8 @@
 #      "## Communication Policy" line, compared by checksum (shasum -a 256,
 #      falling back to cksum if shasum is unavailable).
 #   5. Subagent isolation — subagent prompts (agents/<name>.md for mimir,
-#      brokk, heimdall, kvasir, bragi) and their skills
-#      (skills/<name>/*/SKILL.md) must not reference any other agent by name
+#      brokk, heimdall, kvasir, bragi) and their skills (matched by slug prefix
+#      anywhere under skills/) must not reference any other agent by name
 #      (case-insensitive, word-boundary match). Self-references are allowed;
 #      Odin's files and skills are exempt from this scan.
 #   6. Skill description namelessness — every skills/**/SKILL.md's `description:`
@@ -422,36 +422,57 @@ check_agent_freshness() {
 # CHECK 5 — Subagent isolation.
 #
 # Subagents do not know about each other: each subagent's prompt
-# (agents/<name>.md) and skills (skills/<name>/*/SKILL.md) must not mention
-# any OTHER agent by name. Matching is case-insensitive with word boundaries
-# (grep -iw), so word-internal occurrences such as "encoding", "Hardcoding",
-# or "eroding" do not falsely match "odin". An agent's own name is allowed
-# (self-references). Odin's files and skills are exempt (the orchestrator
-# knows the full pantheon).
+# (agents/<name>.md) and each subagent-owned skill must not mention any OTHER
+# agent by name. Skill ownership is derived from the skill slug's <agent>-
+# prefix (frontmatter name == directory slug, enforced by Check 3), NOT from
+# the directory layout — so mandatory skills in the feature directories
+# (research/, memories/, deliberation/) are scanned identically to optional
+# skills under skills/<agent>/. Matching is case-insensitive with word
+# boundaries (grep -iw), so word-internal occurrences such as "encoding" or
+# "Hardcoding" do not falsely match "odin". Self-references are allowed.
+# odin-* skills are exempt (the orchestrator knows the full pantheon);
+# non-agent slugs (e.g. shared skills) are not scanned.
 # ---------------------------------------------------------------------------
 SUBAGENT_NAMES='mimir brokk heimdall kvasir bragi'
 ALL_AGENT_NAMES='odin mimir brokk heimdall kvasir bragi'
 
+# Scan one file owned by agent $2 for references to any other agent name.
+scan_isolation() {
+  local file="$1" agent="$2" other hit
+  for other in $ALL_AGENT_NAMES; do
+    [ "$other" = "$agent" ] && continue
+    while IFS= read -r hit; do
+      [ -n "$hit" ] || continue
+      fail_msg "$(rel "$file"): line ${hit%%:*}: references other agent '$other'"
+      FAIL_ISOLATION=$((FAIL_ISOLATION + 1))
+    done <<EOF
+$(grep -iwn "$other" "$file" 2>/dev/null || true)
+EOF
+  done
+}
+
 check_isolation() {
   heading "Check 5: Subagent isolation (no cross-agent references)"
 
-  local agent other file hit
+  local agent file slug owner
+
+  # Subagent prompt files.
   for agent in $SUBAGENT_NAMES; do
-    for file in "$AGENTS_DIR/$agent.md" "$SKILLS_DIR/$agent"/*/SKILL.md; do
-      [ -f "$file" ] || continue
-      for other in $ALL_AGENT_NAMES; do
-        [ "$other" = "$agent" ] && continue
-        # -i: case-insensitive; -w: whole-word match; -n: line numbers.
-        while IFS= read -r hit; do
-          [ -n "$hit" ] || continue
-          fail_msg "$(rel "$file"): line ${hit%%:*}: references other agent '$other'"
-          FAIL_ISOLATION=$((FAIL_ISOLATION + 1))
-        done <<EOF
-$(grep -iwn "$other" "$file" 2>/dev/null || true)
-EOF
-      done
-    done
+    file="$AGENTS_DIR/$agent.md"
+    [ -f "$file" ] || continue
+    scan_isolation "$file" "$agent"
   done
+
+  # Skill files — owner derived from the slug prefix (layout-independent).
+  while IFS= read -r -d '' file; do
+    slug=$(basename "$(dirname "$file")")
+    owner="${slug%%-*}"
+    case "$owner" in
+      odin) continue ;;
+      mimir|brokk|heimdall|kvasir|bragi) scan_isolation "$file" "$owner" ;;
+      *) continue ;;
+    esac
+  done < <(find "$SKILLS_DIR" -name SKILL.md -print0 | sort -z)
 
   if [ "$FAIL_ISOLATION" -eq 0 ]; then
     pass_msg "no subagent prompt or skill references another agent by name"
