@@ -107,10 +107,18 @@ You'll be prompted for two choices: whether to copy the curated optional skills 
 
 **What gets installed:**
 
+*Copied from the repo:*
+
 - **Agents** → `~/.config/opencode/agents/yggdrasil/`
 - **Commands** → `~/.config/opencode/commands/yggdrasil/`
 - **Capability generator** → `~/.config/opencode/yggdrasil/generate-capabilities.sh`
+
+*Created once, preserved on upgrades:*
+
 - **Custom-capabilities scaffold** → `~/.config/opencode/yggdrasil/custom-capabilities.yaml` (first install only; never overwritten on upgrades)
+
+*Generated at install time (not repo-committed):*
+
 - **Capability inventory** → `~/.config/opencode/skills/yggdrasil/shared/capability-inventory/SKILL.md` (regenerated automatically on every install)
 
 **Skills installed:**
@@ -143,7 +151,52 @@ The path supports `~` expansion (e.g., `~/my-opencode-config`).
 
 #### Optional Skills
 
-Yggdrasil ships with a curated set of optional skills. **These are starting points, not prescriptions** — each is a Markdown file installed into the respective agent subdirectory under the installed `skills/yggdrasil/` tree (e.g., `skills/yggdrasil/brokk/`, `skills/yggdrasil/mimir/`). Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own. (Installed only if you accept the "Copy optional skills?" prompt at install time.)
+Yggdrasil ships with a curated set of optional skills. **These are starting points, not prescriptions** — each is a Markdown file installed into the respective agent subdirectory under the installed `skills/yggdrasil/` tree. Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own. (Installed only if you accept the "Copy optional skills?" prompt at install time.)
+
+**Directory structure:**
+
+```
+~/.config/opencode/skills/yggdrasil/
+├── research/                          # Mandatory skills
+│   ├── odin-research-workflow/
+│   ├── kvasir-research-decomposition/
+│   ├── mimir-research-convention/
+│   └── heimdall-research-review/
+├── memories/                          # Mandatory skills
+│   ├── odin-memory-system/
+│   └── brokk-memory-curation/
+├── deliberation/                      # Mandatory skills
+│   ├── odin-deliberation-council/
+│   ├── bragi-council-deliberation-foundations/
+│   ├── bragi-council-deliberation-systems/
+│   ├── bragi-council-deliberation-adversary/
+│   ├── bragi-council-deliberation-pragmatist/
+│   └── bragi-council-deliberation-humanist/
+├── bragi/                             # Optional skills (if accepted at install)
+│   ├── bragi-presentation-structuring/
+│   ├── bragi-question-formulation/
+│   └── bragi-tradeoff-communication/
+├── brokk/                             # Optional skills (if accepted at install)
+│   ├── brokk-documentation-writing/
+│   ├── brokk-git-usage/
+│   ├── brokk-software-engineering/
+│   └── brokk-system-prompts/
+├── heimdall/                          # Optional skills (if accepted at install)
+│   ├── heimdall-design-review/
+│   ├── heimdall-documentation-review/
+│   ├── heimdall-implementation-review/
+│   └── heimdall-system-prompt-review/
+├── kvasir/                            # Optional skills (if accepted at install)
+│   ├── kvasir-approach-evaluation/
+│   ├── kvasir-risk-assessment/
+│   └── kvasir-task-decomposition/
+└── mimir/                             # Optional skills (if accepted at install)
+    ├── mimir-codebase-analysis/
+    ├── mimir-diagnostic-analysis/
+    └── mimir-security-analysis/
+```
+
+**Available optional skills by agent:**
 
 - **Bragi:** Presentation structuring, Question formulation, Trade-off communication
 - **Brokk:** Documentation writing, Git usage, Software engineering, System prompts
@@ -169,13 +222,29 @@ Each command routes through the full orchestration pipeline — reviewed at ever
 
 Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/`, rooted at the session working directory — recommended to be git-tracked — distinct from the transient, gitignored Yggdrasil Workspace (`.yggdrasil-workspace/`).
 
+**Why they're separate:**
+
+- **`.yggdrasil-workspace/`** — Transient task artifacts (research notes, drafts, intermediate outputs, review verdicts). Gitignored. Deleted between sessions. Task-scoped and ephemeral.
+- **`.yggdrasil-memory/`** — Persistent knowledge base (verified findings, decisions, hard-won insights). Git-tracked. Survives between sessions and projects. Curated and long-lived.
+
+This separation ensures that valuable, verified findings persist and accumulate across projects, while task-specific work doesn't clutter the knowledge base or version control.
+
 **What it contains:** verified facts with file/line citations, decisions and rationale, and hard-won findings (root causes, dependency quirks, performance characteristics). Not task narratives, review verdicts, transient state, or anything reproducible in seconds by reading one file.
 
 Memory is maintained through the three [commands](#commands) above, each routed through the full reviewed orchestration pipeline — never an instant, unreviewed write. If a project has no `.yggdrasil-memory/` directory, the commands offer to establish it (scaffolded from canonical templates in the `brokk-memory-curation` skill). By default the knowledge base is git-tracked, so git history provides an audit trail and a recovery net for destructive operations.
 
+**Typical memory workflow:**
+
+1. **Run a research task** — e.g., `/yggdrasil/research "How does the authentication system work?"` — and Heimdall reviews the findings.
+2. **Promote valuable findings** — if the findings are broadly useful (not task-specific), run `/yggdrasil/remember "authentication system"` to promote them to the knowledge base. The findings are reviewed again before promotion.
+3. **Consolidate periodically** — run `/yggdrasil/dream` to audit the knowledge base for duplicates, contradictions, and staleness. This is maintenance, not deletion — the dream workflow identifies issues and suggests consolidation, but never silently removes entries.
+4. **Remove outdated entries** — run `/yggdrasil/forget "old-finding-topic"` to delete entries that are no longer accurate or relevant. This is destructive and always confirmed before dispatch.
+
 The full memory convention — promotion pipeline, dream consolidation, forget deletion, and the Recall mechanism — is governed by the same orchestration rules that shape every task: every write is reviewed, every deletion is confirmed, and nothing enters memory without a vetted pipeline. The orchestration doctrine for the three command-triggered operations lives in the **[`skills/memories/odin-memory-system/SKILL.md`](./skills/memories/odin-memory-system/SKILL.md)** skill; the canonical entry-schema template lives in **[`skills/memories/brokk-memory-curation/SKILL.md`](./skills/memories/brokk-memory-curation/SKILL.md)**.
 
 ## Extending Yggdrasil with Tools & Skills
+
+> ⚠️ **After installation, do not edit files in this repository.** All customization (new skills, tool grants, capability registry) happens in the installed location (`~/.config/opencode/skills/yggdrasil/`, `~/.config/opencode/agents/yggdrasil/`, etc.). The repo is only used for framework upgrades. Changes made to the repo after install will be lost on the next upgrade.
 
 The repo is only needed for the initial install and framework upgrades. Once installed, all extension happens in the installed location, via two paths that end in the same regeneration step: **add a new skill** to a specialist (a Markdown file), or **grant a new tool** to a specialist (a permission + registry entry). Both feed the same generator and surface in the same capability inventory.
 
@@ -248,6 +317,16 @@ For example, `$CONFIG_BASE/skills/yggdrasil/brokk/brokk-shell-scripting/SKILL.md
 Both Odin and Kvasir maintain awareness of all available capabilities — built-in skills plus custom-granted tools — by independently loading the same **`capability-inventory` skill** at the start of task execution/planning. No relay, copying, or curation needed — both agents load the same source directly via name-based discovery.
 
 The inventory is assembled from two sources: **built-in skills** (harvested automatically from agent and skill frontmatter) and **custom capabilities** (read from `custom-capabilities.yaml`). The generator is created at install time and can be re-run after adding custom tools. Custom tool grants are managed post-install in `$CONFIG_BASE/yggdrasil/custom-capabilities.yaml` and `$CONFIG_BASE/agents/yggdrasil/`, never in the repo.
+
+**When to regenerate the capability inventory:**
+
+After you add a new skill or grant a new tool to a specialist, you must regenerate the inventory so Odin and Kvasir know about it:
+
+```bash
+$CONFIG_BASE/yggdrasil/generate-capabilities.sh
+```
+
+This is a one-line command that harvests all skill frontmatter and custom capabilities into a single `capability-inventory/SKILL.md` file. Without regeneration, your new skill or tool will be invisible to planning and task execution. (`setup.sh` automatically regenerates the inventory on every install and upgrade, so fresh installs are always current.)
 
 ### Deliberation Council
 
