@@ -282,11 +282,11 @@ Odin provides an optional **Deliberation Council** workflow — trigger-gated, d
 4. Dispatch one fresh-session **Bragi** task to draft the final user-facing answer from Kvasir's synthesis artifact. The deliverable states whether research was performed.
 5. **Final Review Gate** — a fresh Heimdall session validates the assembled deliverable.
 
-**Triggering (mode-specific):**
+**Triggering:** The invariant rules live in the shared § Workflows section and hold in every mode — the `/yggdrasil/deliberate` command fires it immediately; explicit multi-perspective/opinions/angles language in the request fires it; an opinion-type question without explicit multi-perspective language is the suggestion candidate; a suggestion the user accepts fires it; factual or executable requests skip it. Each mode's Communication Policy carries only its deltas:
 
-- In **Interactive** mode: the `/deliberate` command fires it immediately; explicit multi-perspective/opinions/angles language in the request fires it; an opinion-type question without explicit multi-perspective language prompts a suggest-then-confirm, letting the user choose; factual or executable requests skip it.
-- In **Guided** mode: explicit multi-perspective/opinions/angles language in the request fires it; an opinion-type question without explicit multi-perspective language prompts a suggest-then-confirm, letting the user choose; factual or executable requests skip it. (The `/deliberate` command is unavailable — it targets Interactive mode only.)
-- In **Autonomous** mode: explicit multi-perspective/deliberation language fires it; opinion-type language without an explicit request skips it (suggest-then-confirm requires interaction, which contradicts the autonomous Communication Policy); no opinion-type language skips it.
+- **Interactive** — commands available; the suggestion candidate prompts a suggest-then-confirm, letting the user choose.
+- **Guided** — no commands are routed to it; the suggestion candidate prompts a suggest-then-confirm (the suggestion rides the triggering decision, before autonomous execution begins).
+- **Autonomous** — no commands; the suggestion candidate is skipped — suggest-then-confirm requires interaction, which contradicts the autonomous Communication Policy.
 
 **Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost without research: N + 2 (7 at N=5) plus the Final Review Gate. Cost with research: N + 3 (8 at N=5) plus the Final Review Gate, scaling with parallel Mimir sessions. Output is a deliverable — it must pass the Final Review Gate.
 
@@ -305,11 +305,11 @@ Odin also provides a **Research workflow** — trigger-gated and deliverable-pro
 7. Dispatch one fresh-session **Bragi** task to draft the final user-facing deliverable from the reviewed synthesis. Bragi stands between the synthesis and the user, preserving Kvasir's advisory boundary.
 8. Route the assembled deliverable through the **Final Review Gate** (a fresh Heimdall session) validating it against the original request.
 
-**Triggering (mode-specific):**
+**Triggering:** The invariant rules live in the shared § Workflows section and hold in every mode — the `/yggdrasil/research` command fires it immediately; explicit research/investigate/analyze-into language in the request fires it; factual or executable requests skip it. Each mode's Communication Policy carries only its deltas:
 
-- In **Interactive** mode: the `/research` command fires it immediately; explicit research/investigate/analyze-into language in the request fires it; factual or executable requests skip it.
-- In **Guided** mode: explicit research/investigate/analyze-into language in the request fires it; factual or executable requests skip it. (The `/research` command is unavailable — it targets Interactive mode only.)
-- In **Autonomous** mode: explicit research/investigate/analyze-into language in the prompt fires it (the plan checkpoint auto-proceeds; the decomposition still runs); no research-type language skips it. (Suggest-then-confirm is unavailable — it requires interaction, which contradicts the autonomous Communication Policy.)
+- **Interactive** — commands available; the plan checkpoint pauses for the user's steering input before dispatching research streams.
+- **Guided** — no commands are routed to it; the plan checkpoint auto-proceeds (mid-execution contact stays reserved for unresolvable blockers).
+- **Autonomous** — no commands; the plan checkpoint auto-proceeds — the surfaced plan summary rides the final deliverable's disclosure.
 
 **Constraints:** K=1 (one decomposition pass, no re-decomposition loop — iteration is handled internally by the `kvasir-research-decomposition` skill's batching/waves). N is the cluster count from Kvasir's decomposition (adaptive; no fixed default — typically 1 for light questions, 2-5 for heavy research). Cost: `2N + 5` dispatches (7 at N=1, 11 at N=3, 21 at N=8) plus the Final Review Gate. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
 

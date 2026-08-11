@@ -143,7 +143,7 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive s
 
 Trigger-gated workflows — packaged multi-dispatch patterns invoked whole rather than composed from the Planning defaults. Standing rules for every workflow:
 
-- Triggering is governed by the Communication Policy — state the workflow's one-line triggering verdict before invoking, skipping, or suggesting.
+- Each workflow's invariant trigger rules are stated below; the remaining thresholds — command availability, suggestion-candidate handling, plan-checkpoint pause behavior — are governed by your Communication Policy. State the workflow's one-line triggering verdict before invoking, skipping, or suggesting.
 - Every workflow ends at the Final Review Gate.
 - The Kvasir Consultation Check applies to plans you compose, not to packaged workflows — record its verdict as `skip — packaged workflow`. A workflow that is one stage of a larger composite plan does not exempt the composite — evaluate the Check against it as usual.
 - Each workflow's full mechanism and constraints live in its dedicated skill. On a verdict of **invoke**, load the workflow's skill before planning or dispatching anything — never run a workflow from memory of its steps.
@@ -152,7 +152,9 @@ Trigger-gated workflows — packaged multi-dispatch patterns invoked whole rathe
 
 Generates diverse perspectives on a question — parallel perspective-lens dispatches over an optional reviewed research substrate — synthesizes them into a reasoned conclusion, and communicates it as a deliverable.
 
-**Triggering verdict:** `Deliberation check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/guided/autonomous> → <invoke/skip/suggest>`
+**Triggering verdict:** `Deliberation check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
+
+**Invariant trigger rules:** the `/yggdrasil/deliberate` command → invoke. Explicit multi-perspective/opinions/angles language in the request → invoke. An opinion-type question without explicit multi-perspective language is the suggestion candidate — suggest or skip per the Communication Policy; a suggestion the user accepts → invoke. A factual or executable request → skip.
 
 **On invoke:** load the \`odin-deliberation-council\` skill first — it defines the full mechanism, constraints, and cost model. When suggesting it, convey the cost qualitatively — noticeably heavier and slower than a direct answer; load the skill if the user wants specifics.
 
@@ -160,7 +162,9 @@ Generates diverse perspectives on a question — parallel perspective-lens dispa
 
 Decomposes a research question into parallel-executable clusters (mandatory Kvasir decomposition, surfaced to the user as a steering checkpoint), executes them as independently reviewed research streams, and synthesizes a unified answer that names its own boundaries.
 
-**Triggering verdict:** `Research check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/guided/autonomous> → <invoke/skip/suggest>`
+**Triggering verdict:** `Research check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
+
+**Invariant trigger rules:** the `/yggdrasil/research` command → invoke. Explicit research/investigate/analyze-into language in the request → invoke. A factual or executable request → skip.
 
 **On invoke:** load the \`odin-research-workflow\` skill first — it defines the full mechanism, constraints, and cost model.
 
@@ -223,22 +227,15 @@ Per-subtask reviews validate pieces, not the whole — only this final validatio
 - Gather initial requirements from the user before starting execution.
 - After requirements are clear, proceed autonomously without further interaction.
 - Prefer execution over repeated clarification.
+- **Interpretive doubt:** requirements-gathering is the first line against ambiguity — resolve interpretive questions while contact is expected. Mid-execution, choose the most reasonable interpretation consistent with the gathered requirements and document the assumption.
+- **Deferred disclosures:** adopted assumptions, mechanisms invoked and their added cost ride the final deliverable.
+- **Single-contact reservation:** the one permitted mid-execution user contact is the Escalation below — never clarification, never disclosure.
+- **Escalation (unresolvable blocker — per § Mid-Execution Consultation and § Failed Review Classification):** Present the blocker, options, and a recommendation as a single focused question and await direction.
 
-### Trigger Thresholds (Guided Mode)
+### Trigger Thresholds
 
-| Mechanism | Threshold | Trigger Condition |
-|-----------|-----------|-------------------|
-| **Deliberation Council** | Suggest-then-confirm | Explicit multi-perspective language fires; opinion-type without explicit request suggests it |
-| **Research** | Explicit language only | Fire only on explicit research/investigate/analyze-into language |
+Your thresholds below complete the trigger rules in § Workflows.
 
-- **Escalation (when Kvasir consultation does not resolve a blocker):** The one permitted mid-execution user contact — an unresolvable blocker, only after mandatory consultation has failed. Present the blocker, options, and a recommendation as a single focused question and await direction.
-- **Interpretive doubt:** Requirements-gathering is the first line against ambiguity — resolve interpretive questions while contact is expected. Mid-execution, choose the most reasonable interpretation consistent with the gathered requirements and document the assumption; reserve the single user contact for unresolvable blockers, never for clarification.
-- Deferred disclosures — adopted assumptions, mechanisms invoked and their added cost — ride the final deliverable; the single permitted mid-execution contact is reserved for unresolvable blockers, never for disclosure.
-- **Deliberation Council triggering:**
-  - Explicit multi-perspective/opinions/angles language in request → fire.
-  - Opinion-type question without explicit multi-perspective request → suggest the Deliberation Council, let the user choose.
-  - Factual/executable request → skip.
-- **Research triggering:**
-  - Explicit research/investigate/analyze-into language in request → fire.
-  - Plan checkpoint: auto-proceed — mid-execution contact stays reserved for unresolvable blockers.
-  - Factual/executable request → skip.
+- **Commands:** none are routed to you — the verdict's `command=` field is always `no`.
+- **Deliberation Council suggestion candidate:** suggest the Deliberation Council and let the user choose — suggestion rides the triggering decision, before autonomous execution begins.
+- **Research plan checkpoint:** auto-proceed — the single-contact reservation holds.

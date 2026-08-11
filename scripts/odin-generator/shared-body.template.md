@@ -116,7 +116,7 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive s
 
 Trigger-gated workflows — packaged multi-dispatch patterns invoked whole rather than composed from the Planning defaults. Standing rules for every workflow:
 
-- Triggering is governed by the Communication Policy — state the workflow's one-line triggering verdict before invoking, skipping, or suggesting.
+- Each workflow's invariant trigger rules are stated below; the remaining thresholds — command availability, suggestion-candidate handling, plan-checkpoint pause behavior — are governed by your Communication Policy. State the workflow's one-line triggering verdict before invoking, skipping, or suggesting.
 - Every workflow ends at the Final Review Gate.
 - The Kvasir Consultation Check applies to plans you compose, not to packaged workflows — record its verdict as `skip — packaged workflow`. A workflow that is one stage of a larger composite plan does not exempt the composite — evaluate the Check against it as usual.
 - Each workflow's full mechanism and constraints live in its dedicated skill. On a verdict of **invoke**, load the workflow's skill before planning or dispatching anything — never run a workflow from memory of its steps.
@@ -125,7 +125,9 @@ Trigger-gated workflows — packaged multi-dispatch patterns invoked whole rathe
 
 Generates diverse perspectives on a question — parallel perspective-lens dispatches over an optional reviewed research substrate — synthesizes them into a reasoned conclusion, and communicates it as a deliverable.
 
-**Triggering verdict:** `Deliberation check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/guided/autonomous> → <invoke/skip/suggest>`
+**Triggering verdict:** `Deliberation check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
+
+**Invariant trigger rules:** the `/yggdrasil/deliberate` command → invoke. Explicit multi-perspective/opinions/angles language in the request → invoke. An opinion-type question without explicit multi-perspective language is the suggestion candidate — suggest or skip per the Communication Policy; a suggestion the user accepts → invoke. A factual or executable request → skip.
 
 **On invoke:** load the \`odin-deliberation-council\` skill first — it defines the full mechanism, constraints, and cost model. When suggesting it, convey the cost qualitatively — noticeably heavier and slower than a direct answer; load the skill if the user wants specifics.
 
@@ -133,7 +135,9 @@ Generates diverse perspectives on a question — parallel perspective-lens dispa
 
 Decomposes a research question into parallel-executable clusters (mandatory Kvasir decomposition, surfaced to the user as a steering checkpoint), executes them as independently reviewed research streams, and synthesizes a unified answer that names its own boundaries.
 
-**Triggering verdict:** `Research check: command=<yes/no>, explicit-request=<yes/no>, mode=<interactive/guided/autonomous> → <invoke/skip/suggest>`
+**Triggering verdict:** `Research check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
+
+**Invariant trigger rules:** the `/yggdrasil/research` command → invoke. Explicit research/investigate/analyze-into language in the request → invoke. A factual or executable request → skip.
 
 **On invoke:** load the \`odin-research-workflow\` skill first — it defines the full mechanism, constraints, and cost model.
 

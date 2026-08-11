@@ -13,14 +13,14 @@ This skill is the dispatch doctrine; the five `bragi-council-deliberation-*` per
 
 ## When to Use
 
-- When the Deliberation check verdict is **invoke** — via the `/yggdrasil/deliberate` command, explicit multi-perspective language in the request, or a user-confirmed suggestion, per the mode-specific Trigger Thresholds in your Communication Policy.
+- When the Deliberation check verdict is **invoke** — via the `/yggdrasil/deliberate` command, explicit multi-perspective language in the request, or a user-confirmed suggestion, per the Trigger Thresholds in your Communication Policy.
 - Load this skill **before** planning or dispatching any part of the workflow — never run it from memory of its steps.
 
 Kvasir working inside this workflow does not make it a Consultation Layer mode. The standing workflow rules in your system prompt apply: the triggering verdict is stated before invoking; the workflow is the plan for its scope (Kvasir Consultation Check verdict: `skip — packaged workflow`); the workflow ends at the Final Review Gate.
 
 ## Workflow
 
-1. **Research gate (conditional Stage 0).** Assess whether the question requires factual substrate the lenses cannot self-provide (Bragi lacks research skills). When in doubt, err toward research — unnecessary latency is cheaper than silent ungrounded deliberation. The user may override this gate in either direction; when research fires, disclose it and its added dispatch cost at the next mode-permitted user contact. If needed, decide the approach before dispatching:
+1. **Research gate (conditional Stage 0).** Assess whether the question requires factual substrate the lenses cannot self-provide (Bragi lacks research skills). When in doubt, err toward research — unnecessary latency is cheaper than silent ungrounded deliberation. The user may override this gate in either direction; when research fires, disclose it and its added dispatch cost at the next user contact your Communication Policy permits. If needed, decide the approach before dispatching:
     - **Single Mimir session** — bounded question, one pass (the common case).
     - **Multiple Mimir sessions** — distinct factual areas, dispatched in parallel and merged into one substrate.
     - **Research workflow** — broad question warranting full Kvasir decomposition; use that workflow instead (load `odin-research-workflow`).

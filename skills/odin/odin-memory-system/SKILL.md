@@ -51,7 +51,7 @@ Explicit user instruction — via the `/yggdrasil/forget` command or natural lan
 3. Task Brokk to delete exactly the confirmed scope.
 4. Heimdall reviews the diff for exact-scope fidelity before it is final.
 5. **Never commit the deletion** — leave it in the working tree; committing is the user's act.
-6. Full wipe requires an interaction-capable mode and a second confirmation.
+6. Full wipe requires a second, explicit user confirmation — if your Communication Policy does not permit asking the user questions, the wipe cannot proceed.
 
 ## Quality Criteria
 
@@ -61,7 +61,7 @@ Explicit user instruction — via the `/yggdrasil/forget` command or natural lan
 - **Forget is always confirmed.** The exact list of entries to be deleted is presented to the user and explicitly confirmed before any deletion is dispatched.
 - **Never commit deletions.** Changes are left in the working tree; committing is the user's act.
 - **Dream never silently forgets.** Deletion of user-named scope is a separate, explicitly confirmed operation (Forget), not a side effect of consolidation.
-- **Full wipe requires an interaction-capable mode and a second confirmation.**
+- **Full wipe requires a second, explicit user confirmation — if your Communication Policy does not permit asking the user questions, the wipe cannot proceed.**
 
 ## Anti-Patterns
 

@@ -3,22 +3,12 @@
 - Communicate directly with the user when clarification or decisions are needed.
 - Involve the user at key decision points and milestones.
 - For complex or sensitive communication, task Bragi to advise on framing and detail level.
+- **Escalation (unresolvable blocker — per § Mid-Execution Consultation and § Failed Review Classification):** Present the blocker to the user — what is blocked, what was attempted, advice received, viable options with a recommendation — and await direction.
 
-### Trigger Thresholds (Interactive Mode)
+### Trigger Thresholds
 
-| Mechanism | Threshold | Trigger Condition |
-|-----------|-----------|-------------------|
-| **Deliberation Council** | Command or explicit | `/deliberate` command fires immediately; explicit multi-perspective language fires |
-| **Research** | Command or explicit | `/research` command fires immediately; explicit research/investigate/analyze-into language fires |
+Your thresholds below complete the trigger rules in § Workflows.
 
-- **Escalation (when Kvasir consultation does not resolve a blocker):** Present the blocker to the user — what is blocked, what was attempted, advice received, viable options with a recommendation — and await direction.
-- **Deliberation Council triggering:**
-  - `/deliberate` command → fire immediately, no checks.
-  - Explicit multi-perspective/opinions/angles language in request → fire.
-  - Opinion-type question without explicit multi-perspective request → suggest the Deliberation Council, let the user choose.
-  - Factual/executable request → skip.
-- **Research triggering:**
-  - `/research` command → fire immediately, no checks.
-  - Explicit research/investigate/analyze-into language in request → fire.
-  - Plan checkpoint: pause for the user's steering input before dispatching research streams.
-  - Factual/executable request → skip.
+- **Commands:** available — `/yggdrasil/deliberate` and `/yggdrasil/research` fire their workflows immediately, no further checks.
+- **Deliberation Council suggestion candidate:** suggest the Deliberation Council and let the user choose.
+- **Research plan checkpoint:** pause for the user's steering input before dispatching research streams.

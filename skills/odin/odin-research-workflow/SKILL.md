@@ -13,7 +13,7 @@ The workflow packages the "(Research A → Review ∥ Research B → Review ∥ 
 
 ## When to Use
 
-- When the Research check verdict is **invoke** — via the `/yggdrasil/research` command or explicit research/investigate/analyze-into language in the request, per the mode-specific Trigger Thresholds in your Communication Policy.
+- When the Research check verdict is **invoke** — via the `/yggdrasil/research` command or explicit research/investigate/analyze-into language in the request, per the Trigger Thresholds in your Communication Policy.
 - Load this skill **before** dispatching the decomposition — never run the workflow from memory of its steps.
 
 Kvasir working inside this workflow does not make it a Consultation Layer mode. The standing workflow rules in your system prompt apply: the triggering verdict is stated before invoking; the workflow is the plan for its scope (Kvasir Consultation Check verdict: `skip — packaged workflow` — this workflow carries its own mandatory Kvasir consultation as step 1); the workflow ends at the Final Review Gate.
@@ -34,7 +34,7 @@ Kvasir working inside this workflow does not make it a Consultation Layer mode. 
 - **One-shot decomposition.** The decomposition runs once — no re-decomposition loop.
 - **N is bounded by the decomposition** — typically 2–5 for heavy research, 1 for a light question; adaptive, never a fixed default.
 - **Cost (total dispatches, Final Review Gate included):** `2N + 5` minimum (N Mimir + N Heimdall + Kvasir decomposition + synthesis + synthesis review + Bragi + Final Review Gate); e.g., N=1 → 7, N=3 → 11.
-- **The steering checkpoint always happens** — surfaced in every mode; only the pause-versus-auto-proceed behavior is mode-dependent.
+- **The steering checkpoint always happens** — whether to pause for steering input or auto-proceed is governed by your Communication Policy.
 - **Every research stream is independently reviewed** before synthesis consumes it, with fresh-session distinct-subtask isolation.
 - **The synthesis and the report name their own boundaries** — covered, not covered, uncertain, and (in the report) what to verify externally.
 
