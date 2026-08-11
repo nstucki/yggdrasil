@@ -1,9 +1,9 @@
 ---
-name: brokk-git
+name: brokk-git-usage
 description: Perform local git operations — branching, staging, committing — without modifying existing history.
 ---
 
-# Git
+# Git Usage
 
 ## Purpose
 

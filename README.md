@@ -117,9 +117,9 @@ You'll be prompted for two choices: whether to copy the curated optional skills 
 
 Required (always installed, regardless of the prompt — Odin's workflow and memory mechanisms depend on them):
 
-- **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`) → `~/.config/opencode/skills/yggdrasil/research/`
 - **Memory skills** (`odin-memory-system`, `brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/memories/`
 - **Deliberation skills** (`odin-deliberation-council` and the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/deliberation/`
+- **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`) → `~/.config/opencode/skills/yggdrasil/research/`
 
 Optional (the curated starter skills, installed only if accepted at the prompt):
 
@@ -141,34 +141,15 @@ OPENCODE_CONFIG_BASE=/custom/path ./setup.sh -y
 
 The path supports `~` expansion (e.g., `~/my-opencode-config`).
 
-#### Upgrades
-
-Re-running `./setup.sh` after pulling the latest framework updates performs a safe upgrade:
-
-- **Agent files** that have been locally modified are backed up with a timestamp suffix (e.g., `odin-autonomous.md.bak.1234567890`) before being overwritten. Review your backup to recover any custom permission grants and re-apply them to the new version.
-- **Skill files** are overwritten if they match the current version; they're never backed up.
-- **Custom-capabilities.yaml** is never touched — your custom tool grants are always preserved.
-- **Capability inventory** is always regenerated to reflect framework updates and any custom capabilities you've added.
-- **Nothing is ever deleted.** `setup.sh` only adds and overwrites — it never removes files from your installed tree. When a framework update moves, renames, or retires skills, the old installed copies remain behind as stale orphans (visible as duplicate or outdated entries in the capability inventory after regeneration) and must be removed manually.
-
-> **One-time cleanup — 2026-08 restructuring:** mandatory skills moved from agent-nested paths into the feature folders (`research/`, `memories/`, `deliberation/`). If you installed before this change, remove the now-stale copies (this touches only old framework paths — optional skills and your own additions are untouched):
->
-> ```bash
-> cd ~/.config/opencode/skills/yggdrasil
-> rm -rf odin/memory odin/workflows odin/odin-research-convention \
->        brokk/memory kvasir/research mimir/research heimdall/research \
->        bragi/council-deliberation bragi/council-prompt
-> ```
-
 #### Optional Skills
 
 Yggdrasil ships with a curated set of optional skills. **These are starting points, not prescriptions** — each is a Markdown file installed into the respective agent subdirectory under the installed `skills/yggdrasil/` tree (e.g., `skills/yggdrasil/brokk/`, `skills/yggdrasil/mimir/`). Review, modify, and extend them to match your team's workflows. Remove what you don't need, adjust what you do, and add your own. (Installed only if you accept the "Copy optional skills?" prompt at install time.)
 
 - **Bragi:** Presentation structuring, Question formulation, Trade-off communication
-- **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
-- **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
+- **Brokk:** Documentation writing, Git usage, Software engineering, System prompts
+- **Heimdall:** Design review, Documentation review, Implementation review, System prompt review
 - **Kvasir:** Approach evaluation, Risk assessment, Task decomposition
-- **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
+- **Mimir:** Codebase analysis, Diagnostic analysis, Security analysis
 
 ## Commands
 
@@ -272,7 +253,7 @@ The inventory is assembled from two sources: **built-in skills** (harvested auto
 
 Odin provides an optional **Deliberation Council** workflow — trigger-gated, deliverable-producing: it generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/deliberation/odin-deliberation-council/SKILL.md`](./skills/deliberation/odin-deliberation-council/SKILL.md)** skill, which Odin loads on invoke.
 
-**Mechanism — a 5-stage pipeline:**
+**A 5-stage pipeline:**
 
 1. **Research gate (conditional Stage 0).** Odin assesses whether the question requires factual substrate the lenses cannot self-provide (Bragi lacks research skills). When in doubt, err toward research. User override is available; if triggered, the user is told with cost. If needed, **Odin decides the approach** before dispatching:
     - **Single Mimir session** — bounded question, one pass (the common case).
@@ -303,7 +284,7 @@ Odin provides an optional **Deliberation Council** workflow — trigger-gated, d
 
 Odin also provides a **Research workflow** — trigger-gated and deliverable-producing, orchestrating heavy research tasks through strategic decomposition and parallelized investigation. Like the Deliberation Council, it produces a user-facing deliverable (not advisory output) and routes through the Final Review Gate. Two distinctions set it apart: it is **adaptive** — the number of research streams N is determined by Kvasir's one-shot decomposition of the topic, not fixed at a default — and it is the only workflow with a **mandatory user-visible steering checkpoint** between planning and execution, which is what makes the mandatory Kvasir consultation additive rather than redundant. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/research/odin-research-workflow/SKILL.md`](./skills/research/odin-research-workflow/SKILL.md)** skill, which Odin loads on invoke.
 
-**Mechanism — an 8-step arc:**
+**An 8-step arc:**
 
 1. Dispatch one **Kvasir** task to decompose the research question into independent research clusters. The decomposition plan is written to a plan artifact. Kvasir is advisory here (Reading A) — no independent Heimdall review of the decomposition itself.
 2. **Plan checkpoint** — surface the decomposition plan to the user as a steering checkpoint before committing to execution; pause for redirect. This is the key innovation: the mandatory Kvasir consultation is additive because the plan is visible and steerable, not a hidden internal step.

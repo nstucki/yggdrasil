@@ -22,10 +22,11 @@
 #      anywhere under skills/) must not reference any other agent by name
 #      (case-insensitive, word-boundary match). Self-references are allowed;
 #      Odin's files and skills are exempt from this scan.
-#   6. Skill description namelessness — every skills/**/SKILL.md's `description:`
-#      frontmatter field must not leak any agent name (odin, mimir, brokk, heimdall,
-#      kvasir, bragi — case-insensitive, whole-word match). Also verifies the repo's
-#      custom-capabilities.yaml scaffold remains empty (no real custom tool grants).
+#   6. Skill description namelessness + repo scaffold emptiness — every skills/**/SKILL.md's
+#      `description:` frontmatter field must not leak any agent name (odin, mimir, brokk,
+#      heimdall, kvasir, bragi — case-insensitive, whole-word match). Also verifies the
+#      repo's custom-capabilities.yaml and skills/shared/ remain empty (no custom tool
+#      grants or generated files in the repo).
 #   7. Odin agent invariant markers (rule strings present in generated agent) —
 #      a curated list of distinctive strings (invariant markers) must appear in
 #      agents/odin-autonomous.md to guard invariant orchestration rules against
@@ -528,6 +529,16 @@ check_capabilities() {
       fail_msg "  Custom tool grants belong in the installed copy: \$CONFIG_BASE/yggdrasil/custom-capabilities.yaml"
       FAIL_CAPABILITIES=$((FAIL_CAPABILITIES + 1))
     fi
+  fi
+  
+  # Check 6d: skills/shared/ must remain empty in the repo. Generated files like
+  # capability-inventory belong in the installed copy only ($CONFIG_BASE/skills/yggdrasil/shared/).
+  # The repo's skills/shared/ directory should contain no SKILL.md files.
+  local shared_skills_count=$(find "$SKILLS_DIR/shared" -name "SKILL.md" 2>/dev/null | wc -l)
+  if [ "$shared_skills_count" -gt 0 ]; then
+    fail_msg "$(rel "$SKILLS_DIR/shared"): must remain empty (no generated skills in repo)"
+    fail_msg "  Generated files like capability-inventory belong in the installed copy: \$CONFIG_BASE/skills/yggdrasil/shared/"
+    FAIL_CAPABILITIES=$((FAIL_CAPABILITIES + 1))
   fi
   
   if [ "$FAIL_CAPABILITIES" -eq 0 ]; then

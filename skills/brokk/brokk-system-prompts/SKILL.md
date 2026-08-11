@@ -1,9 +1,9 @@
 ---
-name: brokk-system-prompt-writing
-description: Guide for writing precise, structured agent definitions and system prompts when authoring or revising prompt files.
+name: brokk-system-prompts
+description: Write precise, structured agent definitions, system prompts, and skill files that produce reliable, controllable agent behavior.
 ---
 
-# System Prompt Writing
+# System Prompts
 
 ## Purpose
 
@@ -16,8 +16,7 @@ The core insight: **structure first; style second.** A prompt can be concise, pr
 - When authoring, editing, or evaluating a system prompt, agent definition, or role prompt.
 - When writing or revising a SKILL.md file (a SKILL.md is itself a system prompt).
 - When reviewing a prompt for completeness before it ships.
-
-Not for user-facing chat messages or one-shot instructions — it is for the standing prompt that defines an agent.
+- **Not** for user-facing chat messages or one-shot instructions — only for the standing prompt that defines an agent.
 
 ## Workflow
 
@@ -80,7 +79,7 @@ Apply the 23 principles below in order: **define scope → cover structure → o
 
 ### D. Conditional Layer (apply when the agent is user-facing)
 
-- **19. If the agent interacts with human users, additionally specify:** tone (register, formality, address); uncertainty transparency (distinguish known from inferred; flag speculation); ambiguity consultation (ask rather than silently choose when interpretations diverge materially); downstream-impact awareness (parties affected by outputs who did not interact directly). Mandatory for user-facing agents; optional for machine-facing subagents with pure contract interfaces.
+- **19. If the agent interacts with human users, additionally specify**: tone (register, formality, address); uncertainty transparency (distinguish known from inferred; flag speculation); ambiguity consultation (ask rather than silently choose when interpretations diverge materially); downstream-impact awareness (parties affected by outputs who did not interact directly). Mandatory for user-facing agents; optional for machine-facing subagents with pure contract interfaces.
 
 ### E. Context and Validation (apply always)
 
@@ -94,29 +93,29 @@ Apply the 23 principles below in order: **define scope → cover structure → o
 
 ## Quality Criteria
 
-- **Removability:** Can you remove any sentence without losing information? If yes, remove it.
-- **Precision:** How many outputs could satisfy each instruction? If "many," narrow it.
-- **Coverage:** Specifies scope, I/O contracts, input-class behavior, failure behavior, boundaries, invariants, decision rules.
-- **Conflict-free:** For each constraint pair, precedence is specified where inputs overlap.
-- **Simulated:** Walked through normal, edge, and worst cases — agent does what's intended in all three.
-- **Voice:** Imperative for actions, declarative for identity, conditional for logic, prohibitive for boundaries; no third-person references to the agent.
-- **Failure behavior:** Every major action states what the agent does on failure.
-- **Boundaries:** Stated as prohibitions and placed early.
-- **Exemplar-conformance:** Follows the structural pattern of existing prompts in the target system.
+- **Removability**: Can you remove any sentence without losing information? If yes, remove it.
+- **Precision**: How many outputs could satisfy each instruction? If "many," narrow it.
+- **Coverage**: Specifies scope, I/O contracts, input-class behavior, failure behavior, boundaries, invariants, decision rules.
+- **Conflict-free**: For each constraint pair, precedence is specified where inputs overlap.
+- **Simulated**: Walked through normal, edge, and worst cases — agent does what's intended in all three.
+- **Voice**: Imperative for actions, declarative for identity, conditional for logic, prohibitive for boundaries; no third-person references to the agent.
+- **Failure behavior**: Every major action states what the agent does on failure.
+- **Boundaries**: Stated as prohibitions and placed early.
+- **Exemplar-conformance**: Follows the structural pattern of existing prompts in the target system.
 
 ## Anti-Patterns
 
-- **Style-first drafting:** Polished prose before scope, contracts, and failure behavior are defined. Style cannot rescue missing structure.
-- **"Possibly" hedges:** Suggestions give the agent license to ignore inconsistently. Commit or abstain — never hedge.
-- **Third-person voice:** "The agent validates inputs" introduces referential ambiguity. Address the agent as "you," always.
-- **Chronological ordering for non-procedural workflows:** Buries critical constraints mid-prompt where attention is weakest. Order by behavioral priority.
-- **Buried constraints:** Critical prohibitions hidden mid-paragraph. Place boundaries first.
-- **Missing failure behavior:** An agent without failure handling either crashes or hallucinates.
-- **Missing boundaries:** No prompt is safe without explicit prohibitions on what the agent must NEVER do.
-- **Missing I/O contracts:** Without explicit input and output contracts, the agent is untestable and unintegrable.
-- **Compound instructions:** Multiple verbs per sentence cause middle actions to be skipped. Split atomically.
-- **Examples without rules:** Generalization from examples is uncontrolled. Lead with constraints; use examples to disambiguate.
-- **Abstract verbs:** "Handle," "manage," "process" without specifying action, condition, and output format.
-- **Verbose redundancy:** Restating the same constraint in different words. Maximize signal density — remove redundancy, not specification.
-- **Cross-referenced dependencies:** "See step 3 above" is attention-fragile. Inline the dependency.
-- **Invented structure:** Inventing a novel section pattern when the target system has an established convention. Follow existing exemplars.
+- **Style-first drafting**: Polished prose before scope, contracts, and failure behavior are defined. Style cannot rescue missing structure.
+- **"Possibly" hedges**: Suggestions give the agent license to ignore inconsistently. Commit or abstain — never hedge.
+- **Third-person voice**: "The agent validates inputs" introduces referential ambiguity. Address the agent as "you," always.
+- **Chronological ordering for non-procedural workflows**: Buries critical constraints mid-prompt where attention is weakest. Order by behavioral priority.
+- **Buried constraints**: Critical prohibitions hidden mid-paragraph. Place boundaries first.
+- **Missing failure behavior**: An agent without failure handling either crashes or hallucinates.
+- **Missing boundaries**: No prompt is safe without explicit prohibitions on what the agent must NEVER do.
+- **Missing I/O contracts**: Without explicit input and output contracts, the agent is untestable and unintegrable.
+- **Compound instructions**: Multiple verbs per sentence cause middle actions to be skipped. Split atomically.
+- **Examples without rules**: Generalization from examples is uncontrolled. Lead with constraints; use examples to disambiguate.
+- **Abstract verbs**: "Handle," "manage," "process" without specifying action, condition, and output format.
+- **Verbose redundancy**: Restating the same constraint in different words. Maximize signal density — remove redundancy, not specification.
+- **Cross-referenced dependencies**: "See step 3 above" is attention-fragile. Inline the dependency.
+- **Invented structure**: Inventing a novel section pattern when the target system has an established convention. Follow existing exemplars.
