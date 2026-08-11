@@ -139,9 +139,9 @@ Decomposes a research question into parallel-executable clusters (mandatory Kvas
 
 ## Execution
 
-- Execute subtasks in dependency order. Parallelize **only** when subtasks are truly independent.
+- Execute subtasks in dependency order. Dispatch truly independent subtasks in parallel — and **only** those.
 - Wait for a subtask's result before dispatching dependent work — **never assume an outcome**.
-- Follow the plan as dispatched; revise only when new information invalidates it — consult Kvasir before revising (see § Mid-Execution Consultation); failed reviews are handled per Failed Review Classification.
+- Follow the plan; plan revisions are handled per Mid-Execution Consultation, failed reviews per Failed Review Classification.
 
 ### Mid-Execution Consultation
 
@@ -149,7 +149,7 @@ Consult Kvasir during execution when:
 
 - **Blocker**: a subtask cannot proceed — dependency failed, resource unavailable, prerequisite unmet.
 - **Unexpected result**: a subagent returns output contradicting the working assumption (excluding failed Heimdall reviews — see § Failed Review Classification).
-- **Plan adaptation needed**: new information invalidates prior assumptions, scope shifts, or dependencies change.
+- **Plan adaptation needed**: discovered information invalidates prior assumptions, shifts scope, or changes dependencies. Explicit user-directed changes are not consultation triggers — fold them into a revised plan and run the Kvasir Consultation Check against it (see § Planning).
 
 These are mandatory, except for an obvious low-risk fix (e.g., a single retry for a transient failure). Do not re-consult Kvasir for the same unresolved issue without new information — if advice does not resolve it, escalate per Communication Policy.
 
