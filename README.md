@@ -118,8 +118,9 @@ You'll be prompted for two choices: whether to copy the curated optional skills 
 Required (always installed, regardless of the prompt — Odin's workflow and memory mechanisms depend on them):
 
 - **Memory skills** (`odin-memory-system` → `~/.config/opencode/skills/yggdrasil/odin/memory/`, `brokk-memory-curation` → `~/.config/opencode/skills/yggdrasil/brokk/memory/`)
-- **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/bragi/council-deliberation/`
 - **Workflow skills** (`odin-deliberation-council`, `odin-research-workflow`) → `~/.config/opencode/skills/yggdrasil/odin/workflows/`
+- **Deliberation Council skills** (the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/bragi/council-deliberation/`
+- **Research family skills** (`kvasir-research-decomposition` → `~/.config/opencode/skills/yggdrasil/kvasir/research/`, `mimir-research-convention` → `~/.config/opencode/skills/yggdrasil/mimir/research/`, `heimdall-research-review` → `~/.config/opencode/skills/yggdrasil/heimdall/research/`)
 
 Optional (the curated starter skills, installed only if accepted at the prompt):
 
@@ -157,9 +158,8 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 - **Bragi:** Presentation structuring, Question formulation, Trade-off communication
 - **Brokk:** API design, Backend development, Database development, DevOps, Documentation writing, Frontend development, Git, Refactoring, Testing
 - **Heimdall:** Accessibility review, API contract review, Architecture review, Code review, Dependency review, Documentation review, Performance review, Security review, Test review
-- **Kvasir:** Approach evaluation, Research decomposition, Risk assessment, Task decomposition
+- **Kvasir:** Approach evaluation, Risk assessment, Task decomposition
 - **Mimir:** Codebase exploration, Data analysis, Debugging analysis, Dependency analysis, Impact analysis, Performance analysis, Security analysis, Web research
-- **Odin:** Research convention
 
 ## Commands
 
@@ -296,9 +296,9 @@ Odin also provides a **Research workflow** — trigger-gated and deliverable-pro
 
 **Mechanism — an 8-step arc:**
 
-1. Dispatch one **Kvasir** task with the `kvasir-research-decomposition` skill to decompose the research question into independent research clusters. The decomposition plan is written to a plan artifact. Kvasir is advisory here (Reading A) — no independent Heimdall review of the decomposition itself.
+1. Dispatch one **Kvasir** task to decompose the research question into independent research clusters. The decomposition plan is written to a plan artifact. Kvasir is advisory here (Reading A) — no independent Heimdall review of the decomposition itself.
 2. **Plan checkpoint** — surface the decomposition plan to the user as a steering checkpoint before committing to execution; pause for redirect. This is the key innovation: the mandatory Kvasir consultation is additive because the plan is visible and steerable, not a hidden internal step.
-3. Dispatch **N parallel Mimir research streams** — one per cluster from the decomposition — each grounding its investigation in live sources per the `odin-research-convention` skill and writing a `NN-research-cluster-<name>.md` artifact. Parallelism is emergent from the decomposition (independent clusters run in parallel), not enforced where clusters depend on each other.
+3. Dispatch **N parallel Mimir research streams** — one per cluster from the decomposition — each grounding its investigation in live sources with every finding backed by specific, verifiable citations, and writing a `NN-research-cluster-<name>.md` artifact. Parallelism is emergent from the decomposition (independent clusters run in parallel), not enforced where clusters depend on each other.
 4. Dispatch **N parallel fresh-session Heimdall reviews** — one per Mimir artifact — each writing a `NN-review-cluster-<name>.md` artifact.
 5. Dispatch one **synthesis** task: read all reviewed cluster artifacts and organize the findings around the original question, **naming its own boundaries** — what was covered, what was not, and what remains uncertain — in a synthesis artifact.
 6. Dispatch one **Heimdall** task to review the synthesis.

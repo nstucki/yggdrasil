@@ -428,7 +428,7 @@ backup_differing_agents() {
 # ── Feature-subdir routing for always-on skills (single source of truth) ────
 
 # Return the feature subdirectory for an always-on skill, or fail (return 1)
-# if the skill is not one of the 9 always-on nested skills.
+# if the skill is not one of the 12 always-on nested skills.
 #
 # This is the SINGLE source of truth consumed by:
 #   - the always-on install blocks (target path construction),
@@ -444,19 +444,25 @@ backup_differing_agents() {
 # `council-deliberation/`.
 nested_subdir_for() {
     case "$1/$2" in
-        bragi/bragi-council-deliberation-foundations|bragi/bragi-council-deliberation-systems|\
-        bragi/bragi-council-deliberation-adversary|bragi/bragi-council-deliberation-pragmatist|\
-        bragi/bragi-council-deliberation-humanist)
-            printf 'council-deliberation\n' ;;
-        brokk/brokk-memory-curation)
-            printf 'memory\n' ;;
-        odin/odin-memory-system)
-            printf 'memory\n' ;;
-        odin/odin-deliberation-council|odin/odin-research-workflow)
-            printf 'workflows\n' ;;
-        *)
-            return 1 ;;
-    esac
+         bragi/bragi-council-deliberation-foundations|bragi/bragi-council-deliberation-systems|\
+         bragi/bragi-council-deliberation-adversary|bragi/bragi-council-deliberation-pragmatist|\
+         bragi/bragi-council-deliberation-humanist)
+             printf 'council-deliberation\n' ;;
+         brokk/brokk-memory-curation)
+             printf 'memory\n' ;;
+         heimdall/heimdall-research-review)
+             printf 'research\n' ;;
+         kvasir/kvasir-research-decomposition)
+             printf 'research\n' ;;
+         mimir/mimir-research-convention)
+             printf 'research\n' ;;
+         odin/odin-memory-system)
+             printf 'memory\n' ;;
+         odin/odin-deliberation-council|odin/odin-research-workflow)
+             printf 'workflows\n' ;;
+         *)
+             return 1 ;;
+     esac
 }
 
 # ── Install agents ─────────────────────────────────────────────────────────
@@ -512,10 +518,23 @@ ok "Agents installed."
 #      workflows (and both commands) are inert without them. Install to
 #      odin/workflows/<skill-name>/.
 #
-# These 9 always-on skills install to feature subdirectories
-# (bragi/council-deliberation/, brokk/memory/, odin/memory/, odin/workflows/) — a target-only nesting; the source repo stays flat.
+#   4. The three research-family skills — kvasir-research-decomposition,
+#      mimir-research-convention, heimdall-research-review — dispatched
+#      unconditionally by odin-research-workflow (step 1, 3, 4, 5, 6) with
+#      no fallback. The workflow's doctrine is defined in terms of these
+#      skills' internals (decomposition mechanism, proof standards, review
+#      checklist); without them, the mandatory research dispatch degrades
+#      to unstructured judgment. Additionally, research artifacts feed the
+#      memory promotion pipeline (/yggdrasil/remember), which presupposes
+#      proof-grounded findings — ungrounded research risks downstream
+#      corruption. These skills meet the always-on bar by construction:
+#      the workflow dispatches with them unconditionally, carrying no
+#      fallback. Install to <agent>/research/<skill-name>/.
+#
+# These 12 always-on skills install to feature subdirectories
+# (bragi/council-deliberation/, brokk/memory/, heimdall/research/, kvasir/research/, mimir/research/, odin/memory/, odin/workflows/) — a target-only nesting; the source repo stays flat.
 # The routing is governed by nested_subdir_for() above (single source of
-# truth), which the bulk copy below also consults to SKIP these 9 skills
+# truth), which the bulk copy below also consults to SKIP these 12 skills
 # (they are written exclusively by the always-on blocks here, never by the
 # bulk copy — restoring the single-write-path invariant).
 #
@@ -524,7 +543,7 @@ ok "Agents installed."
 # COPY_SKILLS exactly as before.
 
 # ── Orphan cleanup: remove legacy flat-layout always-on skills ──
-# All 9 always-on skills now install to feature subdirectories (see above).
+# All 12 always-on skills now install to feature subdirectories (see above).
 # On upgrade from a prior flat layout, the old flat copies at
 # <agent>/<skill_name>/ would remain (the merge copy never deletes),
 # causing silent duplication: generate-capabilities.sh's recursive find
@@ -565,6 +584,14 @@ fi
 if [ -d "${DST_SKILLS}/bragi/council-prompt" ]; then
     info "Removing retired Prompt Council skills (bragi/council-prompt/)…"
     rm -rf "${DST_SKILLS}/bragi/council-prompt"
+fi
+
+# ── Retired-skill cleanup ──
+# odin-research-convention was retired (functionality absorbed by the
+# always-on research-family skills). Remove stale installed copies.
+if [ -d "${DST_SKILLS}/odin/odin-research-convention" ]; then
+    rm -rf "${DST_SKILLS}/odin/odin-research-convention"
+    info "Removed retired skill odin-research-convention."
 fi
 
 SRC_MEMORY_SKILL="${SRC_SKILLS}/brokk/brokk-memory-curation"
@@ -635,6 +662,54 @@ if [ -d "$SRC_ODIN_RESEARCH_WF_SKILL" ]; then
     ok "odin-research-workflow installed."
 fi
 
+SRC_KVASIR_RESEARCH_SKILL="${SRC_SKILLS}/kvasir/kvasir-research-decomposition"
+DST_KVASIR_RESEARCH_SKILL="${DST_SKILLS}/kvasir/research/kvasir-research-decomposition"
+
+if [ -d "$SRC_KVASIR_RESEARCH_SKILL" ]; then
+    info "Creating skills directory…"
+    mkdir -p "$DST_KVASIR_RESEARCH_SKILL"
+
+    info "Copying kvasir-research-decomposition to ${DST_KVASIR_RESEARCH_SKILL}…"
+    # Merge copy: copies just this one skill directory unconditionally to its
+    # feature subdirectory (kvasir/research/). The bulk copy below SKIPS this
+    # skill via nested_subdir_for, so there is no redundant overwrite —
+    # single write path (the nested location).
+    cp -R "${SRC_KVASIR_RESEARCH_SKILL}/." "$DST_KVASIR_RESEARCH_SKILL/"
+    ok "kvasir-research-decomposition installed."
+fi
+
+SRC_MIMIR_RESEARCH_SKILL="${SRC_SKILLS}/mimir/mimir-research-convention"
+DST_MIMIR_RESEARCH_SKILL="${DST_SKILLS}/mimir/research/mimir-research-convention"
+
+if [ -d "$SRC_MIMIR_RESEARCH_SKILL" ]; then
+    info "Creating skills directory…"
+    mkdir -p "$DST_MIMIR_RESEARCH_SKILL"
+
+    info "Copying mimir-research-convention to ${DST_MIMIR_RESEARCH_SKILL}…"
+    # Merge copy: copies just this one skill directory unconditionally to its
+    # feature subdirectory (mimir/research/). The bulk copy below SKIPS this
+    # skill via nested_subdir_for, so there is no redundant overwrite —
+    # single write path (the nested location).
+    cp -R "${SRC_MIMIR_RESEARCH_SKILL}/." "$DST_MIMIR_RESEARCH_SKILL/"
+    ok "mimir-research-convention installed."
+fi
+
+SRC_HEIMDALL_RESEARCH_SKILL="${SRC_SKILLS}/heimdall/heimdall-research-review"
+DST_HEIMDALL_RESEARCH_SKILL="${DST_SKILLS}/heimdall/research/heimdall-research-review"
+
+if [ -d "$SRC_HEIMDALL_RESEARCH_SKILL" ]; then
+    info "Creating skills directory…"
+    mkdir -p "$DST_HEIMDALL_RESEARCH_SKILL"
+
+    info "Copying heimdall-research-review to ${DST_HEIMDALL_RESEARCH_SKILL}…"
+    # Merge copy: copies just this one skill directory unconditionally to its
+    # feature subdirectory (heimdall/research/). The bulk copy below SKIPS this
+    # skill via nested_subdir_for, so there is no redundant overwrite —
+    # single write path (the nested location).
+    cp -R "${SRC_HEIMDALL_RESEARCH_SKILL}/." "$DST_HEIMDALL_RESEARCH_SKILL/"
+    ok "heimdall-research-review installed."
+fi
+
 # Deliberation Council skills → bragi/council-deliberation/
 # Always installed so Odin's embedded Deliberation Council mechanism works on
 # every install. See the rationale in the block comment above.
@@ -664,10 +739,12 @@ done
 # anyway). If they accepted, all skills install per their own answer and
 # the note is redundant noise.
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: brokk-memory-curation, odin-memory-system, odin-deliberation-council,"
+    warn "Note: brokk-memory-curation, heimdall-research-review, kvasir-research-decomposition,"
+    warn "mimir-research-convention, odin-memory-system, odin-deliberation-council,"
     warn "odin-research-workflow, and the five bragi-council-deliberation-* skills install"
-    warn "unconditionally — the memory commands and Odin's Deliberation Council and"
-    warn "Research workflows depend on them regardless of your answer above."
+    warn "unconditionally — the memory commands, Odin's Deliberation Council and Research"
+    warn "workflows, and the research-family mechanism depend on them regardless of your"
+    warn "answer above."
 fi
 
 # ── Install skills ─────────────────────────────────────────────────────────
@@ -679,18 +756,18 @@ if [ "$COPY_SKILLS" = true ]; then
     info "Copying skills to ${DST_SKILLS}…"
     # Per-skill merge copy (replaces the former bulk `cp -R`).
     #
-    # The 9 always-on skills are SKIPPED here: they are installed
+    # The 12 always-on skills are SKIPPED here: they are installed
     # unconditionally to feature subdirectories (bragi/council-deliberation/,
-    # brokk/memory/, odin/memory/, odin/workflows/) by the
-    # always-on blocks above. Copying them here too would land them flat
-    # at <agent>/<skill_name>/ — a second, duplicate copy that fractures
-    # the single-write-path invariant and corrupts the capability
-    # inventory (recursive find discovers both). The skip restores
-    # single-path convergence: each always-on skill is written to exactly
-    # one location.
+    # brokk/memory/, heimdall/research/, kvasir/research/, mimir/research/,
+    # odin/memory/, odin/workflows/) by the always-on blocks above. Copying
+    # them here too would land them flat at <agent>/<skill_name>/ — a second,
+    # duplicate copy that fractures the single-write-path invariant and
+    # corrupts the capability inventory (recursive find discovers both). The
+    # skip restores single-path convergence: each always-on skill is written
+    # to exactly one location.
     #
-    # All other skills copy flat, preserving the source repo's flat layout
-    # in the target (unchanged behavior for the 36 optional skills).
+     # All other skills copy flat, preserving the source repo's flat layout
+     # in the target (unchanged behavior for the 34 optional skills).
     for agent_dir in "${SRC_SKILLS}"/*/; do
         [ -d "$agent_dir" ] || continue
         agent_name=$(basename "$agent_dir")
