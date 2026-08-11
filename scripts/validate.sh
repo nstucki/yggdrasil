@@ -25,7 +25,7 @@
 #   6. Skill description namelessness + repo scaffold emptiness — every skills/**/SKILL.md's
 #      `description:` frontmatter field must not leak any agent name (odin, mimir, brokk,
 #      heimdall, kvasir, bragi — case-insensitive, whole-word match). Also verifies the
-#      repo's custom-capabilities.yaml and skills/shared/ remain empty (no custom tool
+#      repo's config-home/custom-capabilities.yaml and skills/shared/ remain empty (no custom tool
 #      grants or generated files in the repo).
 #   7. Odin agent invariant markers (rule strings present in generated agent) —
 #      a curated list of distinctive strings (invariant markers) must appear in
@@ -516,11 +516,11 @@ check_capabilities() {
     FAIL_CAPABILITIES=$((FAIL_CAPABILITIES + 1))
   fi
   
-  # Check 6c: Scaffold emptiness — the repo's custom-capabilities.yaml must be
+  # Check 6c: Scaffold emptiness — the repo's config-home/custom-capabilities.yaml must be
   # empty (no real custom tool grants). This prevents accidentally committing
   # user-specific custom capabilities into the shared framework. Real custom
   # grants live in the INSTALLED copy ($CONFIG_BASE/yggdrasil/custom-capabilities.yaml).
-  local custom_caps_file="$REPO_ROOT/custom-capabilities.yaml"
+  local custom_caps_file="$REPO_ROOT/config-home/custom-capabilities.yaml"
   if [ -f "$custom_caps_file" ]; then
     # Check if any non-comment, non-empty lines exist under custom_capabilities:.
     # Look for "  - name:" entries (the start of a custom capability list item).

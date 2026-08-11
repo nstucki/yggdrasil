@@ -150,7 +150,7 @@ fi
 SRC_AGENTS="${SCRIPT_DIR}/agents"
 SRC_SKILLS="${SCRIPT_DIR}/skills"
 SRC_COMMANDS="${SCRIPT_DIR}/commands/yggdrasil"
-SRC_GENERATOR="${SCRIPT_DIR}/scripts/generate-capabilities.sh"
+SRC_GENERATOR="${SCRIPT_DIR}/config-home/generate-capabilities.sh"
 
 DST_BASE="$CONFIG_BASE"
 DST_AGENTS="${DST_BASE}/agents/yggdrasil"
@@ -179,6 +179,13 @@ for feature in $MANDATORY_SKILL_DIRS; do
     if [ ! -d "${SRC_SKILLS}/${feature}" ]; then
         err "Mandatory skill folder not found: ${SRC_SKILLS}/${feature}"
         err "The checkout looks incomplete or corrupted."
+        exit 1
+    fi
+done
+for f in "$SRC_GENERATOR" "${SCRIPT_DIR}/config-home/custom-capabilities.yaml"; do
+    if [ ! -f "$f" ]; then
+        err "Source file not found: ${f}"
+        err "Run this script from the Yggdrasil repository root."
         exit 1
     fi
 done
@@ -398,7 +405,7 @@ ok "Generator installed to ${DST_GENERATOR}."
 # First install only — never overwrite the user's custom tool grants.
 if [ ! -f "$DST_CUSTOM_CAPS" ]; then
     info "Creating custom-capabilities scaffold…"
-    cp "${SCRIPT_DIR}/custom-capabilities.yaml" "$DST_CUSTOM_CAPS"
+    cp "${SCRIPT_DIR}/config-home/custom-capabilities.yaml" "$DST_CUSTOM_CAPS"
     ok "Custom capabilities scaffold created at ${DST_CUSTOM_CAPS}."
 else
     ok "Custom capabilities file already exists (preserved: ${DST_CUSTOM_CAPS})."

@@ -42,14 +42,14 @@ mkdir -p "$tmp/yggdrasil"
 
 cp -R "$REPO_ROOT/agents/"* "$tmp/agents/yggdrasil/" 2>/dev/null || true
 cp -R "$REPO_ROOT/skills/"* "$tmp/skills/yggdrasil/" 2>/dev/null || true
-cp "$REPO_ROOT/custom-capabilities.yaml" "$tmp/yggdrasil/custom-capabilities.yaml"
+cp "$REPO_ROOT/config-home/custom-capabilities.yaml" "$tmp/yggdrasil/custom-capabilities.yaml"
 
 echo "Temp config base ready."
 echo ""
 
 # Run the generator against the synthetic config base.
 echo "Running generator..."
-output=$(OPENCODE_CONFIG_BASE="$tmp" "$REPO_ROOT/scripts/generate-capabilities.sh" --print 2>/dev/null)
+output=$(OPENCODE_CONFIG_BASE="$tmp" "$REPO_ROOT/config-home/generate-capabilities.sh" --print 2>/dev/null)
 
 # Helper function to check presence of a substring.
 check_contains() {
@@ -130,7 +130,7 @@ echo ""
 # neither --config-base flag nor OPENCODE_CONFIG_BASE env var is set.
 
 echo "Setting up self-location test scenario..."
-cp "$REPO_ROOT/scripts/generate-capabilities.sh" "$tmp/yggdrasil/generate-capabilities.sh"
+cp "$REPO_ROOT/config-home/generate-capabilities.sh" "$tmp/yggdrasil/generate-capabilities.sh"
 chmod +x "$tmp/yggdrasil/generate-capabilities.sh"
 
 # Run the script from the temp location without env var (to test self-location).

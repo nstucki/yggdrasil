@@ -161,9 +161,9 @@ No complex logic — just `cat` and `sed`. This makes the generators transparent
 
 ## Capability Inventory Generator
 
-**Script:** `generate-capabilities.sh`
+**Script:** `../config-home/generate-capabilities.sh` (not in this directory)
 
-Generates the dynamic capability-inventory skill (a separate system from the agent generators). Not covered here; see the skill documentation.
+Generates the dynamic capability-inventory skill (a separate system from the agent generators). Unlike the scripts here, it is **install-side**: `setup.sh` copies it to `$CONFIG_BASE/yggdrasil/` and it runs against the installed layout, not the repo. It lives in `config-home/` together with the `custom-capabilities.yaml` scaffold — both are payload for the installed config home. See the main README.
 
 ---
 
