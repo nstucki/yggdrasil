@@ -11,9 +11,9 @@ This directory contains the agent generators, validation tools, and supporting s
 Generates the three Odin agent files (autonomous, guided, interactive) from shared and mode-specific templates.
 
 **Templates:**
-- `odin-generator/preamble.template` — Frontmatter and title (with `{{MODE_TITLE}}` and `{{DESCRIPTION}}` substitution)
-- `odin-generator/shared-body.template` — Shared orchestration content (Responsibilities, Boundaries, Conventions, Planning, Workflows, Execution, Review & Quality Gates)
-- `odin-generator/communication-policy-{mode}.fragment` — Mode-specific Communication Policy (one per mode: autonomous, guided, interactive)
+- `odin-generator/preamble.template.md` — Frontmatter and title (with `{{MODE_TITLE}}` and `{{DESCRIPTION}}` substitution)
+- `odin-generator/shared-body.template.md` — Shared orchestration content (Responsibilities, Boundaries, Conventions, Planning, Workflows, Execution, Review & Quality Gates)
+- `odin-generator/communication-policy-{mode}.fragment.md` — Mode-specific Communication Policy (one per mode: autonomous, guided, interactive)
 
 **Usage:**
 ```bash
@@ -37,9 +37,9 @@ Generates the three Odin agent files (autonomous, guided, interactive) from shar
 Generates the five subagent files (bragi, brokk, heimdall, kvasir, mimir) from per-agent templates and shared fragments.
 
 **Templates:**
-- `subagent-generator/{agent}.template` — Agent-specific definition (one per agent)
-- `subagent-generator/knowledge-base.fragment` — Shared Yggdrasil Memory section (used by all agents)
-- `subagent-generator/workspace-convention.fragment` — Shared Yggdrasil Workspace section (used by all agents except Brokk)
+- `subagent-generator/{agent}.template.md` — Agent-specific definition (one per agent)
+- `subagent-generator/knowledge-base.fragment.md` — Shared Yggdrasil Memory section (used by all agents)
+- `subagent-generator/workspace-convention.fragment.md` — Shared Yggdrasil Workspace section (used by all agents except Brokk)
 
 **Usage:**
 ```bash
@@ -109,9 +109,9 @@ Both exit with code 0 on success, non-zero on failure.
 ### To modify an Odin agent:
 
 1. Identify which template/fragment to edit:
-   - Frontmatter/title changes → `odin-generator/preamble.template`
-   - Shared content (Responsibilities, Boundaries, Conventions, Planning, Workflows, Execution, Review) → `odin-generator/shared-body.template`
-   - Mode-specific Communication Policy → `odin-generator/communication-policy-{mode}.fragment`
+    - Frontmatter/title changes → `odin-generator/preamble.template.md`
+    - Shared content (Responsibilities, Boundaries, Conventions, Planning, Workflows, Execution, Review) → `odin-generator/shared-body.template.md`
+    - Mode-specific Communication Policy → `odin-generator/communication-policy-{mode}.fragment.md`
 
 2. Edit the template/fragment
 
@@ -131,9 +131,9 @@ Both exit with code 0 on success, non-zero on failure.
 ### To modify a subagent:
 
 1. Identify which template/fragment to edit:
-    - Agent-specific content → `subagent-generator/{agent}.template`
-    - Shared Yggdrasil Memory section → `subagent-generator/knowledge-base.fragment` (affects all agents)
-     - Shared Yggdrasil Workspace section → `subagent-generator/workspace-convention.fragment` (affects all agents except Brokk)
+     - Agent-specific content → `subagent-generator/{agent}.template.md`
+     - Shared Yggdrasil Memory section → `subagent-generator/knowledge-base.fragment.md` (affects all agents)
+      - Shared Yggdrasil Workspace section → `subagent-generator/workspace-convention.fragment.md` (affects all agents except Brokk)
 
 2. Edit the template/fragment
 
@@ -154,8 +154,8 @@ Both exit with code 0 on success, non-zero on failure.
 
 Both generators are pure concatenation scripts:
 
-- **Odin:** `preamble.template` (with sed substitution) + newline + `shared-body.template` + newline + `communication-policy-{mode}.fragment`
-- **Subagents:** `{agent}.template` + newline + (newline + `workspace-convention.fragment` if agent ≠ brokk) + newline + `knowledge-base.fragment`
+- **Odin:** `preamble.template.md` (with sed substitution) + newline + `shared-body.template.md` + newline + `communication-policy-{mode}.fragment.md`
+- **Subagents:** `{agent}.template.md` + newline + (newline + `workspace-convention.fragment.md` if agent ≠ brokk) + newline + `knowledge-base.fragment.md`
 
 No complex logic — just `cat` and `sed`. This makes the generators transparent and the parity checks deterministic.
 

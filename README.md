@@ -332,20 +332,20 @@ To test a change to an agent or skill: edit the source file, run `scripts/valida
 **All files under `agents/` are generated output.** Never edit them directly. Instead:
 
 1. **For Odin agents** (odin-autonomous.md, odin-guided.md, odin-interactive.md):
-   - Edit the source templates in `scripts/odin-generator/`:
-     - `preamble.template` — frontmatter and title (contains `{{MODE_TITLE}}` and `{{DESCRIPTION}}` substitution tokens)
-     - `shared-body.template` — shared orchestration content (Responsibilities, Boundaries, Conventions, Planning, Execution, Review & Quality Gates)
-     - `communication-policy-{mode}.fragment` — mode-specific Communication Policy (one file per mode: autonomous, guided, interactive)
-   - Regenerate: `scripts/generate-odin-agents.sh`
-   - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-odin-generator.sh`
+    - Edit the source templates in `scripts/odin-generator/`:
+      - `preamble.template.md` — frontmatter and title (contains `{{MODE_TITLE}}` and `{{DESCRIPTION}}` substitution tokens)
+      - `shared-body.template.md` — shared orchestration content (Responsibilities, Boundaries, Conventions, Planning, Execution, Review & Quality Gates)
+      - `communication-policy-{mode}.fragment.md` — mode-specific Communication Policy (one file per mode: autonomous, guided, interactive)
+    - Regenerate: `scripts/generate-odin-agents.sh`
+    - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-odin-generator.sh`
 
 2. **For subagent files** (bragi.md, brokk.md, heimdall.md, kvasir.md, mimir.md):
-    - Edit the source templates in `scripts/subagent-generator/`:
-      - `{agent}.template` — agent-specific definition (frontmatter, Role, Responsibilities, Boundaries, Role Discipline, Workflow, etc.)
-      - `knowledge-base.fragment` — shared Yggdrasil Memory section (used by all agents)
-       - `workspace-convention.fragment` — shared Yggdrasil Workspace section (used by all agents except Brokk)
-   - Regenerate: `scripts/generate-subagents.sh`
-   - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-subagent-generator.sh`
+     - Edit the source templates in `scripts/subagent-generator/`:
+       - `{agent}.template.md` — agent-specific definition (frontmatter, Role, Responsibilities, Boundaries, Role Discipline, Workflow, etc.)
+       - `knowledge-base.fragment.md` — shared Yggdrasil Memory section (used by all agents)
+        - `workspace-convention.fragment.md` — shared Yggdrasil Workspace section (used by all agents except Brokk)
+    - Regenerate: `scripts/generate-subagents.sh`
+    - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-subagent-generator.sh`
 
 **Why?** The generators ensure consistency across variants and prevent accidental divergence. Editing generated files directly causes them to fall out of sync with their templates — a future regeneration (by CI, a contributor, or a task) will silently overwrite your changes. The validation gate (`scripts/validate.sh` Check 4) catches this at commit time.
 

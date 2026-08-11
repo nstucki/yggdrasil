@@ -68,12 +68,12 @@ OUTPUT_DIR="$REPO_ROOT/agents"
 SUBAGENTS="bragi brokk heimdall kvasir mimir"
 
 # Verify template files exist
-if [ ! -f "$TEMPLATE_DIR/knowledge-base.fragment" ]; then
-  echo "Error: shared fragment not found: $TEMPLATE_DIR/knowledge-base.fragment" >&2
+if [ ! -f "$TEMPLATE_DIR/knowledge-base.fragment.md" ]; then
+  echo "Error: shared fragment not found: $TEMPLATE_DIR/knowledge-base.fragment.md" >&2
   exit 1
 fi
-if [ ! -f "$TEMPLATE_DIR/workspace-convention.fragment" ]; then
-  echo "Error: shared fragment not found: $TEMPLATE_DIR/workspace-convention.fragment" >&2
+if [ ! -f "$TEMPLATE_DIR/workspace-convention.fragment.md" ]; then
+  echo "Error: shared fragment not found: $TEMPLATE_DIR/workspace-convention.fragment.md" >&2
   exit 1
 fi
 
@@ -81,7 +81,7 @@ fi
 generate_subagent_file() {
   local agent="$1"
 
-  local template="$TEMPLATE_DIR/$agent.template"
+  local template="$TEMPLATE_DIR/$agent.template.md"
   if [ ! -f "$template" ]; then
     echo "Error: agent template not found: $template" >&2
     return 1
@@ -91,25 +91,25 @@ generate_subagent_file() {
 
   # Brokk does not get the workspace convention fragment (it has its own
   # workspace note inline in its template). All other agents get both
-  # shared fragments appended: workspace-convention.fragment first, then knowledge-base.fragment.
+  # shared fragments appended: workspace-convention.fragment.md first, then knowledge-base.fragment.md.
 
   if [ "$PRINT_ONLY" -eq 1 ]; then
     cat "$template"
     printf '\n'
     if [ "$agent" != "brokk" ]; then
-      cat "$TEMPLATE_DIR/workspace-convention.fragment"
+      cat "$TEMPLATE_DIR/workspace-convention.fragment.md"
       printf '\n'
     fi
-    cat "$TEMPLATE_DIR/knowledge-base.fragment"
+    cat "$TEMPLATE_DIR/knowledge-base.fragment.md"
   else
     {
       cat "$template"
       printf '\n'
       if [ "$agent" != "brokk" ]; then
-        cat "$TEMPLATE_DIR/workspace-convention.fragment"
+        cat "$TEMPLATE_DIR/workspace-convention.fragment.md"
         printf '\n'
       fi
-      cat "$TEMPLATE_DIR/knowledge-base.fragment"
+      cat "$TEMPLATE_DIR/knowledge-base.fragment.md"
     } > "$output_file"
   fi
 }

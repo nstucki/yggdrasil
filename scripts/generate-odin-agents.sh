@@ -65,12 +65,12 @@ TEMPLATE_DIR="$SCRIPT_DIR/odin-generator"
 OUTPUT_DIR="$REPO_ROOT/agents"
 
 # Verify template files exist
-if [ ! -f "$TEMPLATE_DIR/preamble.template" ]; then
-  echo "Error: preamble template not found: $TEMPLATE_DIR/preamble.template" >&2
+if [ ! -f "$TEMPLATE_DIR/preamble.template.md" ]; then
+  echo "Error: preamble template not found: $TEMPLATE_DIR/preamble.template.md" >&2
   exit 1
 fi
-if [ ! -f "$TEMPLATE_DIR/shared-body.template" ]; then
-  echo "Error: shared body template not found: $TEMPLATE_DIR/shared-body.template" >&2
+if [ ! -f "$TEMPLATE_DIR/shared-body.template.md" ]; then
+  echo "Error: shared body template not found: $TEMPLATE_DIR/shared-body.template.md" >&2
   exit 1
 fi
 
@@ -105,7 +105,7 @@ generate_odin_file() {
   description=$(get_mode_desc "$mode") || return 1
   
   # Verify fragment exists
-  local fragment="$TEMPLATE_DIR/communication-policy-${mode}.fragment"
+  local fragment="$TEMPLATE_DIR/communication-policy-${mode}.fragment.md"
   if [ ! -f "$fragment" ]; then
     echo "Error: communication policy fragment not found: $fragment" >&2
     return 1
@@ -117,17 +117,17 @@ generate_odin_file() {
   
   if [ "$PRINT_ONLY" -eq 1 ]; then
     # Print to stdout
-    cat "$TEMPLATE_DIR/preamble.template" | sed "s/{{MODE_TITLE}}/$mode_title/g; s/{{DESCRIPTION}}/$description/g"
+    cat "$TEMPLATE_DIR/preamble.template.md" | sed "s/{{MODE_TITLE}}/$mode_title/g; s/{{DESCRIPTION}}/$description/g"
     printf '\n'
-    cat "$TEMPLATE_DIR/shared-body.template"
+    cat "$TEMPLATE_DIR/shared-body.template.md"
     printf '\n'
     cat "$fragment"
   else
     # Write to file
     {
-      cat "$TEMPLATE_DIR/preamble.template" | sed "s/{{MODE_TITLE}}/$mode_title/g; s/{{DESCRIPTION}}/$description/g"
+      cat "$TEMPLATE_DIR/preamble.template.md" | sed "s/{{MODE_TITLE}}/$mode_title/g; s/{{DESCRIPTION}}/$description/g"
       printf '\n'
-      cat "$TEMPLATE_DIR/shared-body.template"
+      cat "$TEMPLATE_DIR/shared-body.template.md"
       printf '\n'
       cat "$fragment"
     } > "$output_file"
