@@ -32,7 +32,6 @@ permission:
     "git stash list": allow
     "git stash pop*": allow
     "git stash apply*": allow
-    # git denials — must come AFTER allows (last-match-wins)
     # block history modification
     "git commit --amend*": deny
     "git commit -m* --amend*": deny

@@ -8,11 +8,13 @@ permission:
   bash:
     "*": deny
     # filesystem inspection
+    "cat*": allow
     "du*": allow
     "file*": allow
     "ls*": allow
     "pwd": allow
     "tree*": allow
+    "which*": allow
     # text inspection
     "grep*": allow
     "head*": allow
@@ -51,8 +53,6 @@ permission:
     "capability-inventory": allow
     "kvasir-*": allow
   todo: allow
-  webfetch: allow
-  websearch: allow
 ---
 
 # Kvasir — Strategist

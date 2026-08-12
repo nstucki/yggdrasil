@@ -8,11 +8,13 @@ permission:
   bash:
     "*": deny
     # filesystem inspection
+    "cat*": allow
     "du*": allow
     "file*": allow
     "ls*": allow
     "pwd": allow
     "tree*": allow
+    "which*": allow
     # text inspection
     "grep*": allow
     "head*": allow
@@ -39,12 +41,17 @@ permission:
     "git*>*": deny
     "git*>>*": deny
     "git*<*": deny
-    # development workflows
+    # test runners
     "cargo test*": allow
     "go test*": allow
-    "npm run*": allow
     "npm test*": allow
     "pytest*": allow
+    # verification scripts
+    "npm run*": allow
+    # release-class scripts
+    "npm run publish*": deny
+    "npm run deploy*": deny
+    "npm run release*": deny
   edit:
     "*": deny
     ".yggdrasil-workspace/**": allow

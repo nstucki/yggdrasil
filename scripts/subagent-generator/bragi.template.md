@@ -15,8 +15,6 @@ permission:
     "*": deny
     "bragi-*": allow
   todo: allow
-  webfetch: allow
-  websearch: allow
 ---
 
 # Bragi — Communicator

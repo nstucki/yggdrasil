@@ -7,31 +7,21 @@ permission:
   "*": deny
   bash:
     "*": deny
-    # test runners
-    "cargo test*": allow
-    "go test*": allow
-    "npm test*": allow
-    "npm run test*": allow
-    "pytest*": allow
-    # verification scripts
-    "npm run*": allow
-    # release-class scripts
-    "npm run publish*": deny
-    "npm run deploy*": deny
-    "npm run release*": deny
-    # linters & checkers
-    "shellcheck*": allow
-    "yamllint*": allow
-    "prettier*": allow
-    # filesystem inspection (read-only)
+    # filesystem inspection
     "cat*": allow
-    "head*": allow
-    "tail*": allow
+    "du*": allow
+    "file*": allow
     "ls*": allow
+    "pwd": allow
+    "tree*": allow
+    "which*": allow
+    # text inspection
+    "grep*": allow
+    "head*": allow
+    "rg*": allow
+    "tail*": allow
     "wc*": allow
-    # git denial baseline
-    "git*": deny
-    # git inspection (read-only)
+    # git inspection
     "git blame*": allow
     "git branch": allow
     "git branch --show-current": allow
@@ -51,6 +41,21 @@ permission:
     "git*>*": deny
     "git*>>*": deny
     "git*<*": deny
+  # test runners
+    "cargo test*": allow
+    "go test*": allow
+    "npm test*": allow
+    "pytest*": allow
+    # verification scripts
+    "npm run*": allow
+    # release-class scripts
+    "npm run publish*": deny
+    "npm run deploy*": deny
+    "npm run release*": deny
+    # linters & checkers
+    "shellcheck*": allow
+    "yamllint*": allow
+    "prettier*": allow
   edit:
     "*": deny
     ".yggdrasil-workspace/**": allow
