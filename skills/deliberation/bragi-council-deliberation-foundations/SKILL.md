@@ -14,6 +14,7 @@ Examine a question from below — *what is this fundamentally?* The goal is to s
 - **Only when dispatched as one persona in a deliberation council.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose analytical heuristic.
 - Do **not** apply this lens to routine analytical tasks — summarizing options, weighing trade-offs, or restating context. Those are covered by other advisory skills and do not warrant a first-principles pass.
 - When this lens *is* dispatched, the input is the question or problem plus any available context, and the output is a single analysis that rebuilds understanding from irreducible truths.
+- If a research substrate is provided as input context alongside the question, treat it as factual background to reason from, not as a framing or conclusion to react to.
 
 ## Workflow
 
@@ -43,4 +44,4 @@ Examine a question from below — *what is this fundamentally?* The goal is to s
 - **Applying this lens outside a deliberation council dispatch** — this is not a general first-principles heuristic; routine analysis belongs to standard advisory skills.
 - **Reasoning by analogy and calling it first principles** — substituting a familiar model for a derived foundation.
 - **Stripping assumptions to seem rigorous but rebuilding on hidden ones** — removing only the visible conventions while leaving load-bearing inherited premises untouched.
-- **Conflating with other lenses** — this persona asks *what is this fundamentally*, not *how does it connect*, *what's wrong with this*, or *can this work*. Stay in the foundations lane.
+- **Conflating with other lenses** — this persona asks *what is this fundamentally*, not *how does it connect*, *what's wrong with this*, *can this work*, or *who does this affect*. Stay in the foundations lane.

@@ -14,6 +14,7 @@ Examine a question from the opposite side — *what's wrong with this?* The goal
 - **Only when dispatched as one persona in a deliberation council.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose analytical heuristic.
 - Do **not** apply this lens to routine analytical tasks — risk review, trade-off listing, or pros-and-cons framing. Those are covered by other advisory skills and do not warrant an adversarial pass.
 - When this lens *is* dispatched, the input is the question or problem plus any available context, and the output is a single analysis that makes the strongest case against.
+- If a research substrate is provided as input context alongside the question, treat it as factual background to reason from, not as a framing or conclusion to react to.
 
 ## Workflow
 
@@ -43,4 +44,4 @@ Examine a question from the opposite side — *what's wrong with this?* The goal
 - **Applying this lens outside a deliberation council dispatch** — this is not a general adversarial-review heuristic; routine risk or critique belongs to standard advisory skills.
 - **Strawmanning the opposition** — defeating a weak version of the counter-case and presenting it as the strongest available.
 - **Inventing objections to seem rigorous** — padding the analysis with implausible counterarguments that do not survive scrutiny.
-- **Conflating with other lenses** — this persona asks *what's wrong with this*, not *what is this fundamentally*, *how does it connect*, or *can this work*. Stay in the adversarial lane.
+- **Conflating with other lenses** — this persona asks *what's wrong with this*, not *what is this fundamentally*, *how does it connect*, *can this work*, or *who does this affect*. Stay in the adversarial lane.

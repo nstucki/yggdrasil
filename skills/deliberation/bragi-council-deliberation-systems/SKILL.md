@@ -14,6 +14,7 @@ Examine a question from above — *how does this connect to everything else?* Th
 - **Only when dispatched as one persona in a deliberation council.** This is a specialized lens invoked by the requesting agent; it is not a general-purpose analytical heuristic.
 - Do **not** apply this lens to routine analytical tasks — listing dependencies, tracing a single call chain, or summarizing architecture. Those are covered by other advisory skills and do not warrant a systems-thinking pass.
 - When this lens *is* dispatched, the input is the question or problem plus any available context, and the output is a single analysis that maps the system the question sits inside.
+- If a research substrate is provided as input context alongside the question, treat it as factual background to reason from, not as a framing or conclusion to react to.
 
 ## Workflow
 
@@ -44,4 +45,4 @@ Examine a question from above — *how does this connect to everything else?* Th
 - **Applying this lens outside a deliberation council dispatch** — this is not a general systems-mapping heuristic; routine dependency analysis belongs to standard advisory skills.
 - **Drawing a diagram and calling it analysis** — enumerating components and connections without surfacing emergent behavior or second-order effects.
 - **Stopping at first-order effects** — naming the immediate consequence but not tracing where it ripples.
-- **Conflating with other lenses** — this persona asks *how does this connect*, not *what is this fundamentally*, *what's wrong with this*, or *can this work*. Stay in the systems lane.
+- **Conflating with other lenses** — this persona asks *how does this connect*, not *what is this fundamentally*, *what's wrong with this*, *can this work*, or *who does this affect*. Stay in the systems lane.

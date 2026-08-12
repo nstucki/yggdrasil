@@ -171,7 +171,8 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 │   ├── bragi-council-deliberation-systems/
 │   ├── bragi-council-deliberation-adversary/
 │   ├── bragi-council-deliberation-pragmatist/
-│   └── bragi-council-deliberation-humanist/
+│   ├── bragi-council-deliberation-humanist/
+│   └── bragi-council-deliberation-herald/
 ├── bragi/                             # Optional skills (if accepted at install)
 │   ├── bragi-presentation-structuring/
 │   ├── bragi-question-formulation/
@@ -348,7 +349,7 @@ Odin provides an optional **Deliberation Council** workflow — trigger-gated, d
    - **Humanist** (`bragi-council-deliberation-humanist`) — humanist lens, who is affected and what they value.
    If a substrate was produced, each lens receives it as input context alongside the question. Each lens must **argue its case fully without seeking consensus** — convergence is the synthesizer's job.
 3. Dispatch one **Kvasir** task to synthesize: read all N perspective artifacts, weigh the competing arguments, and reach a reasoned conclusion written to a synthesis artifact. Kvasir is informed whether a shared research prior was used. Kvasir's synthesis is an intermediate artifact — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
-4. Dispatch one fresh-session **Bragi** task to draft the final user-facing answer from Kvasir's synthesis artifact. The deliverable states whether research was performed.
+4. Dispatch one fresh-session **Bragi** task to draft the final user-facing answer from Kvasir's synthesis artifact, per the `bragi-council-deliberation-herald` skill. The deliverable renders the synthesis faithfully, discloses its grounding (research performed or abstraction-only deliberation), and preserves proportional representation of dissenting and minority views — guarding against re-deliberation, softening, opinion-injection, dissent-erasure, and missing grounding-disclosure.
 5. **Final Review Gate** — a fresh Heimdall session validates the assembled deliverable.
 
 **Triggering:** The invariant rules live in the shared § Workflows section and hold in every mode — the `/yggdrasil/deliberate` command fires it immediately; explicit multi-perspective/opinions/angles language in the request fires it; an opinion-type question without explicit multi-perspective language is the suggestion candidate; a suggestion the user accepts fires it; factual or executable requests skip it. Each mode's Communication Policy carries only its deltas:

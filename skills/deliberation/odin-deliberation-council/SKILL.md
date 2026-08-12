@@ -34,7 +34,7 @@ Kvasir working inside this workflow does not make it a Consultation Layer mode. 
     - `bragi-council-deliberation-humanist` — humanist lens, who is affected and what they value.
     If a substrate was produced, each lens receives it as input context — treated as factual background, not a framing to react to. Each lens must argue its case fully without seeking consensus — convergence is the synthesizer's job.
 4. **Synthesis.** Dispatch one Kvasir task to synthesize: read all N perspective artifacts, weigh the competing arguments, and reach a reasoned conclusion. Kvasir is informed whether a shared research prior was used — shared-input agreement is a weaker signal than independently-emergent agreement.
-5. **Deliverable.** Dispatch one fresh-session Bragi task to draft the final user-facing answer from Kvasir's synthesis artifact. The deliverable states whether research was performed, cites the artifact if so, and notes if the deliberation was conducted on abstraction alone.
+5. **Deliverable.** Dispatch one fresh-session Bragi task to draft the final user-facing answer from Kvasir's synthesis artifact, per the `bragi-council-deliberation-herald` skill. The deliverable discloses its grounding per that skill's Workflow.
 6. **Final Review Gate.** Dispatch a fresh Heimdall session to validate the assembled deliverable against the user's original request.
 
 ## Quality Criteria
