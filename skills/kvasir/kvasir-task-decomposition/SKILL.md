@@ -7,7 +7,7 @@ description: Break complex objectives into well-scoped subtasks with explicit de
 
 ## Purpose
 
-Transform complex objectives into well-defined, independently executable subtasks with clear dependencies, inputs, and outputs. Ensure each subtask maps to exactly one owner with one deliverable.
+Transform complex objectives into well-defined, independently executable subtasks with clear dependencies, inputs, and outputs. Ensure each subtask maps to exactly one owner with one well-defined output.
 
 ## When to Use
 
@@ -24,9 +24,9 @@ Transform complex objectives into well-defined, independently executable subtask
    - Note which capabilities the requesting agent has made available.
 
 2. **Identify atomic subtasks.**
-   - Break the objective into the smallest meaningful units of work.
-   - Ensure each unit produces a single, well-defined deliverable.
-   - Confirm no subtask bundles unrelated concerns together.
+    - Break the objective into the smallest meaningful units of work.
+    - Ensure each unit produces a single, well-defined output.
+    - Confirm no subtask bundles unrelated concerns together.
 
 3. **Map dependencies.**
    - Determine which subtasks depend on the outputs of others.
@@ -50,7 +50,7 @@ Transform complex objectives into well-defined, independently executable subtask
 
 ## Quality Criteria
 
-- Every subtask has a single deliverable and a single responsible owner.
+- Every subtask has a single output and a single responsible owner.
 - All dependencies are explicitly stated, not implied.
 - Parallelizable subtasks are identified.
 - The plan covers the full objective with no gaps.
@@ -58,7 +58,7 @@ Transform complex objectives into well-defined, independently executable subtask
 
 ## Anti-Patterns
 
-- **Mixed deliverables**: A subtask that bundles research and implementation into one unit.
+- **Mixed outputs**: A subtask that bundles research and implementation into one unit.
 - **Implicit dependencies**: Assuming a subtask can start without checking its inputs are ready.
 - **Over-decomposition**: Splitting work so finely that coordination overhead exceeds the work itself.
 - **Missing ownership**: A subtask without a clear owner or required capability.

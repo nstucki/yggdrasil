@@ -16,8 +16,8 @@ The name is drawn from the immense ash tree of Norse mythology at the center of 
 
 - **Orchestrated, not single-agent.** A complete task lifecycle — research, strategy, implementation, review — handled by specialists rather than one generalist.
 - **Review built in.** Every Brokk (implementer) output is reviewed by Heimdall before it is considered final. No agent reviews its own output.
-- **A Final Review Gate** validates the assembled deliverable against your original request before anything reaches you.
-- **Persistent project memory.** A source-cited knowledge base (`.yggdrasil-memory/`) persists findings across task lifecycles.
+- **A Final Review Gate** validates the assembled Deliverable against your original request before anything reaches you.
+- **Persistent knowledge base.** A source-cited Yggdrasil Memory (`.yggdrasil-memory/`) persists findings across task lifecycles.
 - **Extensible.** Grant custom tools and MCPs to any specialist; add `odin-*` skills. Curated starter skills ship by default and are meant to be adapted.
 
 ## The Pantheon
@@ -28,7 +28,7 @@ The name is drawn from the immense ash tree of Norse mythology at the center of 
 | **Mimir** | Well-Keeper of Mímisbrunnr | Researcher | Explores codebases, reads docs, gathers context. Illuminates; does not decide or implement. |
 | **Bragi** | The Skald | Communicator | Advises on communication strategy, drafts and presents information, provides the multi-persona Deliberation Council for high-stakes decisions. |
 | **Kvasir** | The Wise Counselor | Strategic Advisor | Synthesizes context into plans; decomposition, risk, approach. Consulted proactively by Odin. |
-| **Brokk** | The Smith | Implementer | Transforms requirements into concrete artifacts: code, docs, tests, config. Has write access. |
+| **Brokk** | The Smith | Implementer | Transforms requirements into concrete Artifacts: code, docs, tests, config. Has write access. |
 | **Heimdall** | The Watchman | Reviewer | Independently validates quality, correctness, completeness. Never implements fixes. |
 
 Odin operates in three modes, adapting his autonomy to the task:
@@ -69,7 +69,7 @@ Odin operates in three modes, adapting his autonomy to the task:
 
 The lifecycle flows through the pantheon: **Odin** receives the objective and determines the path; **Bragi** advises on communication, **Kvasir** on strategy and decomposition; **Mimir** researches and gathers context; **Brokk** implements; **Heimdall** reviews; and **Odin** evaluates the outcome and decides next steps.
 
-Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Every plan ends at a Final Review Gate, where Heimdall validates the assembled deliverable against your original request before it reaches you.
+Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Every plan ends at a Final Review Gate, where Heimdall validates the assembled Deliverable against your original request before it reaches you.
 
 Patterns can be combined, repeated, or reordered as the task demands — for example, multiple research → implement → review rounds within a single task.
 
@@ -123,7 +123,7 @@ You'll be prompted for two choices: whether to copy the curated optional skills 
 
 **Skills installed:**
 
-Required (always installed, regardless of the prompt — Odin's workflow and memory mechanisms depend on them):
+Required (always installed, regardless of the prompt — Odin's workflow and Yggdrasil Memory mechanisms depend on them):
 
 - **Memory skills** (`odin-memory-system`, `brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/memories/`
 - **Deliberation skills** (`odin-deliberation-council` and the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/deliberation/`
@@ -211,8 +211,8 @@ Commands are **macros for user requests to Odin** — equivalent to stating the 
 
 Yggdrasil provides five globally-installed slash-commands, available in every project once installed:
 
-- **`/yggdrasil/deliberate <question>`** — Run the Deliberation Council: five perspective lenses analyze the question in parallel, Kvasir synthesizes the competing arguments, and Bragi delivers the reasoned conclusion. Multi-dispatch and deliverable-producing (7 specialist dispatches plus the Final Review Gate); expect to wait.
-- **`/yggdrasil/research <topic>`** — Decompose the topic via Kvasir, surface the plan as a steering checkpoint, then run parallel research streams with independent review, synthesis, and a Bragi-delivered report. Adaptive and multi-dispatch (minimum ~7, typical ~11, may reach ~21 for genuinely multi-faceted topics); expect to wait.
+- **`/yggdrasil/deliberate <question>`** — Run the Deliberation Council: multiple perspective lenses analyze the question in parallel, synthesize the competing arguments, and deliver a reasoned conclusion. Multi-specialist workflow; expect to wait.
+- **`/yggdrasil/research <topic>`** — Conduct deep research: decompose the topic into independent research areas, investigate each in parallel with review and synthesis, and deliver a comprehensive report. Adaptive multi-specialist workflow; expect to wait.
 - **`/yggdrasil/remember [topic]`** — Promote reviewed findings to the project knowledge base. Runs the reviewed promotion pipeline (orchestrated, not an instant write). The only way promotion is initiated; never automatic at task wrap-up.
 - **`/yggdrasil/dream [scope]`** — Consolidate and audit the knowledge base for duplicates, contradictions, and staleness. Orchestrated maintenance; may prune by judgment but never silently performs a forget.
 - **`/yggdrasil/forget <scope>`** — Delete entries from the knowledge base. Destructive and always confirmed before dispatch; invocation is intent, not confirmation. Working-tree only; full wipe requires a second confirmation.
@@ -225,23 +225,23 @@ Yggdrasil maintains a **persistent knowledge base** at `.yggdrasil-memory/`, roo
 
 **Why they're separate:**
 
-- **`.yggdrasil-workspace/`** — Transient task artifacts (research notes, drafts, intermediate outputs, review verdicts). Gitignored. Deleted between sessions. Task-scoped and ephemeral.
+- **`.yggdrasil-workspace/`** — Transient Workfiles (research notes, drafts, intermediate outputs, review verdicts). Gitignored. Deleted between sessions. Task-scoped and ephemeral.
 - **`.yggdrasil-memory/`** — Persistent knowledge base (verified findings, decisions, hard-won insights). Git-tracked. Survives between sessions and projects. Curated and long-lived.
 
 This separation ensures that valuable, verified findings persist and accumulate across projects, while task-specific work doesn't clutter the knowledge base or version control.
 
 **What it contains:** verified facts with file/line citations, decisions and rationale, and hard-won findings (root causes, dependency quirks, performance characteristics). Not task narratives, review verdicts, transient state, or anything reproducible in seconds by reading one file.
 
-Memory is maintained through the three [commands](#commands) above, each routed through the full reviewed orchestration pipeline — never an instant, unreviewed write. If a project has no `.yggdrasil-memory/` directory, the commands offer to establish it (scaffolded from canonical templates in the `brokk-memory-curation` skill). By default the knowledge base is git-tracked, so git history provides an audit trail and a recovery net for destructive operations.
+Yggdrasil Memory is maintained through the three [commands](#commands) above, each routed through the full reviewed orchestration pipeline — never an instant, unreviewed write. If a project has no `.yggdrasil-memory/` directory, the commands offer to establish it (scaffolded from canonical templates in the `brokk-memory-curation` skill). By default the knowledge base is git-tracked, so git history provides an audit trail and a recovery net for destructive operations.
 
-**Typical memory workflow:**
+**Typical Yggdrasil Memory workflow:**
 
 1. **Run a research task** — e.g., `/yggdrasil/research "How does the authentication system work?"` — and Heimdall reviews the findings.
 2. **Promote valuable findings** — if the findings are broadly useful (not task-specific), run `/yggdrasil/remember "authentication system"` to promote them to the knowledge base. The findings are reviewed again before promotion.
 3. **Consolidate periodically** — run `/yggdrasil/dream` to audit the knowledge base for duplicates, contradictions, and staleness. This is maintenance, not deletion — the dream workflow identifies issues and suggests consolidation, but never silently removes entries.
 4. **Remove outdated entries** — run `/yggdrasil/forget "old-finding-topic"` to delete entries that are no longer accurate or relevant. This is destructive and always confirmed before dispatch.
 
-The full memory convention — promotion pipeline, dream consolidation, forget deletion, and the Recall mechanism — is governed by the same orchestration rules that shape every task: every write is reviewed, every deletion is confirmed, and nothing enters memory without a vetted pipeline. The orchestration doctrine for the three command-triggered operations lives in the **[`skills/memories/odin-memory-system/SKILL.md`](./skills/memories/odin-memory-system/SKILL.md)** skill; the canonical entry-schema template lives in **[`skills/memories/brokk-memory-curation/SKILL.md`](./skills/memories/brokk-memory-curation/SKILL.md)**.
+The full Yggdrasil Memory convention — promotion pipeline, dream consolidation, forget deletion, and the Recall mechanism — is governed by the same orchestration rules that shape every task: every write is reviewed, every deletion is confirmed, and nothing enters Yggdrasil Memory without a vetted pipeline. The orchestration doctrine for the three command-triggered operations lives in the **[`skills/memories/odin-memory-system/SKILL.md`](./skills/memories/odin-memory-system/SKILL.md)** skill; the canonical entry-schema template lives in **[`skills/memories/brokk-memory-curation/SKILL.md`](./skills/memories/brokk-memory-curation/SKILL.md)**.
 
 ## Extending Yggdrasil with Tools & Skills
 
@@ -331,59 +331,35 @@ This is a one-line command that harvests all skill frontmatter and custom capabi
 
 ### Deliberation Council
 
-Odin provides an optional **Deliberation Council** workflow — trigger-gated, deliverable-producing: it generates diverse perspectives on a question, synthesizes them into a reasoned conclusion, and communicates it as a deliverable. It sits alongside "Research → Review → Report" as a deliverable-producing execution pattern, not inside the advisory Consultation Layer. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/deliberation/odin-deliberation-council/SKILL.md`](./skills/deliberation/odin-deliberation-council/SKILL.md)** skill, which Odin loads on invoke.
+Odin provides an optional **Deliberation Council** workflow for high-stakes questions requiring diverse perspectives. It generates multiple viewpoints on a question, synthesizes them into a reasoned conclusion, and delivers the result as a final answer. Use this when you need to explore competing viewpoints, values, or approaches before deciding.
 
-**A 5-stage pipeline:**
+**How it works:**
 
-1. **Research gate (conditional Stage 0).** Odin assesses whether the question requires factual substrate the lenses cannot self-provide (Bragi lacks research skills). When in doubt, err toward research. User override is available; if triggered, the user is told with cost. If needed, **Odin decides the approach** before dispatching:
-    - **Single Mimir session** — bounded question, one pass (the common case).
-    - **Multiple Mimir sessions** — distinct factual areas, dispatched in parallel and merged into one substrate.
-    - **Research workflow** — broad question warranting full Kvasir decomposition; use that workflow instead.
+1. **Optional research phase** — if the question requires factual grounding, Odin conducts targeted research to provide context for the deliberation.
+2. **Parallel perspective analysis** — multiple specialists analyze the question from different angles (first-principles, systems-thinking, adversarial, pragmatic, humanistic) in parallel, each arguing their case fully.
+3. **Synthesis** — the perspectives are synthesized into a reasoned conclusion that weighs competing arguments.
+4. **Final answer** — the synthesis is drafted as a user-facing answer, disclosing its grounding and preserving minority views.
+5. **Review** — the final answer is independently reviewed before delivery.
 
-   Each substrate must be **fact-rich and framing-poor** ("what is the case?", not "what does it mean?") and begins with a **scope-declaration preamble** (what was investigated, what was out-of-scope, and why). If research is not needed (conceptual/values/framing questions), skip this step.
-2. Dispatch **N (default 5) Bragi tasks** in parallel, each adopting one perspective lens from the `bragi-council-deliberation-*` skills, the question, and any available context:
-   - **Foundations** (`bragi-council-deliberation-foundations`) — first-principles lens, strip away convention.
-   - **Systems** (`bragi-council-deliberation-systems`) — systems-thinking lens, map relationships and feedback loops.
-   - **Adversary** (`bragi-council-deliberation-adversary`) — adversarial lens, construct the strongest case against.
-   - **Pragmatist** (`bragi-council-deliberation-pragmatist`) — pragmatist lens, test against concrete constraints.
-   - **Humanist** (`bragi-council-deliberation-humanist`) — humanist lens, who is affected and what they value.
-   If a substrate was produced, each lens receives it as input context alongside the question. Each lens must **argue its case fully without seeking consensus** — convergence is the synthesizer's job.
-3. Dispatch one **Kvasir** task to synthesize: read all N perspective artifacts, weigh the competing arguments, and reach a reasoned conclusion written to a synthesis artifact. Kvasir is informed whether a shared research prior was used. Kvasir's synthesis is an intermediate artifact — Bragi stands between Kvasir and the user, preserving Kvasir's advisory boundary.
-4. Dispatch one fresh-session **Bragi** task to draft the final user-facing answer from Kvasir's synthesis artifact, per the `bragi-council-deliberation-herald` skill. The deliverable renders the synthesis faithfully, discloses its grounding (research performed or abstraction-only deliberation), and preserves proportional representation of dissenting and minority views — guarding against re-deliberation, softening, opinion-injection, dissent-erasure, and missing grounding-disclosure.
-5. **Final Review Gate** — a fresh Heimdall session validates the assembled deliverable.
+**When to use:** Explicitly request multiple perspectives, use the `/yggdrasil/deliberate` command, or ask for opinions/angles on a question. Factual or executable requests skip this workflow.
 
-**Triggering:** The invariant rules live in the shared § Workflows section and hold in every mode — the `/yggdrasil/deliberate` command fires it immediately; explicit multi-perspective/opinions/angles language in the request fires it; an opinion-type question without explicit multi-perspective language is the suggestion candidate; a suggestion the user accepts fires it; factual or executable requests skip it. Each mode's Communication Policy carries only its deltas:
-
-- **Interactive** — commands available; the suggestion candidate prompts a suggest-then-confirm, letting the user choose.
-- **Guided** — no commands are routed to it; the suggestion candidate prompts a suggest-then-confirm (the suggestion rides the triggering decision, before autonomous execution begins).
-- **Autonomous** — no commands; the suggestion candidate is skipped — suggest-then-confirm requires interaction, which contradicts the autonomous Communication Policy.
-
-**Constraints:** K=1 (one round, no iteration). N=5 (all perspectives fire by default). Cost without research: N + 2 (7 at N=5) plus the Final Review Gate. Cost with research: N + 3 (8 at N=5) plus the Final Review Gate, scaling with parallel Mimir sessions. Output is a deliverable — it must pass the Final Review Gate.
+**What to expect:** This is a multi-specialist workflow that takes longer than a simple answer. You'll receive a reasoned conclusion that acknowledges competing viewpoints and explains its grounding.
 
 ### Research
 
-Odin also provides a **Research workflow** — trigger-gated and deliverable-producing, orchestrating heavy research tasks through strategic decomposition and parallelized investigation. Like the Deliberation Council, it produces a user-facing deliverable (not advisory output) and routes through the Final Review Gate. Two distinctions set it apart: it is **adaptive** — the number of research streams N is determined by Kvasir's one-shot decomposition of the topic, not fixed at a default — and it is the only workflow with a **mandatory user-visible steering checkpoint** between planning and execution, which is what makes the mandatory Kvasir consultation additive rather than redundant. The shared orchestration body carries only the triggering verdict and a lean summary; the full mechanism and constraints live in the **[`skills/research/odin-research-workflow/SKILL.md`](./skills/research/odin-research-workflow/SKILL.md)** skill, which Odin loads on invoke.
+Odin also provides a **Research workflow** for deep investigation of complex topics. It decomposes the question into independent research areas, investigates each in parallel with citations and review, synthesizes the findings, and delivers a comprehensive report. Use this when you need thorough, multi-faceted research rather than a quick answer.
 
-**An 8-step arc:**
+**How it works:**
 
-1. Dispatch one **Kvasir** task to decompose the research question into independent research clusters. The decomposition plan is written to a plan artifact. Kvasir is advisory here (Reading A) — no independent Heimdall review of the decomposition itself.
-2. **Plan checkpoint** — surface the decomposition plan to the user as a steering checkpoint before committing to execution; pause for redirect. This is the key innovation: the mandatory Kvasir consultation is additive because the plan is visible and steerable, not a hidden internal step.
-3. Dispatch **N parallel Mimir research streams** — one per cluster from the decomposition — each grounding its investigation in live sources with every finding backed by specific, verifiable citations, and writing a `NN-research-cluster-<name>.md` artifact. Parallelism is emergent from the decomposition (independent clusters run in parallel), not enforced where clusters depend on each other.
-4. Dispatch **N parallel fresh-session Heimdall reviews** — one per Mimir artifact — each writing a `NN-review-cluster-<name>.md` artifact.
-5. Dispatch one **synthesis** task: read all reviewed cluster artifacts and organize the findings around the original question, **naming its own boundaries** — what was covered, what was not, and what remains uncertain — in a synthesis artifact.
-6. Dispatch one **Heimdall** task to review the synthesis.
-7. Dispatch one fresh-session **Bragi** task to draft the final user-facing deliverable from the reviewed synthesis. Bragi stands between the synthesis and the user, preserving Kvasir's advisory boundary.
-8. Route the assembled deliverable through the **Final Review Gate** (a fresh Heimdall session) validating it against the original request.
+1. **Decomposition** — the topic is analyzed and broken into independent research areas.
+2. **Plan checkpoint** — you see the research plan and can redirect before investigation begins (this is your steering point).
+3. **Parallel investigation** — each research area is investigated independently, with findings grounded in live sources and backed by specific citations.
+4. **Review and synthesis** — each investigation is reviewed, then synthesized into a comprehensive answer that names its own boundaries (what was covered, what was not, what remains uncertain).
+5. **Final answer** — the synthesis is drafted as a user-facing report and independently reviewed before delivery.
 
-**Triggering:** The invariant rules live in the shared § Workflows section and hold in every mode — the `/yggdrasil/research` command fires it immediately; explicit research/investigate/analyze-into language in the request fires it; factual or executable requests skip it. Each mode's Communication Policy carries only its deltas:
+**When to use:** Explicitly request research, investigation, or deep analysis, or use the `/yggdrasil/research` command. Factual or executable requests skip this workflow.
 
-- **Interactive** — commands available; the plan checkpoint pauses for the user's steering input before dispatching research streams.
-- **Guided** — no commands are routed to it; the plan checkpoint auto-proceeds (mid-execution contact stays reserved for unresolvable blockers).
-- **Autonomous** — no commands; the plan checkpoint auto-proceeds — the surfaced plan summary rides the final deliverable's disclosure.
-
-**Constraints:** K=1 (one decomposition pass, no re-decomposition loop — iteration is handled internally by the `kvasir-research-decomposition` skill's batching/waves). N is the cluster count from Kvasir's decomposition (adaptive; no fixed default — typically 1 for light questions, 2-5 for heavy research). Cost: `2N + 5` dispatches (7 at N=1, 11 at N=3, 21 at N=8) plus the Final Review Gate. The Research mechanism's output is a deliverable, not advisory — it must pass the Final Review Gate.
-
-**Relationship to other mechanisms:** Kvasir's decomposition (step 1) is advisory and does not receive independent Heimdall review (Consultation Layer doctrine) — but unlike the ordinary Consultation Check, the consultation here is mandatory, not trigger-gated; the steering checkpoint (step 2) is what makes that mandatory consultation additive. Sibling to the Deliberation Council — both are deliverable-producing workflows, skill-packaged and loaded on invoke. The Final Review Gate applies as normal.
+**What to expect:** This is a multi-specialist workflow that takes longer than a simple answer. The plan checkpoint gives you a chance to steer the investigation. You'll receive a comprehensive report with citations and clear boundaries on what was and wasn't covered.
 
 ## Development
 
@@ -412,8 +388,8 @@ To test a change to an agent or skill: edit the source file, run `scripts/valida
 2. **For subagent files** (bragi.md, brokk.md, heimdall.md, kvasir.md, mimir.md):
      - Edit the source templates in `scripts/subagent-generator/`:
        - `{agent}.template.md` — agent-specific definition (frontmatter, Role, Responsibilities, Boundaries, Role Discipline, Workflow, etc.)
-       - `knowledge-base.fragment.md` — shared Yggdrasil Memory section (used by all agents)
-        - `workspace-convention.fragment.md` — shared Yggdrasil Workspace section (used by all agents except Brokk)
+       - `memory.fragment.md` — shared Yggdrasil Memory section (used by all agents)
+        - `workspace.fragment.md` — shared Yggdrasil Workspace section (used by all agents except Brokk)
     - Regenerate: `scripts/generate-subagents.sh`
     - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-subagent-generator.sh`
 

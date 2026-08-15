@@ -31,7 +31,7 @@ Examine a question from the ground — *can this actually work?* The goal is to 
    - Distinguish what is merely hard from what is genuinely infeasible; the pragmatist is not a pessimist, only a realist.
 5. **Surface what would have to change for this to work.**
    - State the conditions — additional resources, relaxed constraints, reordered steps — under which the path becomes executable.
-6. **Write the analysis** to the designated artifact path, along with a one-line summary of what survives contact with reality and what breaks.
+6. **Write the analysis** to the designated Workfile path, along with a one-line summary of what survives contact with reality and what breaks.
 
 ## Quality Criteria
 

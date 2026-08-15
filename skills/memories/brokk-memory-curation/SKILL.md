@@ -7,15 +7,15 @@ description: Distill reviewed findings into Yggdrasil Memory — the persistent,
 
 ## Purpose
 
-Maintain a persistent, project-scoped knowledge base by distilling reviewed research findings into durable, source-cited entries; establishing the knowledge base structure in new projects; and executing consolidation and deletion operations when tasked by the requesting agent.
+Maintain the persistent, project-scoped Yggdrasil Memory by distilling reviewed research findings into durable, source-cited entries; establishing the knowledge base structure in new projects; and executing consolidation and deletion operations when tasked by the requesting agent.
 
 Four tasks route through this skill: establishing the knowledge base structure, and the three entry-mutating operations — promotion, consolidation, and deletion. Every entry is grounded in reviewed sources and carries explicit metadata per the schema below.
 
 ## When to Use
 
-- **Promotion (Remember):** When the requesting agent tasks you to distill reviewed research findings into memory entries. The requesting agent provides the reviewed artifact path(s); you extract durable claims, cite their sources, and write them as new or updated entries.
+- **Promotion (Remember):** When the requesting agent tasks you to distill reviewed research findings into Yggdrasil Memory entries. The requesting agent provides the reviewed Workfile path(s); you extract durable claims, cite their sources, and write them as new or updated entries.
 - **Establishment:** When a project lacks a `.yggdrasil-memory/` directory and the requesting agent asks you to scaffold it. You create the directory structure, populate canonical templates, and initialize the manifest.
-- **Consolidation (Dream):** When the requesting agent provides a reviewed audit of the knowledge base and tasks you to apply its findings — merging duplicates, reconciling contradictions, pruning obsolete entries, reorganizing topics, and updating the manifest.
+- **Consolidation (Dream):** When the requesting agent provides a reviewed audit of Yggdrasil Memory and tasks you to apply its findings — merging duplicates, reconciling contradictions, pruning obsolete entries, reorganizing topics, and updating the manifest.
 - **Deletion (Forget):** When the requesting agent provides an explicit, confirmed scope of entries to delete and tasks you to remove them. You delete exactly the named entries, update the manifest, and leave changes in the working tree (never commit).
 
 ## Workflow
@@ -38,9 +38,9 @@ When tasked to establish `.yggdrasil-memory/` in a project:
 
 ### Promotion Workflow (Remember)
 
-When tasked to promote reviewed findings into memory:
+When tasked to promote reviewed findings into Yggdrasil Memory:
 
-1. **Read the reviewed artifact(s) fully.** The requesting agent provides the path(s) to the reviewed research artifact(s) and/or original sources. Read them completely before extracting claims.
+1. **Read the reviewed Workfile(s) fully.** The requesting agent provides the path(s) to the reviewed research Workfile(s) and/or original sources. Read them completely before extracting claims.
 2. **Extract durable, source-cited claims only.** Identify statements that are:
    - Factual and verifiable against the sources you just read.
    - Durable (not task-specific, not transient state, not reproducible in seconds by reading one file).
@@ -54,13 +54,13 @@ When tasked to promote reviewed findings into memory:
    - **Cite sources precisely:** in the frontmatter `sources` field, list file paths and line numbers (e.g., `scripts/validate.sh:42-50`, `AGENTS.md:35`).
 5. **Update `INDEX.md`.** Add or update one line per entry: topic name, brief summary, updated date. Keep the manifest in sync with the files on disk.
 6. **Leave changes in the working tree. Do not commit.** The diff is reviewed downstream; committing is the user's act, never an agent's.
-7. **Report completion** to the requesting agent with the list of entries created/updated and the artifact path.
+7. **Report completion** to the requesting agent with the list of entries created/updated and the Memory paths.
 
 ### Consolidation Workflow (Dream)
 
 When tasked to apply a reviewed audit to the knowledge base:
 
-1. **Read the reviewed audit artifact fully.** The requesting agent provides the path to the reviewed audit (an analysis of the knowledge base for duplicates, contradictions, staleness, and reorganization opportunities). Read it completely.
+1. **Read the reviewed audit Workfile fully.** The requesting agent provides the path to the reviewed audit (an analysis of Yggdrasil Memory for duplicates, contradictions, staleness, and reorganization opportunities). Read it completely.
 2. **Execute the audit's findings faithfully.** Do not re-decide what the audit already decided. Apply its guidance exactly:
    - **Merge/deduplicate:** Combine overlapping entries into one authoritative entry; union their source citations.
    - **Reconcile contradictions:** Where the audit identified conflicting claims, follow its guidance on which entry to keep (mark the loser `superseded` or delete it).
@@ -68,7 +68,7 @@ When tasked to apply a reviewed audit to the knowledge base:
    - **Reorganize:** Split bloated topic files, rename topics, or restructure as the audit recommends.
 3. **Update `INDEX.md`.** Rebuild the manifest to reflect all changes (deletions, merges, renames, confidence downgrades).
 4. **Leave changes in the working tree. Do not commit.** The diff is reviewed downstream; committing is the user's act, never an agent's.
-5. **Report completion** to the requesting agent with a summary of changes (entries merged, deleted, reorganized, confidence adjusted) and the artifact path.
+5. **Report completion** to the requesting agent with a summary of changes (entries merged, deleted, reorganized, confidence adjusted) and the Memory paths.
 
 ### Deletion Workflow (Forget)
 
@@ -146,7 +146,7 @@ Every project's `.yggdrasil-memory/README.md` is generated from this canonical t
 ````markdown
 # Yggdrasil Memory
 
-This directory contains the project's persistent knowledge base — distilled, source-cited findings that persist across task lifecycles.
+This directory contains the project's persistent Yggdrasil Memory — distilled, source-cited findings that persist across task lifecycles.
 
 ## What Goes Here
 
@@ -208,18 +208,18 @@ This README is generated from the canonical template in the `brokk-memory-curati
 ### Quality Criteria for Entries
 
 - **Every entry must cite verifiable sources.** The `sources` field must list file paths and/or line numbers where the claims are grounded. Never cite a source you have not read.
-- **No entry created or modified without a distinct upstream reviewed artifact backing it.** Promotion requires a reviewed research artifact. Consolidation requires a reviewed audit. Deletion requires explicit user confirmation. Never write to memory based on your own reasoning or inference.
+- **No entry created or modified without a distinct upstream reviewed Workfile backing it.** Promotion requires a reviewed research Workfile. Consolidation requires a reviewed audit. Deletion requires explicit user confirmation. Never write to Yggdrasil Memory based on your own reasoning or inference.
 - **INDEX.md always kept in sync.** Every entry file on disk must have a corresponding row in the manifest. Every row in the manifest must correspond to a file on disk.
 - **Never promote secrets or credentials.** Entries are git-tracked by default and visible in diffs.
-- **Never commit memory changes.** All mutations — promotion, consolidation, deletion — are left in the working tree; committing is the user's act.
+- **Never commit Yggdrasil Memory changes.** All mutations — promotion, consolidation, deletion — are left in the working tree; committing is the user's act.
 - **Confidence and status fields are honest.** Mark entries `low` confidence if sources are old or unverified. Mark entries `stale` if they have not been re-verified in a long time. Never overstate certainty.
 
 ## Anti-Patterns
 
-- **Fabricating knowledge not present in sources.** Every claim must be extractable from the reviewed artifact or original sources you read. Never extrapolate, infer, or add reasoning beyond what the sources support.
+- **Fabricating knowledge not present in sources.** Every claim must be extractable from the reviewed Workfile or original sources you read. Never extrapolate, infer, or add reasoning beyond what the sources support.
 - **Skipping INDEX.md updates.** Update the manifest every time you modify entry files; an out-of-sync manifest defeats its purpose.
 - **Expanding a Forget scope beyond what was confirmed.** The requesting agent provides an explicit list of entries to delete. Delete exactly that list, nothing more. Never infer "related" entries or "probably stale" entries to delete alongside the confirmed scope.
-- **Treating memory entries as a place for raw or unreviewed notes.** Memory is not a scratch pad. Every entry is a durable claim backed by reviewed sources. If you are tempted to write something without a reviewed source, it does not belong in memory yet.
-- **Promoting task narratives or transient state.** Memory is for durable knowledge, not "what happened in this task" or "the current state of X." If a claim is only true for this task or only true right now, it is not durable enough for memory.
+- **Treating Yggdrasil Memory entries as a place for raw or unreviewed notes.** Yggdrasil Memory is not a scratch pad. Every entry is a durable claim backed by reviewed sources. If you are tempted to write something without a reviewed source, it does not belong in Yggdrasil Memory yet.
+- **Promoting task narratives or transient state.** Yggdrasil Memory is for durable knowledge, not "what happened in this task" or "the current state of X." If a claim is only true for this task or only true right now, it is not durable enough for Yggdrasil Memory.
 - **Deleting beyond the task's named scope.** A consolidation task deletes only what its reviewed audit names; a deletion task deletes only the confirmed list. Never remove entries as an unrequested side effect of any operation.
 - **Creating or mutating a knowledge base anywhere other than the session working directory.** The knowledge base must be rooted at the session working directory — never in a global or configuration location, and never in another project's tree. Always establish and work with `.yggdrasil-memory/` at the session working directory root.

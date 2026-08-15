@@ -38,8 +38,8 @@ Generates the five subagent files (bragi, brokk, heimdall, kvasir, mimir) from p
 
 **Templates:**
 - `subagent-generator/{agent}.template.md` — Agent-specific definition (one per agent)
-- `subagent-generator/knowledge-base.fragment.md` — Shared Yggdrasil Memory section (used by all agents)
-- `subagent-generator/workspace-convention.fragment.md` — Shared Yggdrasil Workspace section (used by all agents except Brokk)
+- `subagent-generator/memory.fragment.md` — Shared Yggdrasil Memory section (used by all agents)
+- `subagent-generator/workspace.fragment.md` — Shared Yggdrasil Workspace section (used by all agents except Brokk)
 
 **Usage:**
 ```bash
@@ -131,9 +131,9 @@ Both exit with code 0 on success, non-zero on failure.
 ### To modify a subagent:
 
 1. Identify which template/fragment to edit:
-     - Agent-specific content → `subagent-generator/{agent}.template.md`
-     - Shared Yggdrasil Memory section → `subagent-generator/knowledge-base.fragment.md` (affects all agents)
-      - Shared Yggdrasil Workspace section → `subagent-generator/workspace-convention.fragment.md` (affects all agents except Brokk)
+      - Agent-specific content → `subagent-generator/{agent}.template.md`
+      - Shared Yggdrasil Memory section → `subagent-generator/memory.fragment.md` (affects all agents)
+       - Shared Yggdrasil Workspace section → `subagent-generator/workspace.fragment.md` (affects all agents except Brokk)
 
 2. Edit the template/fragment
 
@@ -155,7 +155,7 @@ Both exit with code 0 on success, non-zero on failure.
 Both generators are pure concatenation scripts:
 
 - **Odin:** `preamble.template.md` (with sed substitution) + newline + `shared-body.template.md` + newline + `communication-policy-{mode}.fragment.md`
-- **Subagents:** `{agent}.template.md` + newline + (newline + `workspace-convention.fragment.md` if agent ≠ brokk) + newline + `knowledge-base.fragment.md`
+- **Subagents:** `{agent}.template.md` + newline + (newline + `workspace.fragment.md` if agent ≠ brokk) + newline + `memory.fragment.md`
 
 No complex logic — just `cat` and `sed`. This makes the generators transparent and the parity checks deterministic.
 

@@ -587,21 +587,21 @@ check_parity_markers() {
     "leads, not ground truth"
     # Session-reuse: Final Review Gate independence
     "fresh Heimdall session"
-    # Kvasir Consultation Check verdict grammar
-    "substantive subtasks="
-    # Review Rules — mandatory producer review, self-review ban,
-    # baseline pinning, verdict grammar
-    "must be reviewed by Heimdall"
-    "may review its own output"
+     # Kvasir Consultation Check verdict grammar
+     "substantive Subtasks="
+     # Review Mechanics — mandatory producer review, self-review ban,
+     # baseline pinning, verdict grammar
+    "receives a dedicated Heimdall review"
+    "never itself re-reviewed"
     "Pin the review baseline"
     "PASS-WITH-NOTES"
     # Failed Review Classification — disputed-findings hard rule,
     # baseline-error doctrine
     "no bypassing specialist review"
     "Baseline error"
-    # Final Review Gate — delivery hard rule, research verification
-    "No deliverable reaches the user without passing"
-    "research-verification obligation"
+     # Final Review Gate — delivery hard rule, ground-truth verification
+     "No Deliverable reaches the user without passing"
+     "verify claims against verifiable ground truth"
     # Communication Policy — no silent degradation
     "undocumented abandonment"
   )

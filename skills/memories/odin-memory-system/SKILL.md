@@ -7,19 +7,17 @@ description: Orchestration doctrine for the user-triggered operations that write
 
 ## Purpose
 
-Define the orchestration doctrine for the three command-triggered memory operations — Remember (promotion), Dream (consolidation), and Forget (deletion). Each operation is an orchestrated, reviewed pipeline that dispatches to specialists; this skill specifies the agent roles, review gates, and guardrails for each.
+Define the orchestration doctrine for the three command-triggered Yggdrasil Memory operations — Remember (promotion), Dream (consolidation), and Forget (deletion). Each operation is an orchestrated, reviewed pipeline that dispatches to specialists; this skill specifies the agent roles, review gates, and guardrails for each.
 
 The write-side implementation — entry schema, directory structure, canonical templates — is owned by the `brokk-memory-curation` skill, which Brokk itself loads. Keep dispatch briefs at the orchestration level: name the operation, the inputs, and the scope; do not restate or invent implementation details.
 
 ## When to Use
 
-- **Remember** — when a memory-promotion command (`/yggdrasil/remember`) or an equivalent natural-language request ("remember this finding") is received.
-- **Dream** — when a memory-consolidation command (`/yggdrasil/dream`) is received, or when you proactively suggest consolidation to the user (e.g., after a subagent reports a contradiction with an `active`-status memory entry).
-- **Forget** — when a memory-deletion instruction is received, whether via the `/yggdrasil/forget` command or natural language, naming an explicit scope.
+- **Remember** — when a Yggdrasil Memory-promotion command (`/yggdrasil/remember`) or an equivalent natural-language request ("remember this finding") is received.
+- **Dream** — when a Yggdrasil Memory-consolidation command (`/yggdrasil/dream`) is received, or when you proactively suggest consolidation to the user (e.g., after a subagent reports a contradiction with an `active`-status Memory entry).
+- **Forget** — when a Yggdrasil Memory-deletion instruction is received, whether via the `/yggdrasil/forget` command or natural language, naming an explicit scope.
 
-Ordinary Recall — subagents consulting memory autonomously during any task — is outside this skill's scope; it is governed by the standing Yggdrasil Memory convention in the system prompt.
-
-All three operations presuppose an existing knowledge base. **Fail-safe establishment:** If `.yggdrasil-memory/` is absent at the session working directory root when a memory command is invoked, inform the user and offer to establish it (scaffolded by Brokk per the `brokk-memory-curation` skill's canonical templates) before any write operation proceeds.
+All three operations presuppose an existing knowledge base. **Fail-safe establishment:** If `.yggdrasil-memory/` is absent at the session working directory root when a Yggdrasil Memory command is invoked, inform the user and offer to establish it (scaffolded by Brokk per the `brokk-memory-curation` skill's canonical templates) before any write operation proceeds.
 
 ## Workflow
 
@@ -27,9 +25,9 @@ All three operations presuppose an existing knowledge base. **Fail-safe establis
 
 A user-triggered operation — initiated only by explicit user request via the `/yggdrasil/remember` command or an equivalent natural-language request; **never launched automatically at task wrap-up**. Only reviewed research is eligible.
 
-1. If a subject is given, promote that finding/topic/artifact. If the subject is empty, identify durable findings from the current task's reviewed research, propose the promotion list to the user, and proceed only on approval.
-2. Task Brokk to distill the Heimdall-passed findings into memory entries, citing sources.
-3. Heimdall reviews the memory write before it is final.
+1. If a subject is given, promote that finding/topic/Workfile. If the subject is empty, identify durable findings from the current task's reviewed research, propose the promotion list to the user, and proceed only on approval.
+2. Task Brokk to distill the Heimdall-passed findings into Yggdrasil Memory entries, citing sources.
+3. Heimdall reviews the Yggdrasil Memory write before it is final.
 4. **Never promote secrets or credentials.**
 
 ### Dream (consolidation)
@@ -39,7 +37,7 @@ A user-triggered maintenance task, invoked via the `/yggdrasil/dream` command or
 1. Task Mimir to audit the knowledge base for duplicates, contradictions, and staleness, re-verifying claims against current sources.
 2. Heimdall reviews the audit before any action is taken on it.
 3. Task Brokk to consolidate per the reviewed audit — merge, prune by reviewed judgment, or reorganize as warranted.
-4. Heimdall reviews the resulting memory diff for fidelity before it is final.
+4. Heimdall reviews the resulting Yggdrasil Memory diff for fidelity before it is final.
 5. Dream prunes by reviewed judgment but never silently performs a forget — deletion of user-named scope is a separate, explicitly confirmed operation.
 
 ### Forget (deletion)
@@ -55,7 +53,7 @@ Explicit user instruction — via the `/yggdrasil/forget` command or natural lan
 
 ## Quality Criteria
 
-- **Only reviewed research is eligible for promotion.** No entry is written without a distinct upstream reviewed artifact backing it.
+- **Only reviewed research is eligible for promotion.** No entry is written without a distinct upstream reviewed Workfile backing it.
 - **Every write is reviewed.** Promotion, consolidation, and deletion each pass through a Heimdall review gate before they are final.
 - **Never promote secrets or credentials.** Entries are git-tracked by default and visible in diffs.
 - **Forget is always confirmed.** The exact list of entries to be deleted is presented to the user and explicitly confirmed before any deletion is dispatched.
@@ -68,6 +66,6 @@ Explicit user instruction — via the `/yggdrasil/forget` command or natural lan
 - **Auto-launching Remember at task wrap-up.** Promotion is user-triggered only. Never launch the pipeline without explicit user request.
 - **Chaining Forget into Dream or any other operation.** Dream prunes by reviewed judgment; Forget obeys explicit, confirmed instruction. Keep the semantics separate. Never silently delete entries as a side effect of Dream.
 - **Committing deletions.** Forget leaves changes in the working tree. Committing is the user's act, never the agent's.
-- **Promoting without a reviewed source.** No entry may be created or modified without a distinct upstream reviewed artifact backing it. If you are tempted to write something without a reviewed source, it does not belong in memory yet.
+- **Promoting without a reviewed source.** No entry may be created or modified without a distinct upstream reviewed Workfile backing it. If you are tempted to write something without a reviewed source, it does not belong in Yggdrasil Memory yet.
 - **Expanding Forget scope beyond what was confirmed.** Delete exactly the confirmed list, nothing more. Never infer "related" or "probably stale" entries to delete alongside the confirmed scope.
 - **Skipping the review gate.** Every write operation — promotion, consolidation, deletion — must pass through Heimdall review before it is final. No exceptions.

@@ -41,13 +41,13 @@ This example is illustrative, not normative. Your project may use different syst
 
 ## Proof Requirements
 
-Every research finding must be accompanied by verifiable proof. This section defines valid proof formats and validation rules. Reviewers validate research artifacts against these same standards — completeness, specificity, spot-checks, and the unverified-claim ratio — so a finding that fails them here will be blocked downstream.
+Every research finding must be accompanied by verifiable proof. This section defines valid proof formats and validation rules. Reviewers validate research Workfiles against these same standards — completeness, specificity, spot-checks, and the unverified-claim ratio — so a finding that fails them here will be blocked downstream.
 
 ### Proof Principles
 
 1. **Every claim requires proof** — No finding can be reported without a corresponding proof reference.
 2. **Proofs must be specific** — Vague citations (e.g., "the codebase", "the docs") are not acceptable.
-3. **Unverifiable claims must be marked** — If a claim cannot be verified against a source, mark it as `[UNVERIFIED]` with a brief explanation of why verification was not possible. Keep unverified claims rare: reviewers flag artifacts where more than 25% of claims are unverified.
+3. **Unverifiable claims must be marked** — If a claim cannot be verified against a source, mark it as `[UNVERIFIED]` with a brief explanation of why verification was not possible. Keep unverified claims rare: reviewers flag Workfiles where more than 25% of claims are unverified.
 
 ### Valid Proof Formats by Source Kind
 

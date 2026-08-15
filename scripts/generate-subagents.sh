@@ -3,8 +3,8 @@
 # generate-subagents.sh — Generate the five subagent files from templates
 #
 # This script assembles the five subagent files (bragi, brokk, heimdall, kvasir,
-# mimir) from per-agent templates and shared fragments. Output is deterministic
-# (LC_ALL=C) and byte-identical to the committed files.
+# mimir) from per-agent template heads, shared fragments, and per-agent workflow
+# tails. Output is deterministic (LC_ALL=C) and byte-identical to the committed files.
 #
 # Usage:
 #   generate-subagents.sh              # regenerate all five files in agents/
@@ -68,12 +68,12 @@ OUTPUT_DIR="$REPO_ROOT/agents"
 SUBAGENTS="bragi brokk heimdall kvasir mimir"
 
 # Verify template files exist
-if [ ! -f "$TEMPLATE_DIR/knowledge-base.fragment.md" ]; then
-  echo "Error: shared fragment not found: $TEMPLATE_DIR/knowledge-base.fragment.md" >&2
+if [ ! -f "$TEMPLATE_DIR/memory.fragment.md" ]; then
+  echo "Error: shared fragment not found: $TEMPLATE_DIR/memory.fragment.md" >&2
   exit 1
 fi
-if [ ! -f "$TEMPLATE_DIR/workspace-convention.fragment.md" ]; then
-  echo "Error: shared fragment not found: $TEMPLATE_DIR/workspace-convention.fragment.md" >&2
+if [ ! -f "$TEMPLATE_DIR/workspace.fragment.md" ]; then
+  echo "Error: shared fragment not found: $TEMPLATE_DIR/workspace.fragment.md" >&2
   exit 1
 fi
 
@@ -87,29 +87,34 @@ generate_subagent_file() {
     return 1
   fi
 
+  local workflow="$TEMPLATE_DIR/$agent.workflow.template.md"
+  if [ ! -f "$workflow" ]; then
+    echo "Error: workflow template not found: $workflow" >&2
+    return 1
+  fi
+
   local output_file="$OUTPUT_DIR/$agent.md"
 
-  # Brokk does not get the workspace convention fragment (it has its own
-  # workspace note inline in its template). All other agents get both
-  # shared fragments appended: workspace-convention.fragment.md first, then knowledge-base.fragment.md.
+  # Assembly order: template head → workspace fragment → memory fragment → workflow tail.
+  # All agents get both shared fragments inserted between the template head and workflow tail.
 
   if [ "$PRINT_ONLY" -eq 1 ]; then
     cat "$template"
     printf '\n'
-    if [ "$agent" != "brokk" ]; then
-      cat "$TEMPLATE_DIR/workspace-convention.fragment.md"
-      printf '\n'
-    fi
-    cat "$TEMPLATE_DIR/knowledge-base.fragment.md"
+    cat "$TEMPLATE_DIR/workspace.fragment.md"
+    printf '\n'
+    cat "$TEMPLATE_DIR/memory.fragment.md"
+    printf '\n'
+    cat "$workflow"
   else
     {
       cat "$template"
       printf '\n'
-      if [ "$agent" != "brokk" ]; then
-        cat "$TEMPLATE_DIR/workspace-convention.fragment.md"
-        printf '\n'
-      fi
-      cat "$TEMPLATE_DIR/knowledge-base.fragment.md"
+      cat "$TEMPLATE_DIR/workspace.fragment.md"
+      printf '\n'
+      cat "$TEMPLATE_DIR/memory.fragment.md"
+      printf '\n'
+      cat "$workflow"
     } > "$output_file"
   fi
 }
