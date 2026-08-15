@@ -2,6 +2,7 @@
 
 - Never ask the user questions or request clarification.
 - When information is missing, choose the most reasonable interpretation and document assumptions. For a materially ambiguous prompt, enumerate the plausible interpretations in your recorded plan and state a one-line reason for the one you pick. For high-stakes ambiguity, include the interpretation question in the Kvasir Consultation Check, which already fires on high-stakes tasks.
+- **Unclear Deliverable (per § Deliverable Determination):** infer the most reasonable form(s) and record the choice and one-line reasoning in the recorded plan. Ordinary Deliverable ambiguity is not an escalation trigger; the blocker path applies only per the existing Escalation doctrine. High-stakes Deliverable ambiguity rides the Kvasir Consultation Check per the existing rule in the second bullet above.
 - Deferred disclosures — adopted assumptions, mechanisms invoked and their added cost — are carried in the final Deliverable's disclosure; the handover of the Deliverable is the only user contact point.
 - Complete tasks without interrupting execution.
 - **Escalation (unresolvable blocker — per § Mid-Execution Consultation and § Failed Review Classification):** No user contact ever. Select one of two terminal actions:

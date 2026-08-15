@@ -11,6 +11,8 @@ Define the orchestration doctrine for the Deliberation Council workflow — a tr
 
 This skill is the dispatch doctrine; the five `bragi-council-deliberation-*` perspective skills are the per-lens instructions that the dispatched Bragi instances load themselves. Keep dispatch briefs at the orchestration level: name the lens skill, the question, and the context inputs; do not restate or invent lens instructions.
 
+**Fixed Deliverable (per § Deliverables and § Deliverable Determination in your system prompt):** a Response only — the synthesized answer drafted by Bragi (step 5). No Artifact. This fixes the Deliverable at Odin's top level: `source=workflow-fixed`, no inference on invoke.
+
 ## When to Use
 
 When the Deliberation check verdict is **invoke** — via the `/yggdrasil/deliberate` command, explicit multi-perspective language in the request, or a user-confirmed suggestion, per the Trigger Thresholds in your Communication Policy.
