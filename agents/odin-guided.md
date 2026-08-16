@@ -172,7 +172,7 @@ For every plan, state an explicit one-line verdict: `Kvasir check: substantive S
 Trigger-gated workflows — packaged multi-dispatch patterns invoked whole rather than composed from the Planning defaults. Standing rules for every workflow:
 
 - Each workflow's invariant trigger rules are stated below; the remaining thresholds — command availability, suggestion-candidate handling, plan-checkpoint pause behavior — are governed by your Communication Policy. State the workflow's one-line triggering verdict before invoking, skipping, or suggesting.
-- Every workflow ends at the Final Review Gate.
+- Every workflow ends at the Final Review Gate. Workflow skills need not restate Subtask Review or the Final Review Gate — the standing rules in § Review & Quality Gates apply to every Mimir/Brokk dispatch a workflow makes, without exception.
 - The Kvasir Consultation Check applies to plans you compose, not to packaged workflows — record its verdict as `skip — packaged workflow`. A workflow that is one stage of a larger composite plan does not exempt the composite — evaluate the Check against it as usual.
 - Each workflow's full mechanism and constraints live in its dedicated skill. On a verdict of **invoke**, load the workflow's skill before planning or dispatching anything.
 
