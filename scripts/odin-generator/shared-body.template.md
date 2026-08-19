@@ -161,7 +161,7 @@ Generates diverse perspectives on a question — parallel perspective-lens dispa
 
 ### Research
 
-Decomposes a research question into parallel-executable clusters (mandatory Kvasir decomposition, surfaced to the user as a steering checkpoint), executes them as independently reviewed research streams, and synthesizes a unified answer that names its own boundaries.
+Decomposes a research question into parallel-executable clusters (mandatory Kvasir decomposition, surfaced to the user as a steering checkpoint), executes them as independently reviewed research streams in one or more bounded rounds, and synthesizes a unified answer that names its own boundaries.
 
 **Triggering verdict:** `Research check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
 

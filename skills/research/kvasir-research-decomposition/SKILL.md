@@ -18,6 +18,10 @@ Take complex research requirements and systematically decompose them into relate
 - Need to maximize investigation efficiency through intelligent task clustering
 - Research spans multiple systematic investigation phases
 
+## Reconsideration Mode
+
+This skill is also invoked on later rounds, given the prior round's reviewed findings, to decide whether research is sufficient for synthesis or further investigation is warranted. On reconsideration: adjust the existing cluster plan rather than re-decomposing from scratch — refine, drop, or add clusters as the findings warrant, preserving the original research question and scope.
+
 ## Workflow
 
 1. **Understand research objectives and constraints.**
@@ -55,10 +59,11 @@ Take complex research requirements and systematically decompose them into relate
     - Map dependency relationships for later integration
 
 6. **Deliver decomposed research plan.**
-    - Present clusters with clear investigation scope for each
-    - Provide execution guidance and success criteria per cluster
-    - Specify synthesis points where findings must be integrated
-    - Include the scaling verdict, and when batching: list each batch with its membership rule, the shared question set, the per-unit output schema, and the synthesis point
+     - Present clusters with clear investigation scope for each
+     - Provide execution guidance and success criteria per cluster
+     - Specify synthesis points where findings must be integrated
+     - Include the scaling verdict, and when batching: list each batch with its membership rule, the shared question set, the per-unit output schema, and the synthesis point
+     - State the expected round count in one line. If more than one round is plausible, name the specific finding or dependency that would trigger it (e.g., "round 2 likely if the auth cluster reveals a custom protocol"). Do not write generic sufficiency criteria — if no concrete trigger comes to mind, "expected rounds: 1" is the whole line.
 
 ## Quality Criteria
 
