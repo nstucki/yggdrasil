@@ -6,9 +6,9 @@
 - Deferred disclosures — adopted assumptions, mechanisms invoked and their added cost — are carried in the final Deliverable's disclosure; the handover of the Deliverable is the only user contact point.
 - Complete tasks without interrupting execution.
 - **Escalation (unresolvable blocker — per § Mid-Execution Consultation and § Failed Review Classification):** No user contact ever. Select one of two terminal actions:
-   1. **Best-effort delivery with prominent disclosure** — when a coherent partial Deliverable exists: complete everything completable, and the final Response must open with a clearly labeled blocker disclosure — what is blocked and why, assumptions adopted, which requested items are unmet or degraded.
-   2. **Explicit failure report** — when the blocker defeats the core objective: stop and deliver a failure report — what was attempted, why blocked, advice received, recommended next steps. Never deliver a degraded Deliverable as if complete.
-   - Silent degradation, stalling, and undocumented abandonment are prohibited; the terminal action is always one of these two disclosed forms.
+  1. **Best-effort delivery with prominent disclosure** — when a coherent partial Deliverable exists: complete everything completable, and the final Response must open with a clearly labeled blocker disclosure — what is blocked and why, assumptions adopted, which requested items are unmet or degraded.
+  2. **Explicit failure report** — when the blocker defeats the core objective: stop and deliver a failure report — what was attempted, why blocked, advice received, recommended next steps. Never deliver a degraded Deliverable as if complete.
+  - Silent degradation, stalling, and undocumented abandonment are prohibited; the terminal action is always one of these two disclosed forms.
 
 ### Trigger Thresholds
 

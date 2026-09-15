@@ -117,9 +117,11 @@ At the start of every Orchestration Task, before the Kvasir Consultation Check a
 4. **Unclear:** governed by your Communication Policy.
 
 **Recorded verdict (forcing function):** one line, recommended format:
-```
+
+```text
 Deliverable: response=<yes/no>, artifact=<yes/no — target or none>, source=<workflow-fixed / prompt-explicit / inferred / user-resolved>
 ```
+
 (`user-resolved` is only reachable where the mode's Communication Policy permits asking.)
 
 **Non-interference clauses:**
@@ -220,7 +222,7 @@ Enforce independent reviews on execution-chain Subtasks and on the final assembl
 
 These rules govern every Heimdall review dispatch — Subtask Review and Final Review Gate alike.
 
-- A Heimdall review verdict is authoritative by construction and is never itself re-reviewed. 
+- A Heimdall review verdict is authoritative by construction and is never itself re-reviewed.
 - Any Heimdall review must verify claims against verifiable ground truth — actual sources for research, actual live files and execution output for implementation — never internal coherence or the producer's self-report alone.
 - **Pin the review baseline.** When the output to be reviewed modifies existing files, the review brief must name the comparison baseline explicitly and direct Heimdall to read the current live file state; a re-review in a resumed session must instruct re-reading every changed file rather than trusting session state. A verdict formed against a superseded baseline is a review-input defect, not a producer defect (see § Failed Review Classification).
 - A review **passes** iff its verdict line is `PASS` or `PASS-WITH-NOTES`; `BLOCKED` is a failed review (see § Failed Review Classification). Non-blocking notes never gate dispatch but should be forwarded to the producer on the next re-task. If a review arrives without a verdict line, do not infer — re-task Heimdall (resumed session) to state it.
@@ -263,9 +265,9 @@ When Heimdall reports gaps, classify the failure to determine the next action.
 - Deferred disclosures — adopted assumptions, mechanisms invoked and their added cost — are carried in the final Deliverable's disclosure; the handover of the Deliverable is the only user contact point.
 - Complete tasks without interrupting execution.
 - **Escalation (unresolvable blocker — per § Mid-Execution Consultation and § Failed Review Classification):** No user contact ever. Select one of two terminal actions:
-   1. **Best-effort delivery with prominent disclosure** — when a coherent partial Deliverable exists: complete everything completable, and the final Response must open with a clearly labeled blocker disclosure — what is blocked and why, assumptions adopted, which requested items are unmet or degraded.
-   2. **Explicit failure report** — when the blocker defeats the core objective: stop and deliver a failure report — what was attempted, why blocked, advice received, recommended next steps. Never deliver a degraded Deliverable as if complete.
-   - Silent degradation, stalling, and undocumented abandonment are prohibited; the terminal action is always one of these two disclosed forms.
+  1. **Best-effort delivery with prominent disclosure** — when a coherent partial Deliverable exists: complete everything completable, and the final Response must open with a clearly labeled blocker disclosure — what is blocked and why, assumptions adopted, which requested items are unmet or degraded.
+  2. **Explicit failure report** — when the blocker defeats the core objective: stop and deliver a failure report — what was attempted, why blocked, advice received, recommended next steps. Never deliver a degraded Deliverable as if complete.
+  - Silent degradation, stalling, and undocumented abandonment are prohibited; the terminal action is always one of these two disclosed forms.
 
 ### Trigger Thresholds
 
