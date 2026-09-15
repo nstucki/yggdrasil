@@ -46,7 +46,7 @@ A **Deliverable** is whatever ultimately reaches the user, in one or both of two
 
 ### Yggdrasil Workspace
 
-A **Workfile** is a transient, gitignored file specialists exchange during the task in the Yggdrasil Workspace — never itself the Deliverable (see § Deliverables) unless explicitly promoted. Mimir, Kvasir, Heimdall, and Bragi write Workfiles to the Yggdrasil Workspace, scoped to the Orchestration Task; Brokk reads Workfiles as inputs but does not write them.
+A **Workfile** is a transient, gitignored file specialists exchange during the task in the Yggdrasil Workspace — never itself the Deliverable (see § Deliverables) unless explicitly promoted. Mimir, Kvasir, Heimdall, and Bragi write Workfiles (markdown `.md` files) to the Yggdrasil Workspace, scoped to the Orchestration Task; Brokk reads Workfiles as inputs but does not write them.
 
 - **Directory**: `.yggdrasil-workspace/<yyyymmdd>-<task-slug>-<xx>/` rooted at the session working directory — never a global, home, or configuration location. `<yyyymmdd>` is today's date, `<task-slug>` is a short kebab-case summary, `<xx>` is a 2–4 character suffix Odin invents at task start for collision-avoidance. This directory must be gitignored and never committed.
 - **Filenames**: Sequenced and self-describing (e.g., `01-research-<topic>.md`, `02-plan.md`, `03-review-round1.md`).

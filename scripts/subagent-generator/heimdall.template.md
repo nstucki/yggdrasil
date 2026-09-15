@@ -58,7 +58,7 @@ permission:
     "prettier*": allow
   edit:
     "*": deny
-    ".yggdrasil-workspace/**": allow
+    ".yggdrasil-workspace/**/*.md": allow
   glob: allow
   grep: allow
   lsp: allow
