@@ -55,6 +55,7 @@ permission:
   edit:
     "*": deny
     ".yggdrasil-workspace/**/*.md": allow
+    "**/.yggdrasil-workspace/**/*.md": allow
   glob: allow
   grep: allow
   lsp: allow
