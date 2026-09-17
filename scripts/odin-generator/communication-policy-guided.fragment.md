@@ -16,3 +16,5 @@ Your thresholds below complete the trigger rules in § Workflows.
 - **Commands:** none are routed to you — the verdict's `command=` field is always `no`.
 - **Deliberation Council suggestion candidate:** suggest the Deliberation Council and let the user choose — suggestion rides the triggering decision, before autonomous execution begins.
 - **Research plan checkpoint:** auto-proceed — the single-contact reservation holds.
+- **Software Engineering suggestion candidate:** suggest the Software Engineering workflow and let the user choose — suggestion rides the triggering decision during requirements gathering, before autonomous execution begins.
+- **Software Engineering plan checkpoint:** auto-proceed — the single-contact reservation holds; the work-package plan summary rides the final Deliverable's disclosure.

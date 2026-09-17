@@ -171,6 +171,16 @@ Decomposes a research question into parallel-executable clusters (mandatory Kvas
 
 **On invoke:** load the \`odin-research-workflow\` skill first — it defines the full mechanism, constraints, and cost model.
 
+### Software Engineering
+
+Delivers a bounded engineering objective as working, tested code — an optional business-analysis pass and an optional arc42-structured architecture decision (gated by its own design review), then test-driven implementation across one or more independently reviewed work packages, with a plan checkpoint before implementation begins.
+
+**Triggering verdict:** `Engineering check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
+
+**Invariant trigger rules:** the `/yggdrasil/engineer` command → invoke. Explicit software-engineering-workflow, test-driven-development, or requirements-analysis/architecture-before-implementation language in the request → invoke. A non-trivial implementation request (new component, multi-module feature, new integration) without such language is the suggestion candidate — suggest or skip per the Communication Policy; a suggestion the user accepts → invoke. A plain implementation request with no test-driven or upfront-design signal, a pure research request, or a question → skip.
+
+**On invoke:** load the `odin-engineering-workflow` skill first — it defines the full mechanism, constraints, and cost model. When suggesting it, convey the cost qualitatively — substantially heavier and slower than implementing directly; load the skill if the user wants specifics.
+
 ## Execution
 
 - Execute Subtasks in dependency order. Dispatch truly independent Subtasks in parallel — and **only** those.

@@ -2,7 +2,7 @@
 #
 # validate.sh — Read-only structural validator for the Yggdrasil project.
 #
-# This script performs eight structural checks against the agent, skill, and
+# This script performs ten structural checks against the agent, skill, and
 # command definitions and reports a per-check summary plus a final PASS/FAIL verdict.
 #
 #   1. Frontmatter parse check — every agents/*.md and skills/**/SKILL.md has a
@@ -34,6 +34,17 @@
 #   8. Command file validation — every commands/*.md has required frontmatter
 #      (`description`), valid `agent` field (if present, must be an Odin variant),
 #      valid `subtask` field (if present, must be `false`), and non-empty template body.
+#   9. Mandatory-skill isolation from optional skills — no .md file under a
+#      mandatory feature directory (research/, memories/, deliberation/,
+#      engineering/) may reference the slug of a skill that ships only with an
+#      optional agent bundle (skills/<agent>/), so mandatory skills keep working
+#      on a mandatory-only install. Both slug lists are derived at check time.
+#  10. No license texts under skills/ — no entry matching LICENSE*
+#      (case-insensitive) may exist anywhere in the skills/ tree, because
+#      setup.sh copies that tree wholesale into the user's config home, which
+#      would install licensing/legal files onto every machine. Third-party
+#      license texts belong in the repo-root LICENSES/ directory, which
+#      setup.sh never copies.
 #
 # GUARANTEE: This script is strictly READ-ONLY. It never creates, modifies, or
 # deletes any project file, and performs no git write operations. It only reads
@@ -427,10 +438,10 @@ check_agent_freshness() {
 # agent by name. Skill ownership is derived from the skill slug's <agent>-
 # prefix (frontmatter name == directory slug, enforced by Check 3), NOT from
 # the directory layout — so mandatory skills in the feature directories
-# (research/, memories/, deliberation/) are scanned identically to optional
-# skills under skills/<agent>/. Matching is case-insensitive with word
-# boundaries (grep -iw), so word-internal occurrences such as "encoding" or
-# "Hardcoding" do not falsely match "odin". Self-references are allowed.
+# (research/, memories/, deliberation/, engineering/) are scanned identically
+# to optional skills under skills/<agent>/. Matching is case-insensitive with
+# word boundaries (grep -iw), so word-internal occurrences such as "encoding"
+# or "Hardcoding" do not falsely match "odin". Self-references are allowed.
 # odin-* skills are exempt (the orchestrator knows the full pantheon);
 # non-agent slugs (e.g. shared skills) are not scanned.
 # ---------------------------------------------------------------------------
@@ -716,6 +727,166 @@ check_commands() {
 }
 
 # ---------------------------------------------------------------------------
+# CHECK 9 — Mandatory-skill isolation from optional skills.
+#
+# Skills in the mandatory feature directories are installed unconditionally, so
+# they must be complete on a mandatory-only install. Referencing a skill that
+# ships only with an optional agent bundle is therefore a hidden dependency:
+# the reference silently dangles for a user who declined the optional skills.
+# For every .md file under a mandatory feature directory, this check fails if
+# the file names the slug of any skill directory under an OPTIONAL root.
+#
+# Neither slug list is hardcoded — both are derived from the tree at check time
+# so new, renamed, or removed skills are picked up automatically:
+#   * mandatory feature directories come from MANDATORY_SKILL_DIRS (mirroring
+#     setup.sh);
+#   * optional roots are every skills/*/ directory that is neither a mandatory
+#     feature directory nor the shared/ scaffold, and the optional slugs are
+#     the skill directories inside them.
+#
+# Allowed by construction: a mandatory skill's own slug and any mandatory ->
+# mandatory cross-reference, because only optional slugs are ever searched for.
+# A slug that exists under BOTH an optional root and a mandatory feature
+# directory is dropped from the search list for the same reason.
+#
+# Matching uses hyphen-aware word boundaries so a shorter optional slug cannot
+# match inside a longer mandatory one (e.g. optional `a-b` inside `a-b-c`).
+# ---------------------------------------------------------------------------
+FAIL_MANDATORY_ISOLATION=0
+
+# The mandatory feature directories — mirrors MANDATORY_SKILL_DIRS in setup.sh.
+# Keep the two in sync. Every other skills/*/ root is optional: an agent bundle
+# (skills/<agent>/) the user may decline, or the shared/ scaffold.
+MANDATORY_SKILL_DIRS='research memories deliberation engineering'
+
+# Is $1 the name of a mandatory feature directory?
+is_mandatory_skill_dir() {
+  case " $MANDATORY_SKILL_DIRS " in
+    *" $1 "*) return 0 ;;
+  esac
+  return 1
+}
+
+# Print the slug of every skill directory under a mandatory feature directory.
+mandatory_skill_slugs() {
+  local feature dir
+  for feature in $MANDATORY_SKILL_DIRS; do
+    [ -d "$SKILLS_DIR/$feature" ] || continue
+    for dir in "$SKILLS_DIR/$feature"/*/; do
+      [ -d "$dir" ] || continue
+      basename "$dir"
+    done
+  done
+}
+
+# Print the slug of every skill directory under an optional root — any
+# skills/*/ that is neither a mandatory feature directory nor shared/.
+optional_skill_slugs() {
+  local root rootname dir
+  for root in "$SKILLS_DIR"/*/; do
+    [ -d "$root" ] || continue
+    rootname=$(basename "$root")
+    [ "$rootname" = "shared" ] && continue
+    is_mandatory_skill_dir "$rootname" && continue
+    for dir in "$root"*/; do
+      [ -d "$dir" ] || continue
+      basename "$dir"
+    done
+  done
+}
+
+# NUL-delimited, sorted list of every .md file under a mandatory feature
+# directory (SKILL.md plus companion files such as templates).
+mandatory_skill_md_files() {
+  local feature
+  for feature in $MANDATORY_SKILL_DIRS; do
+    [ -d "$SKILLS_DIR/$feature" ] || continue
+    find "$SKILLS_DIR/$feature" -name '*.md' -print0
+  done | sort -z
+}
+
+check_mandatory_isolation() {
+  heading "Check 9: Mandatory-skill isolation from optional skills"
+
+  local mandatory_slugs optional_slugs search_slugs slug
+  mandatory_slugs=$(mandatory_skill_slugs)
+  optional_slugs=$(optional_skill_slugs)
+
+  # Build the search list: optional slugs minus any that also exist as a
+  # mandatory skill (a name collision there means the reference is
+  # mandatory -> mandatory, which is allowed).
+  search_slugs=""
+  while IFS= read -r slug; do
+    [ -n "$slug" ] || continue
+    if printf '%s\n' "$mandatory_slugs" | grep -Fxq "$slug"; then
+      continue
+    fi
+    search_slugs="${search_slugs}${slug}
+"
+  done <<EOF
+$optional_slugs
+EOF
+
+  if [ -z "$search_slugs" ]; then
+    pass_msg "no optional skill directories present; nothing to isolate against"
+    return
+  fi
+
+  local file pattern hit
+  while IFS= read -r -d '' file; do
+    while IFS= read -r slug; do
+      [ -n "$slug" ] || continue
+      pattern='(^|[^A-Za-z0-9_-])'"$slug"'([^A-Za-z0-9_-]|$)'
+      while IFS= read -r hit; do
+        [ -n "$hit" ] || continue
+        fail_msg "$(rel "$file"): line ${hit%%:*}: references optional skill '$slug'"
+        FAIL_MANDATORY_ISOLATION=$((FAIL_MANDATORY_ISOLATION + 1))
+      done <<EOF
+$(grep -nE "$pattern" "$file" 2>/dev/null || true)
+EOF
+    done <<EOF
+$search_slugs
+EOF
+  done < <(mandatory_skill_md_files)
+
+  if [ "$FAIL_MANDATORY_ISOLATION" -eq 0 ]; then
+    pass_msg "no mandatory-directory skill references an optional skill"
+  else
+    info_msg "${C_RED}${FAIL_MANDATORY_ISOLATION} mandatory-isolation violation(s)${C_RESET}"
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# CHECK 10 — No license texts under skills/.
+#
+# setup.sh copies the whole skills/ tree into the user's config home with no
+# filename filtering, so any LICENSE file placed there is installed onto every
+# user's machine — licensing/legal texts must never ship that way. This check
+# is a repo-wide sweep: it fails on any entry matching LICENSE* (case-
+# insensitive: LICENSE, LICENSE.txt, license.md, ...) anywhere under skills/,
+# regardless of whether the containing directory is mandatory or optional.
+# Third-party license texts belong in the repo-root LICENSES/ directory, which
+# setup.sh never copies.
+# ---------------------------------------------------------------------------
+FAIL_SKILLS_LICENSE=0
+
+check_skills_license() {
+  heading "Check 10: No license texts under skills/"
+
+  local file
+  while IFS= read -r -d '' file; do
+    fail_msg "$(rel "$file"): license texts under skills/ are installed wholesale by setup.sh; move it to LICENSES/"
+    FAIL_SKILLS_LICENSE=$((FAIL_SKILLS_LICENSE + 1))
+  done < <(find "$SKILLS_DIR" -iname 'LICENSE*' -print0 | sort -z)
+
+  if [ "$FAIL_SKILLS_LICENSE" -eq 0 ]; then
+    pass_msg "no LICENSE* entry anywhere under skills/"
+  else
+    info_msg "${C_RED}${FAIL_SKILLS_LICENSE} license-placement violation(s)${C_RESET}"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Main.
 # ---------------------------------------------------------------------------
 main() {
@@ -749,9 +920,13 @@ main() {
   printf '\n'
   check_commands
   printf '\n'
+  check_mandatory_isolation
+  printf '\n'
+  check_skills_license
+  printf '\n'
 
   # ---- Final summary -------------------------------------------------------
-  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_FRESHNESS + FAIL_ISOLATION + FAIL_CAPABILITIES + FAIL_PARITY_MARKERS + FAIL_COMMANDS))
+  local total=$((FAIL_FRONTMATTER + FAIL_SECTIONS + FAIL_SLUG + FAIL_ODIN_FRESHNESS + FAIL_ISOLATION + FAIL_CAPABILITIES + FAIL_PARITY_MARKERS + FAIL_COMMANDS + FAIL_MANDATORY_ISOLATION + FAIL_SKILLS_LICENSE))
 
   heading "Summary"
   printf '  %-34s %s\n' "Frontmatter parse:"        "$(fmt_count "$FAIL_FRONTMATTER")"
@@ -762,6 +937,8 @@ main() {
   printf '  %-34s %s\n' "Capability mirror:"        "$(fmt_count "$FAIL_CAPABILITIES")"
   printf '  %-34s %s\n' "Parity markers:"           "$(fmt_count "$FAIL_PARITY_MARKERS")"
   printf '  %-34s %s\n' "Command files:"            "$(fmt_count "$FAIL_COMMANDS")"
+  printf '  %-34s %s\n' "Mandatory-skill isolation:" "$(fmt_count "$FAIL_MANDATORY_ISOLATION")"
+  printf '  %-34s %s\n' "License texts under skills/:" "$(fmt_count "$FAIL_SKILLS_LICENSE")"
   printf '  %s\n' "----------------------------------------------------"
   printf '  %-34s %s\n' "Total failures:" "$total"
   printf '\n'

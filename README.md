@@ -69,7 +69,7 @@ Odin operates in three modes, adapting his autonomy to the task:
 
 The lifecycle flows through the pantheon: **Odin** receives the objective and determines the path; **Bragi** advises on communication, **Kvasir** on strategy and decomposition; **Mimir** researches and gathers context; **Brokk** implements; **Heimdall** reviews; and **Odin** evaluates the outcome and decides next steps.
 
-Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Every plan ends at a Final Review Gate, where Heimdall validates the assembled Deliverable against your original request before it reaches you.
+Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Odin also packages three complete workflows that are invoked whole rather than composed step by step: the **Deliberation Council**, deep **Research**, and **Software Engineering** — optional requirements analysis and architecture, then test-driven implementation across independently reviewed work packages. Every plan ends at a Final Review Gate, where Heimdall validates the assembled Deliverable against your original request before it reaches you.
 
 Patterns can be combined, repeated, or reordered as the task demands — for example, multiple research → implement → review rounds within a single task.
 
@@ -128,6 +128,7 @@ Required (always installed, regardless of the prompt — Odin's workflow and Ygg
 - **Memory skills** (`odin-memory-system`, `brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/memories/`
 - **Deliberation skills** (`odin-deliberation-council` and the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/deliberation/`
 - **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`) → `~/.config/opencode/skills/yggdrasil/research/`
+- **Engineering skills** (`odin-engineering-workflow`, `mimir-codebase-context`, `bragi-business-analysis`, `kvasir-software-architecture`, `kvasir-arc42-template`, `brokk-test-driven-development`, `heimdall-engineering-review`) → `~/.config/opencode/skills/yggdrasil/engineering/`
 
 Optional (the curated starter skills, installed only if accepted at the prompt):
 
@@ -155,7 +156,7 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 
 **Directory structure:**
 
-```
+```text
 ~/.config/opencode/skills/yggdrasil/
 ├── research/                          # Mandatory skills
 │   ├── odin-research-workflow/
@@ -173,6 +174,14 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 │   ├── bragi-council-deliberation-pragmatist/
 │   ├── bragi-council-deliberation-humanist/
 │   └── bragi-council-deliberation-herald/
+├── engineering/                       # Mandatory skills
+│   ├── odin-engineering-workflow/
+│   ├── mimir-codebase-context/
+│   ├── bragi-business-analysis/
+│   ├── kvasir-software-architecture/
+│   ├── kvasir-arc42-template/
+│   ├── brokk-test-driven-development/
+│   └── heimdall-engineering-review/
 ├── bragi/                             # Optional skills (if accepted at install)
 │   ├── bragi-presentation-structuring/
 │   ├── bragi-question-formulation/
@@ -210,10 +219,11 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 
 Commands are **macros for user requests to Odin** — equivalent to stating the same request in natural language. Natural-language invocation remains fully valid; commands are shortcuts, not the only door. This ensures commands always flow through the full orchestration pipeline with proper review gates — never bypassing specialist review.
 
-Yggdrasil provides five globally-installed slash-commands, available in every project once installed:
+Yggdrasil provides six globally-installed slash-commands, available in every project once installed:
 
 - **`/yggdrasil/deliberate <question>`** — Run the Deliberation Council: multiple perspective lenses analyze the question in parallel, synthesize the competing arguments, and deliver a reasoned conclusion. Multi-specialist workflow; expect to wait.
 - **`/yggdrasil/research <topic>`** — Conduct deep research: decompose the topic into independent research areas, investigate each in parallel with review and synthesis, and deliver a comprehensive report. Adaptive multi-specialist workflow; expect to wait.
+- **`/yggdrasil/engineer <objective>`** — Run the Software Engineering workflow: optional business analysis and an arc42-structured architecture decision (gated by its own design review), then test-driven implementation across one or more independently reviewed work packages. A plan checkpoint shows you the packages and the architecture decisions before implementation begins. Multi-specialist workflow; expect to wait.
 - **`/yggdrasil/remember [topic]`** — Promote reviewed findings to the project knowledge base. Runs the reviewed promotion pipeline (orchestrated, not an instant write). The only way promotion is initiated; never automatic at task wrap-up.
 - **`/yggdrasil/dream [scope]`** — Consolidate and audit the knowledge base for duplicates, contradictions, and staleness. Orchestrated maintenance; may prune by judgment but never silently performs a forget.
 - **`/yggdrasil/forget <scope>`** — Delete entries from the knowledge base. Destructive and always confirmed before dispatch; invocation is intent, not confirmation. Working-tree only; full wipe requires a second confirmation.
@@ -260,7 +270,7 @@ Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown fil
    $CONFIG_BASE/skills/yggdrasil/<agent>/<agent>-<name>/SKILL.md
    ```
 
-    Mandatory skills live in the feature directories `research/`, `memories/`, and `deliberation/`; optional skills install flat at `<agent>/<agent>-<name>/`.
+    Mandatory skills live in the feature directories `research/`, `memories/`, `deliberation/`, and `engineering/`; optional skills install flat at `<agent>/<agent>-<name>/`.
 
    where `<agent>` is one of `mimir`, `brokk`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
 
@@ -271,7 +281,9 @@ Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown fil
    ---
    ```
 
-   The body follows the same five sections as every shipped skill, in this order: `## Purpose`, `## When to Use`, `## Workflow`, `## Quality Criteria`, `## Anti-Patterns`.
+   Every skill Yggdrasil ships — mandatory feature-directory skills and optional per-agent bundles alike — uses the same five sections, in this relative order: `## Purpose`, `## When to Use`, `## Workflow`, `## Quality Criteria`, `## Anti-Patterns`. That is the framework's own internal convention, applied uniformly across the shipped skill set and enforced there by `scripts/validate.sh` (Check 2). It is not a requirement imposed on you: a skill you define for your own use may be structured however suits you — `validate.sh` only ever validates this repo's shipped skills, never one of yours.
+
+   If you do choose to follow the shipped convention — for consistency with the shipped set, or because you intend to contribute the skill back to the framework — then those five sections are a floor, not a ceiling. A skill **may** add further top-level sections when its domain genuinely calls for them — for example a `## Boundaries` section making operating limits explicit, or an `## Output Contract` section defining a structured handoff to the next step — provided all five mandatory sections remain present and keep their required relative order. Add such sections only when they carry real instruction; they are not a place for filler.
 
 2. **Regenerate the capability mirror**:
 
@@ -362,6 +374,27 @@ Odin also provides a **Research workflow** for deep investigation of complex top
 
 **What to expect:** This is a multi-specialist workflow that takes longer than a simple answer. The plan checkpoint gives you a chance to steer the investigation. You'll receive a comprehensive report with citations and clear boundaries on what was and wasn't covered.
 
+### Software Engineering
+
+Odin further provides a **Software Engineering workflow** for building a bounded objective as working, tested code. It decides an explicit shape up front — whether to gather context, whether to analyze requirements, whether to decide architecture — then implements test-first across one or more independently reviewed work packages. Use this when you want requirements pinned down and the design decided and reviewed before code is written, rather than implementing straight away. Every skill it uses is dedicated to this workflow and installs unconditionally — it depends on zero optional skills, so it behaves identically whichever optional skill sets you accepted or declined at install time.
+
+**How it works:**
+
+1. **Shape decision** — Odin records which steps will run and why, before dispatching anything. Codebase context is gathered first when the objective touches unfamiliar structure.
+2. **Business analysis (optional)** — the objective is analyzed into stakeholders, scope, testable acceptance criteria with stable IDs, ranked quality goals, non-functional targets, assumptions, and open questions — with no solution prescribed.
+3. **Architecture (optional)** — an architecture document structured with the [arc42](https://arc42.org) template, pruned to the sections the objective actually affects, with each significant decision written as a separate Architecture Decision Record (at least two options evaluated against the quality goals), plus a breakdown into work packages.
+4. **Design review** — whenever the architecture step runs, its document is independently reviewed before any implementation consumes it.
+5. **Plan checkpoint** — you see the work packages, the execution mode, and the architecture decisions awaiting your ratification before implementation begins (this is your steering point).
+6. **Test-driven implementation** — each work package is implemented red → green → refactor: failing tests traced to acceptance criteria first, then the minimal implementation, then a behavior-preserving refactor. Every package returns run evidence and is independently reviewed. Packages run in parallel only when their write sets are disjoint and their contracts are fixed up front; otherwise sequentially.
+7. **Integration** — when there is more than one package, a final session runs the full test suite, resolves the seams, and persists the architecture document and the accepted ADRs into the project.
+8. **Final answer** — the outcome is drafted as a user-facing summary (shape taken, acceptance-criteria coverage, test evidence, assumptions, open risks, document locations) and independently reviewed before delivery.
+
+**When to use:** Use the `/yggdrasil/engineer` command, or explicitly ask for the engineering workflow, test-driven development, or requirements and architecture work ahead of implementation. A non-trivial implementation request (new component, multi-module feature, new integration) may be offered as a suggestion. Plain implementation requests — a bug with a repro, a small stated change — skip this workflow and take the ordinary implement → review path.
+
+**What to expect:** This is the heaviest packaged workflow — substantially slower and more dispatch-intensive than implementing directly. The plan checkpoint gives you a chance to adjust the shape, the packages, and the architecture decisions before code is written. You'll receive tested code, and — when the architecture step ran — a persisted arc42 architecture document plus ADR files in the project.
+
+**Availability:** if you installed Yggdrasil before this workflow shipped, re-run `./setup.sh` to install the `engineering/` skills and the `/yggdrasil/engineer` command (this also refreshes the capability inventory).
+
 ## Development
 
 ### Validation
@@ -379,20 +412,20 @@ To test a change to an agent or skill: edit the source file, run `scripts/valida
 **All files under `agents/` are generated output.** Never edit them directly. Instead:
 
 1. **For Odin agents** (odin-autonomous.md, odin-guided.md, odin-interactive.md):
-    - Edit the source templates in `scripts/odin-generator/`:
+   - Edit the source templates in `scripts/odin-generator/`:
       - `preamble.template.md` — frontmatter and title (contains `{{MODE_TITLE}}` and `{{DESCRIPTION}}` substitution tokens)
       - `shared-body.template.md` — shared orchestration content (Responsibilities, Boundaries, Conventions, Planning, Execution, Review & Quality Gates)
       - `communication-policy-{mode}.fragment.md` — mode-specific Communication Policy (one file per mode: autonomous, guided, interactive)
-    - Regenerate: `scripts/generate-odin-agents.sh`
-    - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-odin-generator.sh`
+   - Regenerate: `scripts/generate-odin-agents.sh`
+   - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-odin-generator.sh`
 
 2. **For subagent files** (bragi.md, brokk.md, heimdall.md, kvasir.md, mimir.md):
-     - Edit the source templates in `scripts/subagent-generator/`:
-       - `{agent}.template.md` — agent-specific definition (frontmatter, Role, Responsibilities, Boundaries, Role Discipline, Workflow, etc.)
-       - `memory.fragment.md` — shared Yggdrasil Memory section (used by all agents)
-        - `workspace.fragment.md` — shared Yggdrasil Workspace section (used by all agents except Brokk)
-    - Regenerate: `scripts/generate-subagents.sh`
-    - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-subagent-generator.sh`
+   - Edit the source templates in `scripts/subagent-generator/`:
+      - `{agent}.template.md` — agent-specific definition (frontmatter, Role, Responsibilities, Boundaries, Role Discipline, Workflow, etc.)
+      - `memory.fragment.md` — shared Yggdrasil Memory section (used by all agents)
+      - `workspace.fragment.md` — shared Yggdrasil Workspace section (used by all agents except Brokk)
+   - Regenerate: `scripts/generate-subagents.sh`
+   - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-subagent-generator.sh`
 
 **Why?** The generators ensure consistency across variants and prevent accidental divergence. Editing generated files directly causes them to fall out of sync with their templates — a future regeneration (by CI, a contributor, or a task) will silently overwrite your changes. The validation gate (`scripts/validate.sh` Check 4) catches this at commit time.
 

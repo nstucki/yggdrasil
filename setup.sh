@@ -164,7 +164,7 @@ DST_GENERATOR="${DST_CONFIG_HOME}/generate-capabilities.sh"
 # always-installed commands and Odin's workflow/memory mechanisms depend on
 # these skills with no fallback (see README). Every other skills/ subdirectory
 # holds optional skills, gated by the prompt below.
-MANDATORY_SKILL_DIRS="research memories deliberation"
+MANDATORY_SKILL_DIRS="research memories deliberation engineering"
 
 # ── Pre-flight checks ───────────────────────────────────────────────────────
 
@@ -359,7 +359,7 @@ done
 ok "Mandatory skills installed."
 
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: the mandatory skills (research/, memories/, deliberation/) install"
+    warn "Note: the mandatory skills (research/, memories/, deliberation/, engineering/) install"
     warn "regardless of your answer — Odin's workflows and the commands depend on them."
 fi
 
