@@ -1,6 +1,6 @@
 ---
 name: heimdall-engineering-review
-description: Review the artifacts of the software engineering workflow — codebase-context findings, arc42 architecture documents with decision records, test-driven work packages, and integration results — selecting the checklist by a Focus line in the brief.
+description: Review the artifacts of the software engineering workflow — codebase-context findings, test-driven work-package evidence, and multi-package integration results — selecting the checklist by a Focus line in the brief; architecture documents and their persisted form belong to the dedicated architecture-review skill.
 ---
 
 # Engineering Review

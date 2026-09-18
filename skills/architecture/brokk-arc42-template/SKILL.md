@@ -1,6 +1,6 @@
 ---
 name: brokk-arc42-template
-description: Reference skeleton for arc42-structured architecture documents — the twelve section headings with adapted arc42 guidance, an omission-marker convention, and the decision-record, work-package, and traceability appendices that the architecture step instantiates.
+description: Own the arc42 skeleton and instantiate it into an architecture Workfile — classify the target document's shape and next decision-record number, pre-fill the header, and write the twelve section headings with their adapted arc42 guidance plus the mode-driven decision-record, work-package, and traceability appendices, filling no section and pruning none.
 ---
 
 # arc42 Template — Architecture Document
@@ -67,12 +67,12 @@ The persisted form of this document is a directory — one file per numbered sec
 **Input.** The brief carries one control line:
 
 ```text
-Scaffold: mode=<document-existing | decide-new>, workfile=<NN-architecture-arc42.md path>, location=<docs/architecture/ | path>, objective=<text | none>
+Scaffold: mode=<document-existing | decide-new>, source=<direction | inference>, workfile=<NN-architecture-arc42.md path>, location=<docs/architecture/ | path>, objective=<text | none>
 ```
 
-The header you write carries the mode **and its source** (`direction` when a user or a caller stated the mode, `inference` when it was derived), so the brief must supply the source as well — appended to the mode as `mode=decide-new (source: direction)`, or in the shape verdict the brief echoes.
+`source` is how the mode was arrived at — `direction` when a user or a caller stated it, `inference` when the requesting agent derived it. It is a brief field of its own, immediately after `mode`, because the header you write carries the mode **and its source** on one line and you copy both from here rather than re-deriving either.
 
-A missing `mode`, a missing `workfile`, or a `mode` with no source → **ask the requesting agent**. Do not guess any of the three: the mode drives the header and the appendix treatment, the source is a header field the reviewer checks against this brief, and the workfile path is the only thing you may write.
+A missing `mode`, a missing `source`, or a missing `workfile` → **ask the requesting agent**. Do not guess any of the three: the mode drives the header and the appendix treatment, the source is a header field the reviewer checks against this brief, and the workfile path is the only thing you may write.
 
 **Output.** One Workfile at the briefed path, plus the `Scaffold result:` line of step 5. Nothing else is written, anywhere.
 

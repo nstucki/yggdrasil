@@ -1,6 +1,6 @@
 ---
 name: kvasir-software-architecture
-description: Decide and document software architecture for a bounded objective using the arc42 template — quality goals first, pruned to the affected sections, with separate architecture decision records logged in section 9 and a work-package breakdown for test-driven implementation.
+description: Fill a scaffolded arc42 architecture document in one of two modes, selected by a Mode line in the brief — deciding new architecture for a bounded objective, or recording an existing system as-is and proposing nothing — quality goals first, pruned to the affected sections, with separate architecture decision records logged in section 9 and, when deciding, a work-package breakdown for test-driven implementation.
 ---
 
 # Software Architecture
