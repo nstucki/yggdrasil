@@ -62,7 +62,12 @@ Three of your outputs are consumed directly and must be shaped for that consumpt
    - A red baseline is a finding, not a defect to fix: report the failures unchanged and leave the tree untouched.
    - Cite the CI configuration path and the commands CI runs, so a local-only green result is not mistaken for a green pipeline.
 
-8. **Inventory existing architecture and decision-record documentation.** Search the conventional locations (`docs/architecture/`, `docs/arc42*`, `architecture/`, `doc/`, `docs/adr/`, `docs/decisions/`, `adr/`) and the README's documentation links. For each document found: path, format (arc42 or other, and which structure), a one-line description of what it covers, its stated status and date, and whether it covers the objective's area. For decision records: the directory, the numbering pattern, the highest number in use, and the ID and title of any record the objective's area touches. If nothing exists, state that explicitly — "no architecture document found; searched: <paths>" — because absence is as load-bearing as presence.
+8. **Inventory existing architecture and decision-record documentation.** Search the conventional locations (`docs/architecture/`, `docs/architecture/arc42/`, `docs/arc42*`, `architecture/`, `doc/`, `docs/architecture/decisions/`, `docs/adr/`, `docs/decisions/`, `adr/`) and the README's documentation links. For each document found: path, **shape**, a one-line description of what it covers, its stated status and date, and whether it covers the objective's area. The shape is exactly one of:
+   - **`arc42 directory`** — a directory holding both `README.md` and `01-introduction-and-goals.md`. List which of the twelve `NN-*.md` section files are filled and which are stubs, quoting the `README.md` Sections table or the stub markers themselves as the proof.
+   - **`arc42 single file`** — one markdown file carrying the arc42 `## N.` headings. List which sections are filled and which carry omission markers.
+   - **`other`** — name its structure (its top-level headings or its own file layout) without mapping it onto arc42.
+
+   For decision records: the directory — including a `decisions/` subdirectory inside an architecture directory — the numbering pattern, the highest number in use, and the ID and title of any record the objective's area touches. If nothing exists, state that explicitly — "no architecture document found; searched: <paths>" — because absence is as load-bearing as presence.
 
 9. **Record the dependencies relevant to the objective.** Name, version, and the manifest line that declares each, plus the lockfile if one pins it. Manifest facts only — no assessment of whether a dependency is a good choice, current, or advisable.
 
@@ -84,7 +89,7 @@ Three of your outputs are consumed directly and must be shaped for that consumpt
 6. `## Current Behavior` — per touched path: inputs, outputs, side effects, error handling, defaults — each cited; contradictions recorded with both citations
 7. `## Conventions` — convention · example `path:line` · how widespread
 8. `## Test Infrastructure` — runner · exact commands · layout · fixtures and harness · required services · CI path, followed by `### Baseline Run` with the command as run, exit status, counts, duration, and verbatim output (or the `[UNVERIFIED — not executed: <reason>]` marker)
-9. `## Existing Architecture and Decision Records` — path · format · covers · status and date · relevance to the objective; or the explicit "none found; searched: <paths>" line
+9. `## Existing Architecture and Decision Records` — path · shape (`arc42 directory` / `arc42 single file` / `other`) · filled sections · covers · status and date · relevance to the objective; or the explicit "none found; searched: <paths>" line
 10. `## Dependencies` — name · version · declaring manifest line
 11. `## Current-State View` — one Mermaid diagram with its traceability note, or the one-line reason for omitting it
 12. `## Not Examined and Unverified` — `### Asked but Unconfirmed` (question · what was looked at · why it stayed open) and `### Unverified Findings` (finding · reason)
@@ -93,7 +98,7 @@ Three of your outputs are consumed directly and must be shaped for that consumpt
 
 1. The scope line: area investigated, area excluded.
 2. The baseline test result: the command as run, green or red, counts, and the failing test names when red — or the `[UNVERIFIED — not executed]` marker with its reason.
-3. Whether an architecture document and a decision-record directory exist, with their paths and the highest record number in use.
+3. Whether an architecture document and a decision-record directory exist, with their paths, the document's shape (`arc42 directory` / `arc42 single file` / `other`), and the highest record number in use.
 4. Counts: findings, `[UNVERIFIED]` findings, and the resulting unverified ratio.
 5. Contradictions found between code, tests, and documentation, worst first.
 6. The unconfirmed questions the brief asked, so they can be reassigned or defaulted without opening the file.

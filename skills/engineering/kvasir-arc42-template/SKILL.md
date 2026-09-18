@@ -42,6 +42,8 @@ legal code are in LICENSES/CC-BY-SA-4.0-arc42.txt in the Yggdrasil source reposi
 
 Provide the reference arc42 skeleton — the twelve numbered section headings, their sub-structure, the per-section guidance, and the decision-record, work-package, and traceability appendices — that the `kvasir-software-architecture` skill instantiates in its architecture-drafting step. § Skeleton below *is* that payload; everything above it is how to use it.
 
+The persisted form of the document is a directory — one file per numbered section, one per decision record, plus a generated index — produced by the implementation phase's persistence step from this single Workfile; the skeleton itself stays one Workfile.
+
 **This skill is loaded by name with the `skill` tool, never read as a file.** Its content lives in this `SKILL.md` because a skill's own body is inlined when the skill is loaded, whereas companion files sitting beside a `SKILL.md` are not reliably readable by a subagent at runtime — a file-based template is unreachable. Every future change to the skeleton belongs inside this file.
 
 This is a document skeleton, not a method for deciding architecture: quality-goal selection, option evaluation, and the decisions themselves belong to the architecture step's own skill. This skill governs only the shape of the document those decisions are written into.
@@ -61,14 +63,14 @@ Steps 1–8 are the rules for instantiating the skeleton; step 9 governs attribu
 
 1. Copy everything below the horizontal rule in § Skeleton into the architecture Workfile, then fill it.
 2. Delete each guidance block — the fenced **arc42 guidance** blocks and the `> **Yggdrasil:**` blockquotes — as you fill the section it belongs to. Guidance left in a finished section is noise.
-3. **Keep every numbered heading.** A section this change does not affect keeps its heading and gets a one-line marker — `_Not affected by this change_` or `_Omitted — <reason>_` — so a reader can tell "considered and excluded" from "forgotten".
+3. **Keep every numbered heading.** A section this change does not affect keeps its heading and gets a one-line marker, so a reader can tell "considered and excluded" from "forgotten". The wording depends on the document mode: in **seed** mode use `_Omitted — <reason>_`, because the document is the project's whole architecture record and there is no change for a section to be unaffected by; in **update delta** mode use `_Not affected by this change_` for the sections the delta leaves alone. The persistence step copies a seed marker verbatim into the section's own file and never writes an unaffected section in update-delta mode, so `_Not affected by this change_` never lands in the project tree.
 4. Document only what a reader of *this* change needs. The twelve sections are a checklist to walk, not a quota to fill.
 5. Quality goals come first: everything in §4, §9, and §10 should point back to §1.2.
 6. Prefer one good diagram per view over several partial ones. Mermaid, in fenced ` ```mermaid ` blocks, next to the prose it illustrates.
 7. Blackbox interfaces in §5 must be precise enough to write a failing test against.
 8. Angle-bracket placeholders (`<…>`) are fill-ins; table rows are examples of shape, not required counts.
 9. **Attribution travels with arc42 text — and only with it.** The `Attribution and license` block at the top of this skill is skill-level content. When every `arc42 guidance §N` block has been deleted from the Workfile, do **not** copy that block in: the finished document then contains no arc42-licensed text (the section names and numbering are structure, not the Licensed Material — see the scope statement in the license file the block cites). **If any `arc42 guidance §N` block survives into the Workfile** — a section left unfilled with its guidance in place, or guidance deliberately retained — copy the `Attribution and license` block verbatim to the top of the Workfile, directly under the document title, and name in your report every section that still carries arc42 text. Surviving arc42 text stays under CC BY-SA 4.0 wherever the document goes — when the implementation phase persists it into the project, and when it is published outside the organization; your own content does not.
-10. **Appendices A–C are Workfile content, not document content.** Appendix A holds the full architecture decision record text and is split into separate ADR files when the document is persisted into the project. Appendices B and C — work packages and traceability — are planning material and are never persisted. Keep all three in the Workfile, each complete: Appendix B with its `Package check:` verdict line, Appendix C with exactly one row per acceptance criterion in scope.
+10. **Appendices A–C are Workfile content, not document content.** Appendix A holds the full architecture decision record text; Appendix A is split into separate decision-record files, and §1–§12 into one file per section, when the document is persisted into the project. Appendices B and C — work packages and traceability — are planning material and are never persisted. Keep all three in the Workfile, each complete: Appendix B with its `Package check:` verdict line, Appendix C with exactly one row per acceptance criterion in scope.
 
 ## Quality Criteria
 
@@ -77,10 +79,10 @@ Steps 1–8 are the rules for instantiating the skeleton; step 9 governs attribu
 - No `arc42 guidance §N` block and no `> **Yggdrasil:**` blockquote remains in a section that has been filled.
 - §1.2 is filled before §4, §9, and §10 are written, and each of those points back to it.
 - Every angle-bracket placeholder (`<…>`) in the copied skeleton is either resolved or deleted with its row.
-- The skeleton's title is promoted to a top-level `#` in the Workfile; every other heading level is left exactly as the skeleton sets it.
+- The skeleton's title is promoted to a top-level `#` in the Workfile; every other heading level is left exactly as the skeleton sets it — in the Workfile. The persistence step promotes each section by one heading level when it becomes its own file.
 - The document header block carries `Status`, `Date`, `Document scope`, and the `Section scope:` verdict.
 - Appendices A, B, and C are present, with Appendix B's `Package check:` verdict line filled in.
-- The `Attribution and license` block appears in the Workfile **if and only if** at least one `arc42 guidance §N` block remains in it.
+- The `Attribution and license` block appears in the Workfile **if and only if** at least one `arc42 guidance §N` block remains in it. When persisted, this rule holds per section file.
 
 ## Anti-Patterns
 
@@ -92,7 +94,7 @@ Steps 1–8 are the rules for instantiating the skeleton; step 9 governs attribu
 - **Orphaned arc42 text** — an `arc42 guidance` block left in the document without the attribution and license notice.
 - **Attribution by reflex** — pasting the notice into a document that contains no arc42 text, misattributing your own content to arc42.
 - **Editing the skeleton instead of the Workfile** — this skill is reference material; adapt the copy in the Workfile and leave the skeleton intact.
-- **Splitting this content into a companion file** — reference material a skill needs must live in the skill's own `SKILL.md` or in another skill loaded by name; a companion file beside a `SKILL.md` is not reliably readable at runtime.
+- **Splitting this content into a companion file** — reference material a skill needs must live in the skill's own `SKILL.md` or in another skill loaded by name; a companion file beside a `SKILL.md` is not reliably readable at runtime — this concerns the skill's own reference material; the *persisted* architecture document is deliberately multi-file.
 
 ## Skeleton
 
@@ -109,7 +111,7 @@ Copy everything below the horizontal rule into the architecture Workfile.
 - **Document scope:** \<seed | update delta\>
 - **Section scope:** included=\<…\>, omitted=\<…\>
 
-> **Yggdrasil:** in *update delta* mode, name the existing document this delta merges into and list the sections it replaces.
+> **Yggdrasil:** in *update delta* mode, add the header line `- **Existing document:** <path> (<directory index README.md | legacy single file | non-arc42>)` naming what this delta merges into, and list the sections it replaces.
 
 ## 1. Introduction and Goals
 
@@ -544,11 +546,11 @@ Various options:
 
 > **Yggdrasil:** in the AsciiDoc original, `ADR` above is followed by a hyperlink whose label is "Documenting Architecture Decisions" — Michael Nygard's blog post. The acronym is not expanded in the arc42 source.
 >
-> **Yggdrasil:** the decision log. One row per architecturally significant decision, with a one-line summary beneath each row. Full reasoning lives in the ADR itself — link, do not duplicate. New decisions are `Proposed` until ratified.
+> **Yggdrasil:** the decision log. One row per architecturally significant decision, with a one-line summary beneath each row. Full reasoning lives in the ADR itself — link, do not duplicate. New decisions are `Proposed` until ratified. The `Link` column carries the ADR's appendix anchor in the Workfile (`#adr-nnnn-…`); the persistence step rewrites it to the decision file's relative path.
 
 | ID | Title | Status | Date | Link |
 | --- | --- | --- | --- | --- |
-| ADR-\<NNNN\> | \<decision title\> | Proposed | \<YYYY-MM-DD\> | \<relative path or appendix anchor\> |
+| ADR-\<NNNN\> | \<decision title\> | Proposed | \<YYYY-MM-DD\> | \<appendix anchor\> |
 
 ## 10. Quality Requirements
 
@@ -695,7 +697,7 @@ Potentially more columns in case you need translations.
 
 ## Appendix A — Architecture Decision Records
 
-> **Yggdrasil:** full ADR text, one per decision logged in §9, in the format the skill defines (Title · Status · Date · Context · Options Considered · Decision · Consequences · Related). At least two genuinely distinct options per decision, scored against the §1.2 quality goals. *Workfile content — split into separate ADR files on persistence.*
+> **Yggdrasil:** full ADR text, one per decision logged in §9, in the format the skill defines (Title · Status · Date · Context · Options Considered · Decision · Consequences · Related). At least two genuinely distinct options per decision, scored against the §1.2 quality goals. *Workfile content — split into separate decision-record files under the project's decision directory on persistence.*
 
 ## Appendix B — Work Packages
 

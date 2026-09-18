@@ -128,7 +128,7 @@ Required (always installed, regardless of the prompt — Odin's workflow and Ygg
 - **Memory skills** (`odin-memory-system`, `brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/memories/`
 - **Deliberation skills** (`odin-deliberation-council` and the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/deliberation/`
 - **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`) → `~/.config/opencode/skills/yggdrasil/research/`
-- **Engineering skills** (`odin-engineering-workflow`, `mimir-codebase-context`, `bragi-business-analysis`, `kvasir-software-architecture`, `kvasir-arc42-template`, `brokk-test-driven-development`, `heimdall-engineering-review`) → `~/.config/opencode/skills/yggdrasil/engineering/`
+- **Engineering skills** (`odin-engineering-workflow`, `mimir-codebase-context`, `bragi-business-analysis`, `kvasir-software-architecture`, `kvasir-arc42-template`, `brokk-test-driven-development`, `brokk-architecture-persistence`, `heimdall-engineering-review`) → `~/.config/opencode/skills/yggdrasil/engineering/`
 
 Optional (the curated starter skills, installed only if accepted at the prompt):
 
@@ -386,12 +386,12 @@ Odin further provides a **Software Engineering workflow** for building a bounded
 4. **Design review** — whenever the architecture step runs, its document is independently reviewed before any implementation consumes it.
 5. **Plan checkpoint** — you see the work packages, the execution mode, and the architecture decisions awaiting your ratification before implementation begins (this is your steering point).
 6. **Test-driven implementation** — each work package is implemented red → green → refactor: failing tests traced to acceptance criteria first, then the minimal implementation, then a behavior-preserving refactor. Every package returns run evidence and is independently reviewed. Packages run in parallel only when their write sets are disjoint and their contracts are fixed up front; otherwise sequentially.
-7. **Integration** — when there is more than one package, a final session runs the full test suite, resolves the seams, and persists the architecture document and the accepted ADRs into the project.
+7. **Integration** — when there is more than one package, a final session runs the full test suite, resolves the seams, and persists the architecture as a `docs/architecture/` directory — one file per arc42 section, one per accepted decision record, plus an index — into the project.
 8. **Final answer** — the outcome is drafted as a user-facing summary (shape taken, acceptance-criteria coverage, test evidence, assumptions, open risks, document locations) and independently reviewed before delivery.
 
 **When to use:** Use the `/yggdrasil/engineer` command, or explicitly ask for the engineering workflow, test-driven development, or requirements and architecture work ahead of implementation. A non-trivial implementation request (new component, multi-module feature, new integration) may be offered as a suggestion. Plain implementation requests — a bug with a repro, a small stated change — skip this workflow and take the ordinary implement → review path.
 
-**What to expect:** This is the heaviest packaged workflow — substantially slower and more dispatch-intensive than implementing directly. The plan checkpoint gives you a chance to adjust the shape, the packages, and the architecture decisions before code is written. You'll receive tested code, and — when the architecture step ran — a persisted arc42 architecture document plus ADR files in the project.
+**What to expect:** This is the heaviest packaged workflow — substantially slower and more dispatch-intensive than implementing directly. The plan checkpoint gives you a chance to adjust the shape, the packages, and the architecture decisions before code is written. You'll receive tested code, and — when the architecture step ran — the architecture persisted as a `docs/architecture/` directory in the project: one file per arc42 section, one per accepted decision record, plus an index.
 
 **Availability:** if you installed Yggdrasil before this workflow shipped, re-run `./setup.sh` to install the `engineering/` skills and the `/yggdrasil/engineer` command (this also refreshes the capability inventory).
 

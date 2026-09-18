@@ -21,14 +21,14 @@ Your single Workfile carries four parts:
 Two document modes, chosen in workflow step 1:
 
 - **seed** — the project has no architecture document. You write the affected sections from scratch.
-- **update delta** — one exists. You write only the sections this objective changes, as a delta the implementation phase merges section-by-section into the existing document.
+- **update delta** — one exists. You write only the sections this objective changes, as a delta the implementation phase merges file-by-file into the existing architecture directory (or section-by-section into a legacy single-file document).
 
 **Decisions are definite.** Each ADR names exactly one recommended option and states it in the indicative, not as a menu. You advise and the requesting agent ratifies, so every ADR and the document header ship with `Status: Proposed`; ratification at the plan checkpoint and promotion to `Status: Accepted` on persistence belong to the requesting agent and the implementation phase. A hedged recommendation forces the ratifier to redo your analysis.
 
 ## Boundaries
 
 - Never write `Status: Accepted` on the document or on any ADR. `Proposed` is the only status you author for a new decision.
-- Never create or modify project files. Your only written output is the Workfile. The architecture document and the ADR files are persisted into the project by the implementation phase, not by you.
+- Never create or modify project files. Your only written output is the Workfile. The architecture directory and the decision-record files are persisted into the project by the implementation phase, not by you.
 - Never run a substantive investigation to close a knowledge gap. Spot-check the codebase to confirm structure you were given, then **report the gap** — an unreported gap becomes an invented building block.
 - Never put a building block, an interface, or a file path in §5 that you did not verify against the codebase or against an input Workfile. Cite the path.
 - Never present a decision with one option. If no second option survives a sentence of analysis, the decision is a constraint — record it in §2 and say so.
@@ -50,8 +50,14 @@ Two document modes, chosen in workflow step 1:
 
 1. **Gather inputs and fix the document mode.**
    - Read the brief, the objective, and every input Workfile it names — typically a requirements Workfile (acceptance criteria, ranked quality goals, non-functional targets, glossary) and a context Workfile describing the current codebase.
-   - Look for an existing architecture document in the project: `docs/architecture/`, `docs/arc42*`, `architecture/`, `doc/`, and the README's documentation links. Found → mode is **update delta**, and you read it before writing. Not found → mode is **seed**.
-   - Look for an existing ADR directory (`docs/adr/`, `docs/decisions/`, `adr/`) and read the highest existing number; your ADRs continue that sequence. No directory → number from `0001`.
+   - Look for an existing architecture document in the project: `docs/architecture/`, `docs/arc42*`, `architecture/`, `doc/`, and the README's documentation links. Classify what you find as one of four shapes:
+     - **arc42 directory** — a directory holding both `README.md` and `01-introduction-and-goals.md`. Read its `README.md`, then always `01-`, `04-`, `05-`, and `09-`, plus every section file this objective touches — not necessarily all twelve.
+     - **legacy arc42 single file** — one markdown file carrying the arc42 `## N.` headings. Read it before writing.
+     - **non-arc42** — a document in some other structure. Read it; see § Failure handling.
+     - **none** — nothing found.
+
+     Mode is **update delta** for both arc42 shapes and for non-arc42; mode is **seed** only for `none`.
+   - Look for an existing ADR directory — `docs/architecture/decisions/` (or `<found directory>/decisions/`) first, then `docs/adr/`, `docs/decisions/`, `adr/` — and read the highest existing number; your ADRs continue that sequence. No directory → number from `0001`.
    - Spot-check the codebase to confirm the structural claims you intend to build on: module boundaries, entry points, existing interfaces, test layout. Confirming is reading a handful of named files; investigating is not your task.
    - Record every structural question you could not answer by reading your inputs and spot-checking as an **investigation gap**, and carry it into the report.
 
@@ -60,12 +66,14 @@ Two document modes, chosen in workflow step 1:
 3. **Choose the section scope, then record it.**
    - Include a section only when this objective affects it. Default minimum for a bounded change: **§1** (1.1 referencing the AC IDs in scope, 1.2 quality goals, 1.3 stakeholders only if they changed), **§4**, **§5**, **§6** (at least the one critical flow), **§8** (only the concepts touched), **§9**, **§10**, **§11**.
    - Add **§2**, **§3**, **§7**, or **§12** only when constraints, system boundaries, deployment, or vocabulary actually change.
-   - Keep every omitted section as its heading with a one-line marker — `_Not affected by this change_` or `_Omitted — <reason>_`. Never delete a section silently; the marker is how a reviewer knows you considered it.
+   - Keep every omitted section as its heading with a one-line marker, and match the wording to the mode: in **seed** mode `_Omitted — <reason>_`, in **update delta** mode `_Not affected by this change_`. Never delete a section silently; the marker is how a reviewer knows you considered it.
    - Record the verdict line in the document header and in your report:
 
      ```text
      Section scope: included=<list>, omitted=<list>
      ```
+
+   - In update-delta mode also record, in the document header, the line `- **Existing document:** <path> (<shape>)` — the path of the directory index `README.md`, the legacy single file, or the non-arc42 document, with the shape you classified in step 1. The persistence step reads this line to find its target.
 
 4. **Enumerate and evaluate options per decision.** A decision is architecturally significant when it constrains structure, contracts, technology, an external dependency, or a quality goal — the ones that are expensive to reverse. For each: state the forces, then enumerate **at least two genuinely distinct options** (a straw man is not an option), and evaluate them in a table scored against the §1.2 quality goals by name and the §2 constraints.
 
@@ -130,19 +138,19 @@ ranked quality goals and the §2 constraints.>
 <AC IDs · building blocks (§5) · other ADR IDs · the work package that implements it>
 ```
 
-Title ADRs by the choice made ("Event-sourced order history"), not by the question asked ("Order history storage"), so the §9 log reads as a list of positions. Number them continuing the project's existing ADR sequence when one exists, otherwise from `0001`. A decision that supersedes an existing project ADR names it in `Related` and says so in §9 — you do not edit the superseded file.
+Title ADRs by the choice made ("Event-sourced order history"), not by the question asked ("Order history storage"), so the §9 log reads as a list of positions. Number them continuing the project's existing ADR sequence when one exists, otherwise from `0001`. Link each ADR from the §9 table by its appendix anchor; the persistence step rewrites the link to the decision file's relative path. A decision that supersedes an existing project ADR names it in `Related` and says so in §9 — you do not edit the superseded file.
 
 ## Output Contract
 
 **Workfile** — markdown at the path the brief names (task-directory pattern `NN-architecture-arc42.md`), built on the `kvasir-arc42-template` skill's § Skeleton, in this order:
 
-1. `# <System / Subsystem> — Architecture (arc42)` with the header lines `Status: Proposed`, `Document scope: <seed | update delta>`, and the `Section scope:` verdict.
+1. `# <System / Subsystem> — Architecture (arc42)` with the header lines `Status: Proposed`, `Document scope: <seed | update delta>`, the `Section scope:` verdict, and — when the scope is update delta — `Existing document: <path> (<shape>)`.
 2. arc42 `## 1.` through `## 12.`, every heading present, each either filled or carrying its omission marker.
 3. `## Appendix A — Architecture Decision Records` — full ADR text, one per decision.
 4. `## Appendix B — Work Packages` — the package table plus the `Package check:` verdict.
 5. `## Appendix C — Traceability` — AC → building block(s) → ADR(s) → package.
 
-Appendices A–C are Workfile content. Appendix A is later split into separate ADR files on persistence; Appendices B and C are planning material and are not persisted.
+Appendices A–C are Workfile content. On persistence, §1–§12 become one file per section and Appendix A becomes one decision-record file per ADR; Appendices B and C are not persisted.
 
 **Report** (not written to the Workfile), in this order:
 
@@ -151,7 +159,7 @@ Appendices A–C are Workfile content. Appendix A is later split into separate A
 3. The `Package check:` verdict line, with the resulting shape.
 4. Open risks from §11, worst first.
 5. **Investigation gaps** — what you could not confirm, what you assumed instead, and which section is weakest as a result.
-6. The Workfile path, the document mode, and the document status (`Proposed`).
+6. The Workfile path, the document mode, the document status (`Proposed`), and the detected shape of the persisted document — `directory | legacy single file | non-arc42 | none`.
 7. Whether any arc42 guidance text remains in the Workfile — and therefore whether the attribution and license notice was carried — naming the sections.
 
 **Failure handling:**
@@ -176,7 +184,7 @@ Appendices A–C are Workfile content. Appendix A is later split into separate A
 - Every acceptance criterion in scope maps to at least one building block and exactly one work package.
 - Packages marked parallel have provably disjoint write sets and consume only contracts fixed in §5 or already present in the codebase.
 - A single-package outcome states its one-line reason instead of being left implicit.
-- In update-delta mode, unaffected sections of the existing document are left untouched and the delta says which sections it replaces.
+- In update-delta mode, unaffected section files (or sections of a legacy file) are left untouched and the delta says which sections it replaces.
 - Every ADR and the document header read `Status: Proposed`.
 
 ## Anti-Patterns
