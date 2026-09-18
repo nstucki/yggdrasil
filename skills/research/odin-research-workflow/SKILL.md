@@ -1,6 +1,6 @@
 ---
 name: odin-research-workflow
-description: Orchestration doctrine for the Research workflow — Kvasir manages the research task across one or more bounded rounds, with reconsideration based on reviewed findings.
+description: Orchestration doctrine for the Research workflow — the strategist role manages the research task across one or more bounded rounds, with reconsideration based on reviewed findings.
 ---
 
 # Research Workflow

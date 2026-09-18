@@ -12,11 +12,13 @@
 #      headers in the correct order.
 #   3. Slug / name-field match — each skill's `name:` frontmatter value equals
 #      its containing directory (the skill slug).
-#   4. Odin shared-block sync — the three Odin agent files (odin-autonomous,
-#      odin-guided, odin-interactive) contain a byte-identical body block from
-#      the "## Responsibilities" line up to (not including) the
-#      "## Communication Policy" line, compared by checksum (shasum -a 256,
-#      falling back to cksum if shasum is unavailable).
+#   4. Agent freshness — the three Odin agent files (odin-autonomous,
+#      odin-guided, odin-interactive) and the five subagent files (bragi,
+#      brokk, heimdall, kvasir, mimir) are regenerated from their templates
+#      via scripts/generate-odin-agents.sh and scripts/generate-subagents.sh
+#      into a temp directory, then diffed byte-for-byte against the committed
+#      files in agents/. Any drift fails — whether from hand-editing a
+#      generated file or from editing a template without regenerating.
 #   5. Subagent isolation — subagent prompts (agents/<name>.md for mimir,
 #      brokk, heimdall, kvasir, bragi) and their skills (matched by slug prefix
 #      anywhere under skills/) must not reference any other agent by name
