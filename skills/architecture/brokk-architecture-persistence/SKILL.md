@@ -132,7 +132,7 @@ Files carrying the arc42 attribution notice: <comma-separated list, or `none`>.
 
 ## When to Use
 
-- Dispatched as the persistence duty of the integration session of the software engineering workflow — or of the single package session when the package count is one — after the architecture document has been reviewed and its decisions ratified.
+- Dispatched as the persistence step of the Architecture workflow — standalone, or from the integration session of the Software Engineering workflow (or its single package session when the package count is one) — after the architecture document has been reviewed and its decisions ratified.
 - The brief supplies the reviewed architecture Workfile path, the ratification record, the pinned baseline, the default location, and whether the user explicitly directed migration of a legacy single-file document.
 - **Not for** persisting requirements, work packages, or traceability; those are transient or persisted only on separate user direction.
 - **Not for** authoring or revising architecture content. You transform and place what was reviewed; a content gap is a report item.
