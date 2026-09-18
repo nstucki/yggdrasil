@@ -4,9 +4,11 @@
 # OpenCode config directories (default base: ~/.config/opencode; override via
 # OPENCODE_CONFIG_BASE or -c/--config-base).
 #
-# Idempotent. Merges by add/overwrite only — NEVER deletes anything from the
-# destination; stale files from renamed or retired upstream content must be
-# removed manually (see README, "Upgrades").
+# Idempotent. Merges by add/overwrite only, with one exception: the stale copies
+# of skills relocated to another feature directory are removed (see
+# RELOCATED_ENGINEERING_SKILLS). Nothing else is deleted from the destination;
+# other stale files from renamed or retired upstream content must be removed
+# manually (see README, "Upgrades").
 
 set -o errexit
 set -o nounset
@@ -164,7 +166,7 @@ DST_GENERATOR="${DST_CONFIG_HOME}/generate-capabilities.sh"
 # always-installed commands and Odin's workflow/memory mechanisms depend on
 # these skills with no fallback (see README). Every other skills/ subdirectory
 # holds optional skills, gated by the prompt below.
-MANDATORY_SKILL_DIRS="research memories deliberation engineering"
+MANDATORY_SKILL_DIRS="research memories deliberation engineering architecture"
 
 # ── Pre-flight checks ───────────────────────────────────────────────────────
 
@@ -356,11 +358,27 @@ for feature in $MANDATORY_SKILL_DIRS; do
     mkdir -p "${DST_SKILLS}/${feature}"
     cp -R "${SRC_SKILLS}/${feature}/." "${DST_SKILLS}/${feature}/"
 done
+
+# Relocated skills: the copy above never deletes, so a skill that moved to
+# another feature directory — or was renamed on the way — would stay installed
+# twice, once at its old path and once at the new one. Two directories offering
+# the same skill `name` make skill loading ambiguous, so remove the known stale
+# copies. This list is the only place setup.sh deletes; extend it whenever a
+# skill directory is relocated or renamed.
+RELOCATED_ENGINEERING_SKILLS="kvasir-software-architecture kvasir-arc42-template brokk-architecture-persistence mimir-codebase-context"
+for slug in $RELOCATED_ENGINEERING_SKILLS; do
+    stale_dir="${DST_SKILLS}/engineering/${slug}"
+    if [ -d "$stale_dir" ]; then
+        rm -rf "$stale_dir"
+        info "Removed relocated skill copy: engineering/${slug} (now installed under architecture/)"
+    fi
+done
+
 ok "Mandatory skills installed."
 
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: the mandatory skills (research/, memories/, deliberation/, engineering/) install"
-    warn "regardless of your answer — Odin's workflows and the commands depend on them."
+    warn "Note: the mandatory skills (research/, memories/, deliberation/, engineering/, architecture/)"
+    warn "install regardless of your answer — Odin's workflows and the commands depend on them."
 fi
 
 # ── Install optional skills ─────────────────────────────────────────────────

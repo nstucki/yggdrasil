@@ -153,9 +153,9 @@ communicator_skills=""
 # the skill slug's <agent>- prefix (frontmatter name == directory slug,
 # enforced by validate.sh), NOT from the directory layout: mandatory skills
 # live in feature directories (research/, memories/, deliberation/,
-# engineering/), optional skills under <agent>/. Anything under shared/
-# (including this generated inventory itself) is excluded from the role
-# inventory by path.
+# engineering/, architecture/), optional skills under <agent>/. Anything under
+# shared/ (including this generated inventory itself) is excluded from the
+# role inventory by path.
 export LC_ALL=C
 while IFS= read -r -d '' skill_file; do
   skill_name=$(frontmatter_value "$skill_file" "name" 2>/dev/null || true)

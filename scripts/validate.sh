@@ -38,9 +38,10 @@
 #      valid `subtask` field (if present, must be `false`), and non-empty template body.
 #   9. Mandatory-skill isolation from optional skills — no .md file under a
 #      mandatory feature directory (research/, memories/, deliberation/,
-#      engineering/) may reference the slug of a skill that ships only with an
-#      optional agent bundle (skills/<agent>/), so mandatory skills keep working
-#      on a mandatory-only install. Both slug lists are derived at check time.
+#      engineering/, architecture/) may reference the slug of a skill that
+#      ships only with an optional agent bundle (skills/<agent>/), so mandatory
+#      skills keep working on a mandatory-only install. Both slug lists are
+#      derived at check time.
 #  10. No license texts under skills/ — no entry matching LICENSE*
 #      (case-insensitive) may exist anywhere in the skills/ tree, because
 #      setup.sh copies that tree wholesale into the user's config home, which
@@ -440,10 +441,12 @@ check_agent_freshness() {
 # agent by name. Skill ownership is derived from the skill slug's <agent>-
 # prefix (frontmatter name == directory slug, enforced by Check 3), NOT from
 # the directory layout — so mandatory skills in the feature directories
-# (research/, memories/, deliberation/, engineering/) are scanned identically
-# to optional skills under skills/<agent>/. Matching is case-insensitive with
-# word boundaries (grep -iw), so word-internal occurrences such as "encoding"
-# or "Hardcoding" do not falsely match "odin". Self-references are allowed.
+# (research/, memories/, deliberation/, engineering/, architecture/) are
+# scanned identically to optional skills under skills/<agent>/. A skill's
+# owner therefore changes with a slug rename, not with a directory move.
+# Matching is case-insensitive with word boundaries (grep -iw), so
+# word-internal occurrences such as "encoding" or "Hardcoding" do not falsely
+# match "odin". Self-references are allowed.
 # odin-* skills are exempt (the orchestrator knows the full pantheon);
 # non-agent slugs (e.g. shared skills) are not scanned.
 # ---------------------------------------------------------------------------
@@ -759,7 +762,7 @@ FAIL_MANDATORY_ISOLATION=0
 # The mandatory feature directories — mirrors MANDATORY_SKILL_DIRS in setup.sh.
 # Keep the two in sync. Every other skills/*/ root is optional: an agent bundle
 # (skills/<agent>/) the user may decline, or the shared/ scaffold.
-MANDATORY_SKILL_DIRS='research memories deliberation engineering'
+MANDATORY_SKILL_DIRS='research memories deliberation engineering architecture'
 
 # Is $1 the name of a mandatory feature directory?
 is_mandatory_skill_dir() {

@@ -1,5 +1,5 @@
 ---
-name: kvasir-arc42-template
+name: brokk-arc42-template
 description: Reference skeleton for arc42-structured architecture documents — the twelve section headings with adapted arc42 guidance, an omission-marker convention, and the decision-record, work-package, and traceability appendices that the architecture step instantiates.
 ---
 
@@ -40,7 +40,7 @@ legal code are in LICENSES/CC-BY-SA-4.0-arc42.txt in the Yggdrasil source reposi
 
 ## Purpose
 
-Provide the reference arc42 skeleton — the twelve numbered section headings, their sub-structure, the per-section guidance, and the decision-record, work-package, and traceability appendices — that the `kvasir-software-architecture` skill instantiates in its architecture-drafting step. § Skeleton below *is* that payload; everything above it is how to use it.
+Provide the reference arc42 skeleton — the twelve numbered section headings, their sub-structure, the per-section guidance, and the decision-record, work-package, and traceability appendices — that the architecture-drafting step instantiates. § Skeleton below *is* that payload; everything above it is how to use it.
 
 The persisted form of the document is a directory — one file per numbered section, one per decision record, plus a generated index — produced by the implementation phase's persistence step from this single Workfile; the skeleton itself stays one Workfile.
 
