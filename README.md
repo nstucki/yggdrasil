@@ -69,7 +69,7 @@ Odin operates in three modes, adapting his autonomy to the task:
 
 The lifecycle flows through the pantheon: **Odin** receives the objective and determines the path; **Bragi** advises on communication, **Kvasir** on strategy and decomposition; **Mimir** researches and gathers context; **Brokk** implements; **Heimdall** reviews; and **Odin** evaluates the outcome and decides next steps.
 
-Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Odin also packages three complete workflows that are invoked whole rather than composed step by step: the **Deliberation Council**, deep **Research**, and **Software Engineering** — optional requirements analysis and architecture, then test-driven implementation across independently reviewed work packages. Every plan ends at a Final Review Gate, where Heimdall validates the assembled Deliverable against your original request before it reaches you.
+Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Odin also packages four complete workflows that are invoked whole rather than composed step by step: the **Deliberation Council**, deep **Research**, **Architecture** — an arc42 document recording what a system is or deciding what it should become — and **Software Engineering** — optional requirements analysis and architecture, then test-driven implementation across independently reviewed work packages. Every plan ends at a Final Review Gate, where Heimdall validates the assembled Deliverable against your original request before it reaches you.
 
 Patterns can be combined, repeated, or reordered as the task demands — for example, multiple research → implement → review rounds within a single task.
 
@@ -128,7 +128,8 @@ Required (always installed, regardless of the prompt — Odin's workflow and Ygg
 - **Memory skills** (`odin-memory-system`, `brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/memories/`
 - **Deliberation skills** (`odin-deliberation-council` and the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/deliberation/`
 - **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`) → `~/.config/opencode/skills/yggdrasil/research/`
-- **Engineering skills** (`odin-engineering-workflow`, `mimir-codebase-context`, `bragi-business-analysis`, `kvasir-software-architecture`, `kvasir-arc42-template`, `brokk-test-driven-development`, `brokk-architecture-persistence`, `heimdall-engineering-review`) → `~/.config/opencode/skills/yggdrasil/engineering/`
+- **Architecture skills** (`odin-architecture-workflow`, `mimir-codebase-context`, `brokk-arc42-template`, `kvasir-software-architecture`, `heimdall-architecture-review`, `brokk-architecture-persistence`) → `~/.config/opencode/skills/yggdrasil/architecture/`
+- **Engineering skills** (`odin-engineering-workflow`, `bragi-business-analysis`, `brokk-test-driven-development`, `heimdall-engineering-review`) → `~/.config/opencode/skills/yggdrasil/engineering/`
 
 Optional (the curated starter skills, installed only if accepted at the prompt):
 
@@ -174,12 +175,16 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 │   ├── bragi-council-deliberation-pragmatist/
 │   ├── bragi-council-deliberation-humanist/
 │   └── bragi-council-deliberation-herald/
+├── architecture/                      # Mandatory skills
+│   ├── odin-architecture-workflow/
+│   ├── mimir-codebase-context/
+│   ├── brokk-arc42-template/
+│   ├── kvasir-software-architecture/
+│   ├── heimdall-architecture-review/
+│   └── brokk-architecture-persistence/
 ├── engineering/                       # Mandatory skills
 │   ├── odin-engineering-workflow/
-│   ├── mimir-codebase-context/
 │   ├── bragi-business-analysis/
-│   ├── kvasir-software-architecture/
-│   ├── kvasir-arc42-template/
 │   ├── brokk-test-driven-development/
 │   └── heimdall-engineering-review/
 ├── bragi/                             # Optional skills (if accepted at install)
@@ -219,11 +224,12 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 
 Commands are **macros for user requests to Odin** — equivalent to stating the same request in natural language. Natural-language invocation remains fully valid; commands are shortcuts, not the only door. This ensures commands always flow through the full orchestration pipeline with proper review gates — never bypassing specialist review.
 
-Yggdrasil provides six globally-installed slash-commands, available in every project once installed:
+Yggdrasil provides seven globally-installed slash-commands, available in every project once installed:
 
 - **`/yggdrasil/deliberate <question>`** — Run the Deliberation Council: multiple perspective lenses analyze the question in parallel, synthesize the competing arguments, and deliver a reasoned conclusion. Multi-specialist workflow; expect to wait.
 - **`/yggdrasil/research <topic>`** — Conduct deep research: decompose the topic into independent research areas, investigate each in parallel with review and synthesis, and deliver a comprehensive report. Adaptive multi-specialist workflow; expect to wait.
-- **`/yggdrasil/engineer <objective>`** — Run the Software Engineering workflow: optional business analysis and an arc42-structured architecture decision (gated by its own design review), then test-driven implementation across one or more independently reviewed work packages. A plan checkpoint shows you the packages and the architecture decisions before implementation begins. Multi-specialist workflow; expect to wait.
+- **`/yggdrasil/architect <request>`** — Run the Architecture workflow: produce an arc42-structured architecture document in one of two modes — recording the architecture a codebase already has, or deciding new architecture with decision records and work packages. The mode is stated in your request or inferred and recorded. The document is scaffolded, drafted, and design-reviewed before a ratification checkpoint, then persisted to `docs/architecture/` by default. Multi-specialist workflow; expect to wait.
+- **`/yggdrasil/engineer <objective>`** — Run the Software Engineering workflow: optional business analysis and an arc42-structured architecture decision (delegated to the Architecture workflow, which carries its own design review), then test-driven implementation across one or more independently reviewed work packages. A plan checkpoint shows you the packages and the architecture decisions before implementation begins. Multi-specialist workflow; expect to wait.
 - **`/yggdrasil/remember [topic]`** — Promote reviewed findings to the project knowledge base. Runs the reviewed promotion pipeline (orchestrated, not an instant write). The only way promotion is initiated; never automatic at task wrap-up.
 - **`/yggdrasil/dream [scope]`** — Consolidate and audit the knowledge base for duplicates, contradictions, and staleness. Orchestrated maintenance; may prune by judgment but never silently performs a forget.
 - **`/yggdrasil/forget <scope>`** — Delete entries from the knowledge base. Destructive and always confirmed before dispatch; invocation is intent, not confirmation. Working-tree only; full wipe requires a second confirmation.
@@ -270,7 +276,7 @@ Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown fil
    $CONFIG_BASE/skills/yggdrasil/<agent>/<agent>-<name>/SKILL.md
    ```
 
-    Mandatory skills live in the feature directories `research/`, `memories/`, `deliberation/`, and `engineering/`; optional skills install flat at `<agent>/<agent>-<name>/`.
+    Mandatory skills live in the feature directories `research/`, `memories/`, `deliberation/`, `architecture/`, and `engineering/`; optional skills install flat at `<agent>/<agent>-<name>/`.
 
    where `<agent>` is one of `mimir`, `brokk`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
 
@@ -374,20 +380,47 @@ Odin also provides a **Research workflow** for deep investigation of complex top
 
 **What to expect:** This is a multi-specialist workflow that takes longer than a simple answer. The plan checkpoint gives you a chance to steer the investigation. You'll receive a comprehensive report with citations and clear boundaries on what was and wasn't covered.
 
+### Architecture
+
+Odin also provides an **Architecture workflow** that produces a single [arc42](https://arc42.org)-structured architecture document — and persists it into your project. It runs in one of two modes:
+
+- **Document existing** — reverse-engineer and record the architecture the codebase already has, as-is, proposing nothing. Improvement ideas are recorded as technical debt, never as proposals.
+- **Decide new** — decide forward-looking architecture for a bounded objective, with each significant choice written as a separate Architecture Decision Record (at least two options evaluated against the quality goals) plus a breakdown into work packages.
+
+You may state the mode ("document the architecture of this repo", "decide the architecture for the new billing module"); otherwise it is inferred, and either way the mode **and how it was arrived at** are recorded in the document header and in the answer you receive. That is deliberate: a reader must never have to guess whether a document describes what is or proposes what should be.
+
+**How it works:**
+
+1. **Shape decision** — the mode, whether codebase context is needed, and where the result will be persisted are recorded before anything is dispatched. Every skipped step carries its reason.
+2. **Codebase context (conditional)** — gathered and independently reviewed when the structure is not already established, scoped to the whole system in document mode and to the objective in decide mode. Skipped when a reviewed context report already exists.
+3. **Scaffold** — the arc42 skeleton is instantiated into the document: the header pre-filled, all twelve sections present with their guidance, the existing document's shape and the next decision-record number detected. This step always runs, and its output is reviewed before anything is written into it. Mechanics and judgment have separate owners — the scaffolder never decides content, the drafter never hunts for document shape.
+4. **Drafting** — the skeleton is filled: sections pruned to what the objective actually affects with a reason on each omission, decision records at `Status: Proposed`, and in document mode every claim citing a path from the context report.
+5. **Design review** — mandatory, in both modes, before anything consumes the document.
+6. **Ratification checkpoint** — you see the mode, the section scope, the decisions awaiting your ratification, and the review verdict before persistence (this is your steering point).
+7. **Persistence** — the document is written into the project as a `docs/architecture/` directory (or a location you name): one file per arc42 section, one per ratified decision record, plus an index. Merged file-by-file into an existing directory, never overwritten. This step is independently reviewed too.
+8. **Final answer** — the outcome is drafted as a user-facing summary and independently reviewed before delivery.
+
+**When to use:** Use the `/yggdrasil/architect` command, or explicitly ask to document, describe, or decide architecture, or to write an arc42 document or a decision record. Asking how an undocumented codebase is structured may be offered as a suggestion.
+
+**Architecture or engineering?** If your request carries implementation intent — "decide the architecture, *then build it*" — use `/yggdrasil/engineer` instead. The Software Engineering workflow owns architecture-before-implementation and delegates to this workflow internally, so you get the same document plus the code. Use `/yggdrasil/architect` when the document *is* the deliverable.
+
+**What to expect:** A multi-specialist workflow — roughly seven reviewed dispatches for a run whose context is already established, nine when codebase context has to be gathered first — so noticeably slower than asking for a description of the structure. Document-existing mode always persists: you choose the location, not whether it is recorded. In decide-new mode you may decline persistence at the checkpoint and keep the result as a transient Workfile.
+
+**Availability:** if you installed Yggdrasil before this workflow shipped, re-run `./setup.sh` to install the `architecture/` skills and the `/yggdrasil/architect` command (this also refreshes the capability inventory). Four skills moved out of `engineering/` into `architecture/` in the same change — `kvasir-software-architecture`, `brokk-architecture-persistence`, `mimir-codebase-context`, and the arc42 template skill, which was renamed to `brokk-arc42-template` when its ownership moved. The upgrade deletes the superseded copies under `engineering/` in your config home and reports each removal, because `setup.sh` otherwise only ever adds files, and two directories claiming one skill name would make skill loading ambiguous.
+
 ### Software Engineering
 
-Odin further provides a **Software Engineering workflow** for building a bounded objective as working, tested code. It decides an explicit shape up front — whether to gather context, whether to analyze requirements, whether to decide architecture — then implements test-first across one or more independently reviewed work packages. Use this when you want requirements pinned down and the design decided and reviewed before code is written, rather than implementing straight away. Every skill it uses is dedicated to this workflow and installs unconditionally — it depends on zero optional skills, so it behaves identically whichever optional skill sets you accepted or declined at install time.
+Odin further provides a **Software Engineering workflow** for building a bounded objective as working, tested code. It decides an explicit shape up front — whether to gather context, whether to analyze requirements, whether to decide architecture — then implements test-first across one or more independently reviewed work packages. Use this when you want requirements pinned down and the design decided and reviewed before code is written, rather than implementing straight away. Every skill it uses — its own and the Architecture workflow's, which it delegates its architecture step to — is mandatory and installs unconditionally, so it depends on zero optional skills and behaves identically whichever optional skill sets you accepted or declined at install time.
 
 **How it works:**
 
 1. **Shape decision** — Odin records which steps will run and why, before dispatching anything. Codebase context is gathered first when the objective touches unfamiliar structure.
 2. **Business analysis (optional)** — the objective is analyzed into stakeholders, scope, testable acceptance criteria with stable IDs, ranked quality goals, non-functional targets, assumptions, and open questions — with no solution prescribed.
-3. **Architecture (optional)** — an architecture document structured with the [arc42](https://arc42.org) template, pruned to the sections the objective actually affects, with each significant decision written as a separate Architecture Decision Record (at least two options evaluated against the quality goals), plus a breakdown into work packages.
-4. **Design review** — whenever the architecture step runs, its document is independently reviewed before any implementation consumes it.
-5. **Plan checkpoint** — you see the work packages, the execution mode, and the architecture decisions awaiting your ratification before implementation begins (this is your steering point).
-6. **Test-driven implementation** — each work package is implemented red → green → refactor: failing tests traced to acceptance criteria first, then the minimal implementation, then a behavior-preserving refactor. Every package returns run evidence and is independently reviewed. Packages run in parallel only when their write sets are disjoint and their contracts are fixed up front; otherwise sequentially.
-7. **Integration** — when there is more than one package, a final session runs the full test suite, resolves the seams, and persists the architecture as a `docs/architecture/` directory — one file per arc42 section, one per accepted decision record, plus an index — into the project.
-8. **Final answer** — the outcome is drafted as a user-facing summary (shape taken, acceptance-criteria coverage, test evidence, assumptions, open risks, document locations) and independently reviewed before delivery.
+3. **Architecture (optional)** — delegated to the [Architecture workflow](#architecture) in decide-new mode, which scaffolds, drafts, and independently reviews an arc42 document pruned to the sections the objective actually affects, with each significant decision written as a separate Architecture Decision Record (at least two options evaluated against the quality goals), plus a breakdown into work packages. Persistence is deferred back to this workflow so the decisions are promoted only after you ratify them at the plan checkpoint. No implementation plan is formed from an unreviewed document.
+4. **Plan checkpoint** — you see the work packages, the execution mode, and the architecture decisions awaiting your ratification before implementation begins (this is your steering point).
+5. **Test-driven implementation** — each work package is implemented red → green → refactor: failing tests traced to acceptance criteria first, then the minimal implementation, then a behavior-preserving refactor. Every package returns run evidence and is independently reviewed. Packages run in parallel only when their write sets are disjoint and their contracts are fixed up front; otherwise sequentially.
+6. **Integration** — when there is more than one package, a final session runs the full test suite, resolves the seams, and persists the architecture as a `docs/architecture/` directory — one file per arc42 section, one per accepted decision record, plus an index — into the project.
+7. **Final answer** — the outcome is drafted as a user-facing summary (shape taken, acceptance-criteria coverage, test evidence, assumptions, open risks, document locations) and independently reviewed before delivery.
 
 **When to use:** Use the `/yggdrasil/engineer` command, or explicitly ask for the engineering workflow, test-driven development, or requirements and architecture work ahead of implementation. A non-trivial implementation request (new component, multi-module feature, new integration) may be offered as a suggestion. Plain implementation requests — a bug with a repro, a small stated change — skip this workflow and take the ordinary implement → review path.
 
