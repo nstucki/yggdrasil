@@ -40,60 +40,118 @@ legal code are in LICENSES/CC-BY-SA-4.0-arc42.txt in the Yggdrasil source reposi
 
 ## Purpose
 
-Provide the reference arc42 skeleton — the twelve numbered section headings, their sub-structure, the per-section guidance, and the decision-record, work-package, and traceability appendices — that the architecture-drafting step instantiates. § Skeleton below *is* that payload; everything above it is how to use it.
+Own the arc42 skeleton **and** instantiate it. § Skeleton below is the payload — the twelve numbered section headings, their sub-structure, the per-section guidance, and the decision-record, work-package, and traceability appendices. Everything above § Skeleton is the procedure for writing that payload into an architecture Workfile.
 
-The persisted form of the document is a directory — one file per numbered section, one per decision record, plus a generated index — produced by the implementation phase's persistence step from this single Workfile; the skeleton itself stays one Workfile.
+You are the **scaffolder**. You produce the empty document the drafting step then fills, and you resolve up front the mechanical facts that step would otherwise have to look up in the repository: whether the project already has an architecture document, which of four shapes it has, and what the next free decision-record number is. You pre-fill the document header with those answers, place the attribution notice, write every heading with its guidance intact, and report a result line. The drafting step receives a Workfile it only has to fill.
 
-**This skill is loaded by name with the `skill` tool, never read as a file.** Its content lives in this `SKILL.md` because a skill's own body is inlined when the skill is loaded, whereas companion files sitting beside a `SKILL.md` are not reliably readable by a subagent at runtime — a file-based template is unreachable. Every future change to the skeleton belongs inside this file.
+**Judgment is not yours.** Which sections this objective affects, what the quality goals are, which decisions are significant, and what any section says are the drafting step's calls. **Pruning in particular stays there:** a heading you deleted and a heading the drafter deliberately omitted look identical to a reviewer, so you delete nothing and you fill nothing.
 
-This is a document skeleton, not a method for deciding architecture: quality-goal selection, option evaluation, and the decisions themselves belong to the architecture step's own skill. This skill governs only the shape of the document those decisions are written into.
+**Never write outside the Workfile.** The scaffold is a Workfile in the task directory. An existing architecture document under `docs/` is input you read and classify — never a file you write. Persisting into the project tree happens after review and ratification, in the persistence step, not here.
 
-Licensing scope is stated in the `Attribution and license` block above, and the reading convention is the last paragraph of it: a fenced **arc42 guidance §N** block is arc42-original text under CC BY-SA 4.0; a `> **Yggdrasil:**` blockquote is this repository's own guidance. Know which is which before you copy anything out of here — Workflow step 9 depends on the distinction.
+**This skill is loaded by name with the `skill` tool, never read as a file.** The skeleton lives in this `SKILL.md` because a skill's own body is inlined when the skill is loaded, whereas companion files sitting beside a `SKILL.md` are not reliably readable at runtime — a file-based template is unreachable. Every future change to the skeleton belongs inside this file.
+
+**Attribution travels with arc42 text — and only with it.** The `Attribution and license` block above is skill-level content, and the reading convention is its last paragraph: a fenced **arc42 guidance §N** block is arc42-original text under CC BY-SA 4.0, and a `> **Yggdrasil:**` blockquote is this repository's own guidance. Every scaffold you write carries every guidance block, so every scaffold carries the notice — unconditionally, by Workflow step 4. The conditional half of the rule belongs to the drafting step: it deletes the notice if and only if it has deleted the last surviving guidance block. Surviving arc42 text stays under CC BY-SA 4.0 wherever the document goes; the authored content around it does not.
+
+The persisted form of this document is a directory — one file per numbered section, one per decision record, plus a generated index — produced later by the persistence step from this single Workfile. The scaffold is and stays one Workfile.
 
 ## When to Use
 
-- Loaded by the architecture step of the software engineering workflow, before anything is written into the architecture Workfile.
-- Loaded again when an architecture Workfile is revised, so the revision keeps the skeleton's headings, omission markers, and appendix structure.
+- Dispatched as the **scaffold step of the architecture workflow** — in both document modes, on both the standalone and the delegated path, before anything is drafted into the architecture Workfile.
+- Dispatched again to re-scaffold from scratch when an architecture Workfile's headings, header block, or appendix structure no longer match this skeleton and the file has no content worth keeping.
 - Loaded by a reviewer or by the requesting agent to check an instantiated architecture document against the skeleton it was built from.
-- **Not for** any other purpose. This skill carries no architecture method, no review rubric, and no project-specific content.
+- **Not for** filling, revising, or reviewing an architecture document — the drafting step fills it and the review step judges it.
+- **Not for** writing into the project tree, and **not for** deciding what the document should say. This skill carries a skeleton and the procedure for instantiating it, no architecture method, no review rubric, and no project-specific content.
 
 ## Workflow
 
-Steps 1–8 are the rules for instantiating the skeleton; step 9 governs attribution; step 10 governs the appendices.
+**Input.** The brief carries one control line:
 
-1. Copy everything below the horizontal rule in § Skeleton into the architecture Workfile, then fill it.
-2. Delete each guidance block — the fenced **arc42 guidance** blocks and the `> **Yggdrasil:**` blockquotes — as you fill the section it belongs to. Guidance left in a finished section is noise.
-3. **Keep every numbered heading.** A section this change does not affect keeps its heading and gets a one-line marker, so a reader can tell "considered and excluded" from "forgotten". The wording depends on the document mode: in **seed** mode use `_Omitted — <reason>_`, because the document is the project's whole architecture record and there is no change for a section to be unaffected by; in **update delta** mode use `_Not affected by this change_` for the sections the delta leaves alone. The persistence step copies a seed marker verbatim into the section's own file and never writes an unaffected section in update-delta mode, so `_Not affected by this change_` never lands in the project tree.
-4. Document only what a reader of *this* change needs. The twelve sections are a checklist to walk, not a quota to fill.
-5. Quality goals come first: everything in §4, §9, and §10 should point back to §1.2.
-6. Prefer one good diagram per view over several partial ones. Mermaid, in fenced ` ```mermaid ` blocks, next to the prose it illustrates.
-7. Blackbox interfaces in §5 must be precise enough to write a failing test against.
-8. Angle-bracket placeholders (`<…>`) are fill-ins; table rows are examples of shape, not required counts.
-9. **Attribution travels with arc42 text — and only with it.** The `Attribution and license` block at the top of this skill is skill-level content. When every `arc42 guidance §N` block has been deleted from the Workfile, do **not** copy that block in: the finished document then contains no arc42-licensed text (the section names and numbering are structure, not the Licensed Material — see the scope statement in the license file the block cites). **If any `arc42 guidance §N` block survives into the Workfile** — a section left unfilled with its guidance in place, or guidance deliberately retained — copy the `Attribution and license` block verbatim to the top of the Workfile, directly under the document title, and name in your report every section that still carries arc42 text. Surviving arc42 text stays under CC BY-SA 4.0 wherever the document goes — when the implementation phase persists it into the project, and when it is published outside the organization; your own content does not.
-10. **Appendices A–C are Workfile content, not document content.** Appendix A holds the full architecture decision record text; Appendix A is split into separate decision-record files, and §1–§12 into one file per section, when the document is persisted into the project. Appendices B and C — work packages and traceability — are planning material and are never persisted. Keep all three in the Workfile, each complete: Appendix B with its `Package check:` verdict line, Appendix C with exactly one row per acceptance criterion in scope.
+```text
+Scaffold: mode=<document-existing | decide-new>, workfile=<NN-architecture-arc42.md path>, location=<docs/architecture/ | path>, objective=<text | none>
+```
+
+The header you write carries the mode **and its source** (`direction` when a user or a caller stated the mode, `inference` when it was derived), so the brief must supply the source as well — appended to the mode as `mode=decide-new (source: direction)`, or in the shape verdict the brief echoes.
+
+A missing `mode`, a missing `workfile`, or a `mode` with no source → **ask the requesting agent**. Do not guess any of the three: the mode drives the header and the appendix treatment, the source is a header field the reviewer checks against this brief, and the workfile path is the only thing you may write.
+
+**Output.** One Workfile at the briefed path, plus the `Scaffold result:` line of step 5. Nothing else is written, anywhere.
+
+1. **Read the brief and fix the two mode values.** Record `mode` and its source exactly as the brief states them — you neither infer the mode nor revise it from what you find in the repository. `objective` and `location` are context for steps 2 and 4; an `objective=none` is legitimate in document-existing mode.
+
+2. **Resolve the target and classify its shape.** Search in this order: the brief's `location`, then `docs/architecture/`, `docs/arc42*`, `architecture/`, `doc/`, and the README's documentation links. Classify the first architecture document you find as one of four shapes — the same four the persistence step uses, so that the scaffolder, the drafter, and the persister share one vocabulary:
+
+   - **arc42 directory** — a directory holding both `README.md` and `01-introduction-and-goals.md`. This is the directory identity rule in `brokk-architecture-persistence` § The Persisted Layout: the contents decide, never the directory's name. Read its `README.md` and its `01-`, `04-`, `05-`, and `09-` files — far enough to state the path and confirm the shape, never far enough to summarize the architecture.
+   - **legacy arc42 single file** — one markdown file carrying the arc42 `## N.` headings.
+   - **non-arc42** — a document in another structure that nonetheless describes this system's architecture.
+   - **none** — nothing found, or a briefed `location` that does not exist.
+
+   `document-scope` is **update delta** for all three found shapes and **seed** only for `none`. Record the target path for the header's `Existing document:` line, naming the directory index `README.md` for a directory target.
+
+3. **Resolve the decision records and the next number.** Look in `<target>/decisions/`, `docs/architecture/decisions/`, `docs/adr/`, `docs/decisions/`, and `adr/`. Read the highest record number in use **across every directory you find**, and set `next-adr` to that number plus one, zero-padded to four digits; the next record must not collide with an existing one whichever directory the persistence step later writes to. No record anywhere → `next-adr=0001`. Report every decision directory you found, not just the winner.
+
+4. **Write the Workfile.** Copy everything below the horizontal rule in § Skeleton to the briefed path, with exactly these instantiations and no others:
+
+   - **Title.** Promote the skeleton's title heading to a top-level `#` and substitute the system or subsystem name — taken from the existing document's H1 when one was found, otherwise from the repository or project directory name. Leave the `— Architecture (arc42)` suffix as written. Every other heading stays at the level the skeleton sets.
+   - **Attribution.** Copy this skill's `Attribution and license` block verbatim, directly under the title. It is always present in a scaffold, because a scaffold always carries every guidance block.
+   - **Header block**, directly under the attribution block, with these lines and no others:
+
+     ```text
+     - **Status:** Proposed
+     - **Date:** <today, YYYY-MM-DD>
+     - **Document scope:** <seed | update delta>
+     - **Mode:** <document-existing | decide-new> (source: <direction | inference>)
+     - **Section scope:** pending
+     - **Existing document:** <path> (<directory index README.md | legacy single file | non-arc42>)
+     ```
+
+     `Status` is always `Proposed` — ratification is neither yours nor the drafter's to grant. `Document scope` comes from step 2, `Mode` and its source verbatim from the brief, `Section scope` is the literal word `pending` because scope is the drafter's verdict, and `Existing document:` appears **if and only if** `Document scope` is `update delta`.
+   - **Sections §1–§12**, every numbered heading and subsection heading at the skeleton's level, with **every** fenced `arc42 guidance §N` block and **every** `> **Yggdrasil:**` note intact. The drafter reads that guidance while filling and deletes it section by section.
+   - **Appendices, by mode.** With `mode=decide-new`, write Appendices A, B, and C exactly as the skeleton has them, table shells and `Package check:` block included. With `mode=document-existing`, write the Appendix A heading with its note, then the Appendix B and Appendix C headings each followed by the single line `_Not applicable — document-existing mode_` and nothing else — no note, no table shell.
+   - **No content and no pruning.** Do not write a section body, do not resolve an angle-bracket placeholder outside the header block, do not add or delete a table row, and do not remove a heading. A section this objective will not touch still arrives with its heading and its guidance; marking it omitted is the drafter's judgment, recorded with the drafter's own marker wording.
+
+5. **Report the result line** to the requesting agent, followed by anything you could not resolve:
+
+   ```text
+   Scaffold result: workfile=<path>, document-scope=<seed | update delta>, existing=<path (directory index README.md | legacy single file | non-arc42) | none>, next-adr=<NNNN>, attribution=present
+   ```
+
+   Then list, in one line each: every candidate architecture document you rejected and why; every decision directory you found; and any path the brief named that did not resolve. The review of this session re-derives the shape and `next-adr` from the same paths, so state the paths you used.
+
+**Failure handling:**
+
+- The brief omits `mode`, its source, or `workfile` → ask the requesting agent; write nothing until it answers.
+- The briefed `workfile` path already exists and holds content → do not overwrite. Report it and ask: the file is either a finished draft or another session's work.
+- Two candidate documents resolve — a directory and a legacy file, say → take the arc42 directory as the target, report the other as an ambiguity finding with both paths, and let the requesting agent settle it before drafting.
+- A candidate target exists but cannot be read → report it and stop. Classifying a document you could not open as `none` would silently turn an update delta into a seed, and the persistence step would then write over a document nobody reviewed.
+- The project's decision numbering is inconsistent — gaps, duplicates, or non-numeric names → use the highest number you can parse, and report the inconsistency with the directory path.
 
 ## Quality Criteria
 
-- All twelve numbered arc42 headings are present in the Workfile, at the heading levels this skeleton sets.
-- Every section is either filled or carries an explicit omission marker; none is silently dropped.
-- No `arc42 guidance §N` block and no `> **Yggdrasil:**` blockquote remains in a section that has been filled.
-- §1.2 is filled before §4, §9, and §10 are written, and each of those points back to it.
-- Every angle-bracket placeholder (`<…>`) in the copied skeleton is either resolved or deleted with its row.
-- The skeleton's title is promoted to a top-level `#` in the Workfile; every other heading level is left exactly as the skeleton sets it — in the Workfile. The persistence step promotes each section by one heading level when it becomes its own file.
-- The document header block carries `Status`, `Date`, `Document scope`, and the `Section scope:` verdict.
-- Appendices A, B, and C are present, with Appendix B's `Package check:` verdict line filled in.
-- The `Attribution and license` block appears in the Workfile **if and only if** at least one `arc42 guidance §N` block remains in it. When persisted, this rule holds per section file.
+- All twelve numbered arc42 headings and their subsection headings are present in the Workfile, at the heading levels this skeleton sets, none renamed, renumbered, or dropped.
+- No section carries content: every fenced `arc42 guidance §N` block and every `> **Yggdrasil:**` note is intact, and no prose, table row, or resolved placeholder was added outside the header block.
+- The skeleton's title is promoted to a top-level `#`; every other heading level is left exactly as the skeleton sets it. The persistence step promotes each section by one further level when it becomes its own file.
+- The header block carries exactly `Status: Proposed`, `Date`, `Document scope`, `Mode … (source …)`, `Section scope: pending`, and — if and only if the scope is update delta — `Existing document: <path> (<shape>)`.
+- `Mode` and its source match the brief character for character.
+- `Document scope` and the `Existing document:` shape are re-derivable by a reviewer from the same paths you searched: the classification follows the directory identity rule, not the directory's name.
+- `next-adr` is one above the highest record number in use anywhere in the project's decision directories, and `0001` only when no record exists.
+- The appendix treatment matches the brief's mode: A, B, and C as the skeleton has them for `decide-new`; A plus the two `_Not applicable — document-existing mode_` markers for `document-existing`.
+- The `Attribution and license` block is present, verbatim, directly under the title — every scaffold carries guidance, so every scaffold carries the notice.
+- Nothing outside the briefed Workfile path was created or modified.
+- The `Scaffold result:` line is complete, and every field in it matches the file on disk and the paths actually searched.
 
 ## Anti-Patterns
 
-- **Template worship** — filling all twelve sections for a change that touches three, so the signal drowns in ceremony. Prune, and mark what you pruned.
-- **Silent deletion** — dropping an irrelevant section instead of marking it omitted, leaving a reader unable to tell considered-and-excluded from forgotten.
-- **Guidance left in a finished section** — the section reads as filled while still carrying the instructions for filling it.
+- **Filling while scaffolding** — writing a sentence of §1.1 or a first risk row "to get the drafter started". The drafter cannot tell your prose from its own, and the review of this session blocks on any filled section.
+- **Pruning by anticipation** — deleting §7 because the objective "obviously" has no deployment impact. Omission is a judgment recorded with a marker; a missing heading is a defect nobody can distinguish from an accident.
+- **Guessing an under-specified brief** — inventing `decide-new` or a mode source that was never stated. Both drive the header and the appendices, and a wrong guess is invisible in the Workfile.
+- **Classifying by directory name** — calling `docs/architecture/` an arc42 directory without confirming it holds `README.md` and `01-introduction-and-goals.md`, or calling a directory `none` because it is named something else.
+- **Restarting the record sequence** — reporting `next-adr=0001` in a project that already holds `0007`, which collides at persistence and corrupts the decision log.
+- **Reading the existing document as research** — summarizing a found architecture document instead of classifying it. You need its path and its shape; its content is the drafter's input, not your finding.
+- **Writing into the project tree** — editing, moving, or seeding `docs/architecture/` from this step. The scaffold is a Workfile; persistence happens after review and ratification.
+- **Guidance stripped early** — deleting the `arc42 guidance §N` blocks or the `> **Yggdrasil:**` notes to hand over a "clean" file, which removes the per-section instructions the drafter fills from.
+- **Attribution by omission** — writing the skeleton with its guidance blocks but without the notice, which leaves arc42 text in a document that does not carry its license.
 - **Renumbering or renaming the arc42 sections** — the numbering is the shared vocabulary; a §5 that is not the building block view breaks every cross-reference and every reader's expectation.
-- **Table rows as quotas** — treating the example rows as a required count, inventing risks, scenarios, or packages to fill them.
-- **Orphaned arc42 text** — an `arc42 guidance` block left in the document without the attribution and license notice.
-- **Attribution by reflex** — pasting the notice into a document that contains no arc42 text, misattributing your own content to arc42.
-- **Editing the skeleton instead of the Workfile** — this skill is reference material; adapt the copy in the Workfile and leave the skeleton intact.
+- **Editing the skeleton instead of the Workfile** — § Skeleton is the payload; instantiate a copy of it and leave it intact.
 - **Splitting this content into a companion file** — reference material a skill needs must live in the skill's own `SKILL.md` or in another skill loaded by name; a companion file beside a `SKILL.md` is not reliably readable at runtime — this concerns the skill's own reference material; the *persisted* architecture document is deliberately multi-file.
 
 ## Skeleton
