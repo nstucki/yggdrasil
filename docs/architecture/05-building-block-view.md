@@ -6,7 +6,7 @@ _Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)
 
 ```mermaid
 flowchart TB
-  subgraph Odin prompt (generated)
+  subgraph "Odin prompt (generated)"
     T1[shared-body.template.md § Workflows]
     T2[communication-policy-*.fragment.md ×3]
     G[generate-odin-agents.sh → agents/odin-*.md]
@@ -15,7 +15,7 @@ flowchart TB
   end
   CMD[commands/yggdrasil/architect.md] -->|load skill| AW
   G -->|Architecture check → invoke| AW
-  subgraph skills/architecture/ (new mandatory feature dir)
+  subgraph "skills/architecture/ (new mandatory feature dir)"
     AW[odin-architecture-workflow/SKILL.md]
     MCC[mimir-codebase-context/SKILL.md · moved]
     AT[brokk-arc42-template/SKILL.md · moved + renamed, scaffolds]

@@ -14,13 +14,13 @@ sequenceDiagram
   participant B as Brokk
   participant G as Bragi
   U->>O: /yggdrasil/architect "document the architecture of this repo"
-  O->>O: Architecture check → invoke; Architecture shape: mode=document-existing, source=direction, context=yes, persistence=inline
+  O->>O: Architecture check → invoke — Architecture shape: mode=document-existing, source=direction, context=yes, persistence=inline
   O->>M: mimir-codebase-context (scope: whole system)
   M-->>O: NN-context-system.md
   O->>H: Focus: context
   H-->>O: PASS
   O->>B: brokk-arc42-template — Scaffold: mode=document-existing, source=direction, workfile, location
-  B-->>O: skeleton Workfile; Scaffold result: document-scope=seed, existing=none, next-adr=0001
+  B-->>O: skeleton Workfile — Scaffold result: document-scope=seed, existing=none, next-adr=0001
   O->>H: heimdall-architecture-review — Focus: scaffold (standing review)
   H-->>O: PASS
   O->>K: kvasir-software-architecture, Mode: document-existing, Scaffold: path, context Workfile
@@ -38,7 +38,7 @@ sequenceDiagram
   B-->>O: persistence manifest
   O->>H: heimdall-architecture-review — Focus: persistence (standing review)
   O->>G: draft Response
-  O-->>U: Response + Artifact; Architecture result line
+  O-->>U: Response + Artifact — Architecture result line
 ```
 
 Error path: a second `BLOCKED` or a plan-level mismatch stops before persistence and surfaces the review — the run returns `review=<path> — BLOCKED` with `persisted=not-reached`, steps 6–8 never having been entered and no caller waiting to own the persistence decision (AC-12).
@@ -56,11 +56,11 @@ sequenceDiagram
   E->>A: Architecture request: mode=decide-new, objective, requirements=03-…, context=01-… (reviewed), persistence=deferred
   A->>A: shape: mode=decide-new, source=direction, context=no — reviewed Workfile supplied, persistence=deferred
   A->>B: brokk-arc42-template — Scaffold: mode=decide-new, source=direction, workfile, location
-  B-->>A: skeleton Workfile; Scaffold result (document-scope, existing, next-adr)
+  B-->>A: skeleton Workfile — Scaffold result (document-scope, existing, next-adr)
   A->>H: heimdall-architecture-review — Focus: scaffold (standing review)
   H-->>A: PASS
   A->>K: kvasir-software-architecture, Mode: decide-new, Scaffold: path
-  K-->>A: NN-architecture-arc42.md filled (A, B, C; Package check)
+  K-->>A: NN-architecture-arc42.md filled (A, B, C — Package check)
   A->>H: heimdall-architecture-review — Focus: document, Mode: decide-new
   alt review PASS (first attempt)
     H-->>A: PASS
@@ -74,14 +74,14 @@ sequenceDiagram
     else still BLOCKED, or plan-level mismatch
       H-->>A: BLOCKED
       A-->>E: Architecture result: … review=<path> — BLOCKED, persisted=deferred
-      E->>E: § Failed Review Classification — return to analysis step or shape verdict; no TDD plan formed (terminal for this scenario)
+      E->>E: § Failed Review Classification — return to analysis step or shape verdict, no TDD plan formed (terminal for this scenario)
     end
   end
   Note over A,E: Continuation below occurs only on a PASS branch
   A-->>E: Architecture result: … persisted=deferred
-  E->>E: TDD plan from Appendix B; plan checkpoint ratifies ADRs
+  E->>E: TDD plan from Appendix B — plan checkpoint ratifies ADRs
   E->>B: integration + Architecture workflow step 7 (persistence) with ratification record
-  B-->>E: manifest; ADRs Accepted
+  B-->>E: manifest — ADRs Accepted
   E->>H: heimdall-engineering-review — Focus: integration (loads heimdall-architecture-review Focus: persistence by name)
   H-->>E: PASS
 ```

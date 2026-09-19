@@ -6,7 +6,7 @@ _Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)
 
 ```mermaid
 flowchart LR
-  User([User]) -->|/yggdrasil/architect · "document the architecture" · "decide the architecture"| Odin[Odin: Architecture workflow]
+  User([User]) -->|"/yggdrasil/architect · 'document the architecture' · 'decide the architecture'"| Odin["Odin: Architecture workflow"]
   Eng[Odin: Software Engineering workflow] -->|caller contract: mode=decide-new, requirements, reviewed context, persistence=deferred| Odin
   Odin -->|return block| Eng
   Odin -->|brief: scope| Mimir[Mimir · mimir-codebase-context]
