@@ -305,7 +305,7 @@ Appendix headings the drafting step adds to its Workfile — `Appendix A — Arc
 
 ---
 
-> **Yggdrasil:** when you copy this header block into a new Workfile, promote the heading below to a top-level `#` — in the produced document it is that document's own title, and it is `##` here only because this template file nests it under its own top-level title. Leave every other heading in the payload exactly as it is below: sections 1–12, their subsections, and Appendices A–C are already at the levels the produced Workfile requires.
+> **Yggdrasil:** heading-level convention, for anyone consulting this reference. The heading immediately below is the architecture document's own title: it belongs at top-level `#`, and appears as `##` here only because this file nests it under its own top-level title. Every other heading — sections 1–12, their subsections, and Appendices A–C — is already at the level a produced document requires. An agent authoring an architecture Workfile applies that single promotion when it builds the document's structure from § Structure Reference; this block itself is not copied there.
 
 ## \<System / Subsystem\> — Architecture (arc42)
 
