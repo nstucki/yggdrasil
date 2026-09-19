@@ -16,7 +16,7 @@ Define the orchestration doctrine for the Architecture workflow — a trigger-ga
 
 The workflow packages the pattern `Shape verdict → [Context → Review] → Scaffold → Review → Draft → Design Review → Checkpoint → Persist → Review → Response`. Two properties make it more than "Draft → Review → Persist": the **mode and its source are decided and recorded before any dispatch**, and **the arc42 Workfile is scaffolded by one role and filled by another** — mechanics and judgment have separate owners.
 
-This skill is dispatch doctrine only. `mimir-codebase-context`, `brokk-arc42-template`, `kvasir-software-architecture`, `heimdall-architecture-review`, `heimdall-engineering-review`, and `brokk-architecture-persistence` are the per-step methodologies, loaded by the dispatched sessions themselves. Briefs name the skill, the inputs, and the Workfile to write — **never the method**. In particular, how a skeleton is instantiated, how document shape is classified, and how the next decision number is resolved are the scaffolding skill's rules, not yours.
+This skill is dispatch doctrine only. `mimir-architecture-context`, `brokk-arc42-template`, `kvasir-software-architecture`, `heimdall-architecture-review`, and `brokk-architecture-persistence` are the per-step methodologies, loaded by the dispatched sessions themselves. Briefs name the skill, the inputs, and the Workfile to write — **never the method**. In particular, how a skeleton is instantiated, how document shape is classified, and how the next decision number is resolved are the scaffolding skill's rules, not yours.
 
 **Fixed Deliverable (per § Deliverables and § Deliverable Determination in your system prompt):** a Response (drafted by Bragi, step 8) and an Artifact (the persisted arc42 architecture directory — one file per section, one per decision record, plus its index). This fixes the Deliverable at Odin's top level:
 
@@ -45,10 +45,10 @@ Deliverable: response=yes, artifact=yes — persisted arc42 directory (absent on
 A composite caller states one line before executing the steps below; absent, standalone defaults apply.
 
 ```text
-Architecture request: mode=<document-existing | decide-new | infer>, objective=<text | none>, requirements=<Workfile path | none>, context=<Workfile path (reviewed) | none>, persistence=<inline | deferred>, location=<path | docs/architecture/>
+Architecture request: mode=<document-existing | decide-new | infer>, objective=<text | none>, requirements=<Workfile path | none>, persistence=<inline | deferred>, location=<path | docs/architecture/>
 ```
 
-- `context=<path> (reviewed)` ⇒ the context gate (step 2) is skipped. An **unreviewed** Workfile is treated as absent.
+- **The context gate (step 2) is yours alone** — no caller can pre-empt or skip it. The contract carries no context Workfile, because no caller produces the architecture-scoped one the gate exists to obtain. A request line carrying an unrecognized field — a legacy `context=<path>` among them — is a malformed brief: ask the caller what it means, and never read it as a skip.
 - `persistence=deferred` ⇒ steps 6, 7, and 8 are skipped; the caller owns ratification, persistence, and the Response, and invokes step 7 later with its own ratification record.
 - `mode=infer` ⇒ apply the inference rule in step 1.
 - The scaffold step (3) is **never** skipped — in either mode, on either invocation path.
@@ -79,13 +79,13 @@ These two lines are the only coupling surface. A caller may reference them; it m
 
     **Mode.** User direction or a caller's `mode=` value sets the mode and `source=direction`. Otherwise apply the **inference rule**: an objective naming a change (add/replace/migrate/introduce/split …) → `decide-new`; document/describe/as-is/"how is it structured" language, or no change objective at all → `document-existing`; ambiguous → resolve per your Communication Policy — **Interactive asks** the user which mode is wanted; **Guided and Autonomous** take `document-existing` and record `source=inference`. The mode chosen here is echoed verbatim in every brief, in the Workfile header, in the return block, and in the Response; it is never re-decided later.
 
-    **Context.** Record `context=no` with the reason when a reviewed context Workfile was supplied in the caller contract, or when the conversation already established the structure, conventions, and existing documentation of the system in scope. Otherwise `context=yes`.
+    **Context.** Record `context=no` with the reason only when the conversation has already established the module boundaries, entry points, boundary interfaces, and existing architecture documentation of the system in scope — the user supplied them, or an earlier architecture run in this session produced a reviewed `NN-context-architecture-<area>.md` — or when the objective is greenfield with no code yet. Otherwise `context=yes`. An engineering-context Workfile is **not** a skip reason: it records behavior, conventions, and test infrastructure, none of which grounds a §5 blackbox.
 
     **Persistence.** `inline` standalone, `deferred` when the caller said so. `declined` is recorded only after step 6, and only in `decide-new` mode.
 
     Every skipped step is recorded here with its reason — never silently.
 
-2. **Context gate (conditional; skipped per the verdict).** Dispatch Mimir with `mimir-codebase-context`. Scope the brief by mode: in `document-existing` mode the scope is **the system as a whole** (or the named subsystem); in `decide-new` mode it is the objective. Require the output to be **fact-rich and framing-poor** — what is the case, not what should be built — with proofs per finding. Writes `NN-context-<area>.md`. Its standing review is a fresh Heimdall session with `heimdall-engineering-review` and `Focus: context`.
+2. **Architecture-context gate (conditional; skipped per the verdict).** Dispatch Mimir with `mimir-architecture-context`. Scope the brief by mode: in `document-existing` mode the scope is **the system as a whole** (or the named subsystem); in `decide-new` mode it is the objective's structural footprint. Require the output to be **fact-rich and framing-poor** — what is the case, not what should be built — with proofs per finding. Writes `NN-context-architecture-<area>.md`. Its standing review is a fresh Heimdall session with `heimdall-architecture-review` and `Focus: context`, writing `NN-review-context-architecture-<area>.md`.
 
 3. **Scaffold (always — both modes, both invocation paths).** Dispatch Brokk with `brokk-arc42-template` and:
 
@@ -105,11 +105,11 @@ These two lines are the only coupling surface. A caller may reference them; it m
 
     Its standing review is a fresh Heimdall session with `heimdall-architecture-review` and `Focus: scaffold`, writing `NN-review-architecture-scaffold.md`. A `BLOCKED` verdict here goes through § Failed Review Classification — resume the Brokk session once for an execution defect (wrong shape, wrong next number, a filled or missing heading); if it stays BLOCKED, stop and return the failure contract — `persisted=not-reached` on a standalone run, `persisted=deferred` on a composite call. **Never dispatch step 4 against an unreviewed or blocked skeleton.**
 
-4. **Drafting.** Dispatch Kvasir with `kvasir-software-architecture`, the control line `Mode: <mode>`, `Scaffold: <path>`, the `Scaffold result` line from step 3, the objective, and the requirements and context Workfile paths when they exist. The session fills `NN-architecture-arc42.md` **in place** — the scaffold is the hand-off, and no second Workfile is created. Record the returned `Section scope:` and `Package check:` lines (`Package check: n/a` in `document-existing` mode) and the investigation gaps.
+4. **Drafting.** Dispatch Kvasir with `kvasir-software-architecture`, the control line `Mode: <mode>`, `Scaffold: <path>`, the `Scaffold result` line from step 3, the objective, and the requirements and architecture-context Workfile paths when they exist. The session fills `NN-architecture-arc42.md` **in place** — the scaffold is the hand-off, and no second Workfile is created. Record the returned `Section scope:` and `Package check:` lines (`Package check: n/a` in `document-existing` mode) and the investigation gaps.
 
     **Each decision record carries one definite decision at `Status: Proposed`; ratification is not the author's to grant** — the user ratifies at step 6 under Interactive, you ratify by adoption under Guided and Autonomous, and promotion to `Status: Accepted` happens only at persistence. This session receives no dedicated review; step 5 is its gate.
 
-5. **Design review gate (mandatory — never skipped, in either mode, on either path).** Dispatch a fresh Heimdall session with `heimdall-architecture-review`, `Focus: document`, the `Mode:` line echoed from the shape verdict, the architecture Workfile path, the requirements and context Workfile paths, and the pinned baseline. Writes `NN-review-architecture.md`. This precedes the checkpoint so the user ratifies a reviewed document, and precedes any hand-off so no caller consumes an unreviewed contract.
+5. **Design review gate (mandatory — never skipped, in either mode, on either path).** Dispatch a fresh Heimdall session with `heimdall-architecture-review`, `Focus: document`, the `Mode:` line echoed from the shape verdict, the architecture Workfile path, the requirements and architecture-context Workfile paths, and the pinned baseline. Writes `NN-review-architecture.md`. This precedes the checkpoint so the user ratifies a reviewed document, and precedes any hand-off so no caller consumes an unreviewed contract.
 
     A `BLOCKED` verdict goes through § Failed Review Classification: resume the Kvasir session **once** for an execution defect; a plan-level mismatch, or a second `BLOCKED`, ends the run under the failure contract — return `review=<path> — BLOCKED` with `persisted=not-reached` on a standalone run or `persisted=deferred` on a composite call, and stop. No persistence, no Response claiming success.
 
@@ -131,7 +131,7 @@ Finally, state the return block. On `persistence=deferred`, steps 6–8 are skip
 
 | Reviewed node | Review skill | Brief line | Workfile |
 | --- | --- | --- | --- |
-| Context gate (step 2) | `heimdall-engineering-review` | `Focus: context` | `NN-review-context-<area>.md` |
+| Architecture-context gate (step 2) | `heimdall-architecture-review` | `Focus: context` | `NN-review-context-architecture-<area>.md` |
 | Scaffold session (step 3) | `heimdall-architecture-review` | `Focus: scaffold` | `NN-review-architecture-scaffold.md` |
 | Architecture document (step 5) | `heimdall-architecture-review` | `Focus: document`, `Mode:` echoed | `NN-review-architecture.md` |
 | Persistence session (step 7) | `heimdall-architecture-review` | `Focus: persistence` | `NN-review-architecture-persistence.md` |
@@ -146,7 +146,7 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 - **The document is reviewed before anything consumes it** — before ratification, before persistence, before a caller forms a plan from it. No unreviewed architecture reaches the repo or an implementation session.
 - **`document-existing` output always persists.** Persistence is conditional only on a caller deferring it or, in `decide-new` mode, the user declining it.
 - **Ratification is explicit** — every persisted decision was ratified at the checkpoint or by recorded adoption, and only then promoted to `Accepted`.
-- **Both invocation paths are identical** up to the skipped steps: same scaffold, same drafting brief shape, same review gate, same Workfile names. A standalone run and a delegated run of the same objective differ only in steps 2 and 6–8.
+- **Both invocation paths are identical** up to the skipped steps: same scaffold, same drafting brief shape, same review gate, same Workfile names. A standalone run and a delegated run of the same objective differ only in steps 6–8 — the context gate is decided by the same rule on both paths, never by the caller.
 - **The return block is stated on every exit path**, success or `BLOCKED`. A caller that receives no return block must treat the run as failed.
 - **Cost (dispatches inside the workflow; the Final Review Gate is a standing rule on top).** Scaffold and its review, drafting, the design review, persistence and its review, the Response — **7** for a standalone run with context already established; **9** when the context gate fires (Mimir plus its review); **5** for `decide-new` standalone with persistence declined; **4** when a caller defers persistence (steps 2 and 6–8 skipped). Disclose the cost qualitatively at the checkpoint and quantitatively on request.
 - **The Deliverable discloses** the mode and its source, the section scope, the decisions ratified, the persisted location, and the investigation gaps.
@@ -162,7 +162,7 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 - **Skipping the design review gate.** One dispatch guards a document that becomes a repo Artifact and, in a composite run, the contract every implementation session builds against.
 - **Persisting after a `BLOCKED` verdict**, or drafting a Response that reports success over a blocked review. The failure contract returns the review path and stops.
 - **More than one resume per blocked node.** One resume for an execution defect; a plan-level mismatch or a second `BLOCKED` ends the run and surfaces the review.
-- **Re-running the context gate a caller already ran.** A reviewed context Workfile in the caller contract is the skip condition; a duplicate Mimir dispatch is pure cost. Conversely, treating an *unreviewed* Workfile as sufficient imports unvalidated facts into the document.
+- **Treating an engineering-context Workfile as structural evidence.** Behavior, conventions, and a baseline test run do not establish module boundaries, entry points, or boundary interfaces, so skipping the gate on such a Workfile leaves §5 ungrounded and makes the recorded skip reason false. Skip step 2 only for the reasons the shape verdict admits — structure already established in the conversation, or a greenfield objective.
 - **Persisting on a deferred contract.** `persistence=deferred` means the caller owns ratification timing; persisting early promotes decisions the caller has not ratified.
 - **Restating this workflow's steps in a caller's doctrine.** The caller states the request line and consumes the result line — nothing else.
 - **Creating a second architecture Workfile.** The scaffolded file is filled in place; a parallel draft guarantees two documents that disagree.
