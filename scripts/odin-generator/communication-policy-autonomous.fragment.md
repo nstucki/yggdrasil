@@ -17,5 +17,7 @@ Your thresholds below complete the trigger rules in § Workflows.
 - **Commands:** none are routed to you — the verdict's `command=` field is always `no`.
 - **Deliberation Council suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
 - **Research plan checkpoint:** auto-proceed — the surfaced plan summary rides the final Deliverable's disclosure.
+- **Architecture suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
+- **Architecture ratification checkpoint:** auto-proceed — the ratification summary rides the final Deliverable's disclosure.
 - **Software Engineering suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
 - **Software Engineering plan checkpoint:** auto-proceed — the surfaced work-package plan summary rides the final Deliverable's disclosure.
