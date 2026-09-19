@@ -13,13 +13,13 @@ The workflow packages the pattern `[Analysis] → [Architecture] → [Context] �
 
 This skill is dispatch doctrine only. `mimir-engineering-context`, `bragi-business-analysis`, `brokk-test-driven-development`, `heimdall-engineering-review`, and the Architecture workflow's skills (loaded by `odin-architecture-workflow`) are the per-step methodologies, loaded by the dispatched sessions themselves. Briefs name the skill, the inputs, and the Workfile to write — never the method.
 
-**Fixed Deliverable (per § Deliverables and § Deliverable Determination in your system prompt):** a Response (drafted by Bragi, step 9) and an Artifact (code and tests in the target project; plus the persisted arc42 architecture directory — one file per section, one per decision record, plus its index — whenever the architecture step fired). This fixes the Deliverable at Odin's top level:
+**Fixed Deliverable (per § Deliverables and § Deliverable Determination in your system prompt):** a Response (drafted by Bragi, step 9) and an Artifact (code and tests in the target project; plus the persisted arc42 architecture directory — a folder per section holding its generated index and topic documents, the decision records in `09-architecture-decisions/`, and the top index — whenever the architecture step fired). This fixes the Deliverable at Odin's top level:
 
 ```text
-Deliverable: response=yes, artifact=yes — code and tests in the target project (plus the persisted arc42 architecture directory: one file per section, one per decision record, plus its index, when the architecture step fired), source=workflow-fixed
+Deliverable: response=yes, artifact=yes — code and tests in the target project (plus the persisted arc42 architecture directory: a folder per section holding its index and documents, the decision records in their own folder, and the top index, when the architecture step fired), source=workflow-fixed
 ```
 
-The requirements Workfile is **not** persisted by default; persist it to `docs/requirements/<slug>.md` only on user direction. Appendices B and C of the architecture Workfile are transient planning content and are never persisted.
+The requirements Workfile is **not** persisted by default; persist it to `docs/requirements/<slug>.md` only on user direction. Appendices B, C, and D of the architecture Workfile are transient planning content and are never persisted.
 
 **Kvasir Consultation Check:** this workflow is exempt (`Kvasir check: substantive Subtasks=<n>, criteria=<…> → skip — packaged workflow`). Its strategic consultation is internal — the architecture step (step 3, delegated to the Architecture workflow), which is mandatory whenever the work splits into more than one package — and its checkpoint is the user's steering point. When this workflow is one stage of a larger composite plan, the composite is still evaluated by the Check as usual. Mid-Execution Consultation and Failed Review Classification remain in force inside the workflow.
 
@@ -92,7 +92,7 @@ The requirements Workfile is **not** persisted by default; persist it to `docs/r
 
 8. **Integration (fires iff packages ≥ 2).** Dispatch one Brokk session to run the full suite, resolve the seams the parallel sessions reported, and commit if commits were permitted. When the architecture step fired, this session also runs the Architecture workflow's persistence step (`odin-architecture-workflow` step 7) with the ratification record from the checkpoint; its brief contents are defined there. The session returns the persistence manifest in its evidence block. When packages = 1, fold these duties into that single session's brief.
 
-9. **Deliverable (Response).** Dispatch Bragi to draft the user-facing response from the reviewed outputs: the shape taken and why, acceptance criteria covered and not covered, the architecture summary (§4 Solution Strategy in a paragraph) with the architecture directory path (its `README.md`) and the decision-record paths — and, when a legacy single-file document was updated in place, one line noting that directory migration is available on request — the packages and their test evidence, the assumptions adopted, the open risks from §11, and what the user should verify. Writes `NN-response-draft.md`.
+9. **Deliverable (Response).** Dispatch Bragi to draft the user-facing response from the reviewed outputs: the shape taken and why, acceptance criteria covered and not covered, the architecture summary (§4 Solution Strategy in a paragraph) with the architecture directory path (its `README.md`) and the decision-record paths — and, when the persistence step refused a legacy target pending a migration direction, one line stating that nothing was written and putting the migration decision to the user — the packages and their test evidence, the assumptions adopted, the open risks from §11, and what the user should verify. Writes `NN-response-draft.md`.
 
 **Review-skill assignment:** every review gate of this workflow dispatches a fresh Heimdall session with `heimdall-engineering-review` and exactly one `Focus:` line. The standing reviews (per § Review & Quality Gates in your system prompt — one per Mimir or Brokk session, plus the Final Review Gate) are not numbered above.
 
@@ -129,8 +129,8 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 - **Forming a plan from an unreviewed architecture document.** The return block's review verdict is the gate; a `BLOCKED` result routes through § Failed Review Classification instead of feeding Appendix B to 2N+ implementation dispatches.
 - **Unreviewed architecture reaching the repo.** The persisted document and ADR files are user-facing Artifacts, not internal notes.
 - **Accepting a package with no red evidence.** A passing suite proves nothing about whether the tests could ever have failed.
-- **Persisting `Accepted` without ratification**, or persisting a delta over an existing document by overwriting it instead of merging file-by-file (or section-by-section into a legacy file).
-- **Migrating a legacy document as a side effect.** Conversion of a single-file arc42 document into the directory layout happens only on explicit user direction.
+- **Persisting `Accepted` without ratification**, or persisting a delta over an existing document by overwriting it instead of merging document-by-document.
+- **Migrating a legacy document as a side effect.** Conversion of a legacy arc42 document — a flat directory or a single file — into the folder-per-section layout happens only on explicit user direction; without it the persistence step refuses the target and writes nothing.
 - **Template worship.** Letting all twelve arc42 sections be filled for a change that touches three, or briefing for a complete document instead of a pruned one — the ceremony buries the signal the implementation sessions need.
 - **Restating specialist methodology in briefs.** Name the skill, the inputs, and the Workfile; the dispatched session loads its own method.
 - **Re-architecting mid-flight.** If execution shows the design is wrong, that is Mid-Execution Consultation territory, not a second run of the architecture step.
