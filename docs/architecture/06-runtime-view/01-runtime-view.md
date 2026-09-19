@@ -19,12 +19,13 @@ sequenceDiagram
   M-->>O: NN-context-architecture-system.md
   O->>H: heimdall-architecture-review — Focus: context (standing review)
   H-->>O: PASS
-  O->>B: brokk-arc42-template — Scaffold: mode=document-existing, source=direction, workfile, location
-  B-->>O: skeleton Workfile — Scaffold result: document-scope=seed, existing=none, next-adr=0001
-  O->>H: heimdall-architecture-review — Focus: scaffold (standing review)
+  O->>B: brokk-arc42-template — Scaffold: mode=document-existing, source=direction, location=docs/architecture/
+  B->>B: creates docs/architecture/ skeleton in the project — 12 section-folder indices, 09 log, top README Status: Scaffolded
+  B-->>O: Scaffold result: target=docs/architecture/, structure=created, shape=none, document-scope=seed, next-adr=0001
+  O->>H: heimdall-architecture-review — Focus: scaffold (reviews the project tree, git diff = additions only, no Workfile written)
   H-->>O: PASS
-  O->>K: kvasir-software-architecture, Mode: document-existing, Scaffold: path, architecture-context Workfile
-  K-->>O: NN-architecture-arc42.md filled (Mode header, as-is ADRs, B/C n/a)
+  O->>K: kvasir-software-architecture, Mode: document-existing, Scaffold result line, workfile=NN-architecture-arc42.md, architecture-context Workfile
+  K-->>O: NN-architecture-arc42.md created (header incl. Scaffold: … (created), as-is ADRs, B/C n/a, Appendix D layout map)
   O->>H: heimdall-architecture-review — Focus: document, Mode: document-existing
   alt BLOCKED
     H-->>O: BLOCKED
@@ -34,14 +35,15 @@ sequenceDiagram
   end
   H-->>O: PASS / PASS-WITH-NOTES
   O->>U: ratification checkpoint (pause or auto per Communication Policy)
-  O->>B: brokk-architecture-persistence (docs/architecture/, ratification record)
+  O->>B: brokk-architecture-persistence (reviewed Workfile, ratification record, Scaffold result, baseline)
+  B->>B: verifies Status: Scaffolded + identity rule — fills folders per Appendix D, regenerates indices, Status → Accepted
   B-->>O: persistence manifest
   O->>H: heimdall-architecture-review — Focus: persistence (standing review)
   O->>G: draft Response
   O-->>U: Response + Artifact — Architecture result line
 ```
 
-Error path: a second `BLOCKED` or a plan-level mismatch stops before persistence and surfaces the review — the run returns `review=<path> — BLOCKED` with `persisted=not-reached`, steps 6–8 never having been entered and no caller waiting to own the persistence decision (AC-12).
+Error path: a second `BLOCKED` or a plan-level mismatch stops before persistence and surfaces the review — the run returns `review=<path> — BLOCKED` with `persisted=not-reached`, steps 6–8 never having been entered and no caller waiting to own the persistence decision (AC-12). R5: the return block also reports `scaffold=<path> — created (unfilled)`, because the target-project skeleton written at step 3 remains in the working tree; it is disclosed, never deleted by the workflow (ADR-0017).
 
 ## 6.2 Delegation from the engineering workflow (AC-8, AC-9, AC-10, AC-12, AC-19, AC-20)
 
@@ -63,12 +65,13 @@ sequenceDiagram
   M-->>A: NN-context-architecture-<area>.md
   A->>H: heimdall-architecture-review — Focus: context (standing review)
   H-->>A: PASS
-  A->>B: brokk-arc42-template — Scaffold: mode=decide-new, source=direction, workfile, location
-  B-->>A: skeleton Workfile — Scaffold result (document-scope, existing, next-adr)
-  A->>H: heimdall-architecture-review — Focus: scaffold (standing review)
+  A->>B: brokk-arc42-template — Scaffold: mode=decide-new, source=direction, location
+  B->>B: target already a folder-layout directory — writes nothing
+  B-->>A: Scaffold result: target=docs/architecture/, structure=verified, shape=directory, document-scope=update delta, existing=docs/architecture/README.md, next-adr=NNNN
+  A->>H: heimdall-architecture-review — Focus: scaffold (git diff = no change, no Workfile written)
   H-->>A: PASS
-  A->>K: kvasir-software-architecture, Mode: decide-new, Scaffold: path, architecture-context Workfile
-  K-->>A: NN-architecture-arc42.md filled (A, B, C — Package check)
+  A->>K: kvasir-software-architecture, Mode: decide-new, Scaffold result line, workfile path, architecture-context Workfile
+  K-->>A: NN-architecture-arc42.md created (A, B, C — Package check; Appendix D layout map)
   A->>H: heimdall-architecture-review — Focus: document, Mode: decide-new
   alt review PASS (first attempt)
     H-->>A: PASS
@@ -92,8 +95,8 @@ sequenceDiagram
   E->>H: heimdall-engineering-review — Focus: context (standing review, engineering shape)
   H-->>E: PASS
   E->>E: TDD plan from Appendix B + test command/baseline from the engineering context — plan checkpoint ratifies ADRs
-  E->>B: integration + Architecture workflow step 7 (persistence) with ratification record
-  B-->>E: manifest — ADRs Accepted
+  E->>B: integration + Architecture workflow step 7 (persistence) with ratification record + recorded Scaffold result
+  B-->>E: manifest — mapped documents replaced, indices regenerated, ADRs Accepted
   E->>H: heimdall-engineering-review — Focus: integration (loads heimdall-architecture-review Focus: persistence by name)
   H-->>E: PASS
 ```

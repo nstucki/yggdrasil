@@ -1,0 +1,5 @@
+# 8.3 Review gating and status promotion
+
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§8](README.md)._
+
+Every scaffold passes `heimdall-architecture-review` `Focus: scaffold` (the standing review the Brokk session requires, C-12) — from R5 a review of the target-project skeleton, whose top index must read `Status: Scaffolded` until the first persistence promotes it; every architecture Workfile passes `Focus: document` before ratification, persistence, or consumption — inside the Architecture workflow, once; every persisted directory passes its `Focus: persistence` checklist, dispatched directly in a standalone run or loaded by name from the engineering integration review. All architecture checklists live in that one skill (ADR-0010). `Status: Proposed` is the only authored status in both modes; Brokk promotes ratified IDs to `Accepted` on persistence. Document-mode as-is ADRs follow the same lifecycle, with `Kind: as-is` making their nature explicit.

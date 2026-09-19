@@ -1,0 +1,15 @@
+# 5.1.10 Installer, validator, and license notice (registration of the new directory)
+
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§5](README.md)._
+
+- **Provided interface (edits):**
+  - `setup.sh:167` → `MANDATORY_SKILL_DIRS="research memories deliberation engineering architecture"`; `setup.sh:362` warning text lists `architecture/`; after the mandatory copy loop (line 358), a cleanup that removes, when present, `${DST_SKILLS}/engineering/{kvasir-software-architecture,kvasir-arc42-template,brokk-architecture-persistence,mimir-codebase-context}` — relocated (and, for the template, renamed) skills whose stale copies would otherwise be installed twice under the same `name`, or under the old name (C-6).
+  - `scripts/validate.sh:762` → the same five-entry list; comments at lines 40 and 443 updated. No check logic changes: Check 9 derives optional roots from the list, so `architecture/` becomes a mandatory root automatically; Check 5 derives the template's owner as `brokk` from its new slug automatically.
+  - `LICENSES/CC-BY-SA-4.0-arc42.txt` line 6 → `brokk-arc42-template skill:`; lines 8 and 66 → `skills/architecture/brokk-arc42-template/SKILL.md` (C-10).
+  - `config-home/generate-capabilities.sh:155` comment updated (no logic change — role derivation is by slug prefix; the renamed template lands under Implementer automatically).
+  - The four directory moves (`git mv skills/engineering/{kvasir-software-architecture,brokk-architecture-persistence,mimir-codebase-context} skills/architecture/` and `git mv skills/engineering/kvasir-arc42-template skills/architecture/brokk-arc42-template`), with file contents byte-identical **except two rename-forced edits in the template**: frontmatter `name: brokk-arc42-template` (Check 3) and line 43's `kvasir-software-architecture` → "the architecture-drafting step" (Check 5, C-3). The template's Purpose/Workflow rewrite is WP-3's, not WP-0's.
+- **Invariant after this block lands:** `scripts/validate.sh` passes all ten checks with no content edits beyond the two rename-forced ones — the move is behavior-neutral by construction (Q-10).
+- **Location:** `setup.sh`, `scripts/validate.sh`, `LICENSES/CC-BY-SA-4.0-arc42.txt`, `config-home/generate-capabilities.sh` (comment), `skills/architecture/` (directory, five relocated/renamed entries).
+- **Fulfilled AC:** AC-15.
+- **Open issues:** whether `setup.sh` should also warn when it removes a relocated copy (recommend: one `info` line per removal).
+- **R4 edit:** the live cleanup loop (`setup.sh:362–375`, `RELOCATED_ENGINEERING_SKILLS=…`, sweeps `${DST_SKILLS}/engineering/` only) gains a second sweep for `${DST_SKILLS}/architecture/mimir-codebase-context` — a *renamed* skill whose stale deployed copy would otherwise coexist with `mimir-architecture-context` under the same directory, and whose old `name:` would still be harvested into the capability inventory on the next regeneration (R-17). No `MANDATORY_SKILL_DIRS`, `validate.sh`, or `LICENSES` change is needed: both target directories are already mandatory, and no path string references either Mimir slug (C-10).

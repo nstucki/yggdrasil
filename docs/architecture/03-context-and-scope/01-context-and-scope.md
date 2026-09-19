@@ -11,13 +11,15 @@ flowchart LR
   Odin -->|return block| Eng
   Eng -->|brief: touched paths, behavior to characterize| MimirE[Mimir · mimir-engineering-context]
   Odin -->|brief: structural scope| Mimir[Mimir · mimir-architecture-context]
-  Odin -->|brief: Scaffold: mode, location| BrokkS[Brokk · brokk-arc42-template]
-  BrokkS -->|scaffolded Workfile + Scaffold result line| Odin
-  Odin -->|brief: Mode:, scaffold path, inputs| Kvasir[Kvasir · kvasir-software-architecture]
+  Odin -->|brief: Scaffold: mode, source, location| BrokkS[Brokk · brokk-arc42-template]
+  BrokkS -->|section-folder skeleton, Status: Scaffolded| Repo
+  BrokkS -->|Scaffold result line| Odin
+  Odin -->|brief: Mode:, Scaffold result, workfile path, inputs| Kvasir[Kvasir · kvasir-software-architecture]
+  Kvasir -->|reads scaffolded shape| Repo
   Odin -->|brief: Focus: context · scaffold · document, Mode: · persistence| Heimdall[Heimdall · heimdall-architecture-review]
   Odin -->|brief: reviewed Workfile, ratification record| Brokk[Brokk · brokk-architecture-persistence]
   Odin -->|reviewed outputs| Bragi[Bragi · Response draft]
-  Brokk -->|docs/architecture/ directory| Repo[(Target project)]
+  Brokk -->|fills the scaffolded folders per Appendix D| Repo[(Target project)]
 ```
 
 | Partner | Input to the workflow | Output from the workflow |
