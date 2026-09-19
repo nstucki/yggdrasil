@@ -1,6 +1,6 @@
 ---
 name: brokk-arc42-template
-description: Own the arc42 skeleton and instantiate it into an architecture Workfile — classify the target document's shape and next decision-record number, pre-fill the header, and write the twelve section headings with their adapted arc42 guidance plus the mode-driven decision-record, work-package, and traceability appendices, filling no section and pruning none.
+description: Own the arc42 structure reference and scaffold the arc42 folder layout into the target project — classify any existing architecture document's shape, resolve the next decision-record number, and create the index-only section folders at Status Scaffolded, writing no content, no guidance text, and no Workfile.
 ---
 
 # arc42 Template — Architecture Document
@@ -40,119 +40,266 @@ legal code are in LICENSES/CC-BY-SA-4.0-arc42.txt in the Yggdrasil source reposi
 
 ## Purpose
 
-Own the arc42 skeleton **and** instantiate it. § Skeleton below is the payload — the twelve numbered section headings, their sub-structure, the per-section guidance, and the decision-record, work-package, and traceability appendices. Everything above § Skeleton is the procedure for writing that payload into an architecture Workfile.
+Own the arc42 **structure reference** — the twelve numbered sections, their subsections, and a one-line description of each — **and scaffold that structure as a folder layout in the target project**. § Structure Reference below is the text the section indices are generated from. § Skeleton below it is the arc42 guidance payload, kept here as reference material for maintainers and reviewers; it is **never written anywhere**.
 
-You are the **scaffolder**. You produce the empty document the drafting step then fills, and you resolve up front the mechanical facts that step would otherwise have to look up in the repository: whether the project already has an architecture document, which of four shapes it has, and what the next free decision-record number is. You pre-fill the document header with those answers, place the attribution notice, write every heading with its guidance intact, and report a result line. The drafting step receives a Workfile it only has to fill.
+You are the **scaffolder**. You create the empty directory the drafting step will mirror and the persistence step will fill, and you resolve up front the mechanical facts both would otherwise have to look up: whether the project already has an architecture document, which of five shapes it has, and what the next free decision-record number is. You report those answers in one result line. The drafting step then authors its Workfile from that line, and the persistence step fills the folders you created.
 
-**Judgment is not yours.** Which sections this objective affects, what the quality goals are, which decisions are significant, and what any section says are the drafting step's calls. **Pruning in particular stays there:** a heading you deleted and a heading the drafter deliberately omitted look identical to a reviewer, so you delete nothing and you fill nothing.
+**Your medium is the target project.** You write index files under `docs/architecture/` (or the briefed location) and nothing else, anywhere. You **never write a Workfile** — the task directory must gain no file from your session. An existing architecture document is input you read and classify, never a file you edit.
 
-**Never write outside the Workfile.** The scaffold is a Workfile in the task directory. An existing architecture document under `docs/` is input you read and classify — never a file you write. Persisting into the project tree happens after review and ratification, in the persistence step, not here.
+**You write structure, never content.** No topic document, no section body, no decision record, and not one byte of arc42 guidance text goes into the target. Every file you create is a generated index: an H1, a backlink, a one-line description, and a state line saying the section is not yet drafted. Content arrives later, after review and ratification, from the persistence step.
 
-**This skill is loaded by name with the `skill` tool, never read as a file.** The skeleton lives in this `SKILL.md` because a skill's own body is inlined when the skill is loaded, whereas companion files sitting beside a `SKILL.md` are not reliably readable at runtime — a file-based template is unreachable. Every future change to the skeleton belongs inside this file.
+**Judgment is not yours.** Which sections this objective affects, what the quality goals are, which decisions are significant, how a section splits into topic documents, and what any of them says are the drafting step's calls. **Pruning in particular stays there:** a folder you omitted and a section the drafter deliberately omitted look identical to a reviewer, so you create all twelve and fill none.
 
-**Attribution travels with arc42 text — and only with it.** The `Attribution and license` block above is skill-level content, and the reading convention is its last paragraph: a fenced **arc42 guidance §N** block is arc42-original text under CC BY-SA 4.0, and a `> **Yggdrasil:**` blockquote is this repository's own guidance. Every scaffold you write carries every guidance block, so every scaffold carries the notice — unconditionally, by Workflow step 4. The conditional half of the rule belongs to the drafting step: it deletes the notice if and only if it has deleted the last surviving guidance block. Surviving arc42 text stays under CC BY-SA 4.0 wherever the document goes; the authored content around it does not.
+**You never delete or modify what you did not create.** A structure that already exists is verified, or extended with only the folders it lacks. A legacy shape — a flat directory, a single file, a non-arc42 document — is classified and reported with `migration required`, never rewritten: migrating a shipped document is a project decision the user makes, executed later by the persistence step under cited direction.
 
-The persisted form of this document is a directory — one file per numbered section, one per decision record, plus a generated index — produced later by the persistence step from this single Workfile. The scaffold is and stays one Workfile.
+**Attribution stays with the licensed text, and the licensed text never leaves this skill.** The `Attribution and license` block above is skill-level content, and the reading convention is its last paragraph: a fenced **arc42 guidance §N** block is arc42-original text under CC BY-SA 4.0, and a `> **Yggdrasil:**` blockquote is this repository's own guidance. Because nothing you write into a target project contains a guidance block, no file you write carries the notice — the review of your session greps the target for guidance text and expects zero hits. The conditional attribution rule that governed the old guidance-carrying scaffold is therefore dormant by construction, not by discipline.
+
+**This skill is loaded by name with the `skill` tool, never read as a file.** The structure reference and the skeleton live in this `SKILL.md` because a skill's own body is inlined when the skill is loaded, whereas companion files sitting beside a `SKILL.md` are not reliably readable at runtime — a file-based template is unreachable. Every future change to either belongs inside this file.
+
+The shape you create is specified next, and it is the same specification the drafting step maps its Workfile onto and the persistence step fills.
+
+### The Persisted Layout
+
+A persisted arc42 document is a **directory of section folders**. Each of the twelve numbered sections is a folder holding a generated `README.md` index and zero or more `NN-<slug>.md` topic documents. Section 9's folder holds the decision records, and its index is the decision log.
+
+```text
+docs/architecture/
+├── README.md                                  # top index (generated)
+├── 01-introduction-and-goals/
+│   ├── README.md                              # section index (generated)
+│   └── 01-introduction-and-goals.md           # single topic document (default name = section slug)
+├── 05-building-block-view/
+│   ├── README.md
+│   ├── 01-whitebox-overall-system.md          # topic documents: NN-<slug>.md, NN contiguous from 01 in map order
+│   ├── 02-<building-block-group>.md
+│   └── …
+├── 07-deployment-view/
+│   └── README.md                              # omitted section: index only, marker verbatim in the state line
+├── 09-architecture-decisions/
+│   ├── README.md                              # the decision log
+│   ├── 0001-<slug>.md                         # records keep NNNN — global identifiers, append-only
+│   └── 0016-<slug>.md
+└── 12-glossary/
+    ├── README.md
+    └── 01-glossary.md
+```
+
+**Fixed folder table.** These twelve folder names are the shared vocabulary. No variants, no renumbering, no thirteenth section.
+
+| § | Folder | Section heading it carries |
+| --- | --- | --- |
+| 1 | `01-introduction-and-goals/` | `## 1. Introduction and Goals` |
+| 2 | `02-architecture-constraints/` | `## 2. Architecture Constraints` |
+| 3 | `03-context-and-scope/` | `## 3. Context and Scope` |
+| 4 | `04-solution-strategy/` | `## 4. Solution Strategy` |
+| 5 | `05-building-block-view/` | `## 5. Building Block View` |
+| 6 | `06-runtime-view/` | `## 6. Runtime View` |
+| 7 | `07-deployment-view/` | `## 7. Deployment View` |
+| 8 | `08-crosscutting-concepts/` | `## 8. Cross-cutting Concepts` |
+| 9 | `09-architecture-decisions/` | `## 9. Architecture Decisions` |
+| 10 | `10-quality-requirements/` | `## 10. Quality Requirements` |
+| 11 | `11-risks-and-technical-debts/` | `## 11. Risks and Technical Debts` |
+| 12 | `12-glossary/` | `## 12. Glossary` |
+
+**All twelve folders always exist**, each holding at least its index. Git tracks no empty directory, so a structure committed as bare folders vanishes; and a missing folder cannot be told apart from "never scaffolded", "deleted by accident", or "deleted by someone who disagreed". A fixed folder set makes completeness a listing check.
+
+**Topic document.** `NN-<slug>.md`: `NN` is two digits, contiguous from `01`, in layout-map order; `<slug>` is the kebab-case of the document's root heading title. A section with one document names it `01-<section-slug>.md`. Decision records are `NNNN-<slug>.md`, four digits, continuing the project's record sequence — records are global identifiers and append-only, whereas topic ordinals are folder-local ordering that a later delta may re-assign when it re-splits a section.
+
+**Per-document format.** A document is one root heading plus those of its descendants that no other map row claims. Its H1 is the root heading promoted by `depth − 1` — a `## N.` root by 1, a `### N.m` root by 2, a `#### N.m.k` root by 3, a decision record's `### ADR-NNNN` under `## Appendix A` by 2 — and its body is promoted by that same distance. The backlink line is the second content line, `_Part of [<Title>](../README.md) · [§N](README.md)._`; records carry no backlink. Where children are carved out into their own documents, the parent document ends where the first carved-out child began, and the section index carries the reading order.
+
+**Section index (generated).** `# N. <Title>`, the backlink to the top index, the one-line section description, then a state line — `_Pending — not yet drafted_` before first fill, `_Omitted — <reason>_` for an omitted section, or a Documents table (`# · Document · Root heading · Last updated`). "Omitted subsections" (markers verbatim) and "Superseded documents" (files a later map no longer names) follow when either applies. `09-architecture-decisions/README.md` is that section's index and the decision log in one file.
+
+**Top index.** `README.md` at the directory root: title, `Status`, `Date`, `Document scope`, `Mode … (source …)`, a Sections table (state · docs · last updated), and the Change Log.
+
+**Omitted section = index-only folder.** No topic document; the marker travels verbatim in the index's state line. In a flat-to-folder migration the legacy stub file *becomes* that index by rename — never delete-and-recreate.
+
+**Identity rules.** Contents decide the shape of a target, never the directory's name. **Folder layout** if and only if it holds `README.md` and `01-introduction-and-goals/README.md`. **Flat directory (legacy)** if and only if it holds `README.md` and `01-introduction-and-goals.md`. **Legacy single file** when one markdown file carries the arc42 `## N.` headings. **Non-arc42** when a document in another structure describes this system's architecture. **None** when nothing is found.
+
+**Status invariant.** Seed-scope persistence requires the top index at `Status: Scaffolded`; update-delta persistence requires `Accepted`. A `created` structure reads `Scaffolded`; the first persistence promotes it to `Accepted`. A persistence step never creates a folder the scaffold did not.
+
+**No arc42 guidance text anywhere under the target, ever** — and therefore no attribution notice in any file under it. The licensed guidance text stays inside the skill that carries it.
+
+**This specification is duplicated verbatim.** The two skills that write the layout carry this section byte for byte: the scaffolding skill `brokk-arc42-template`, and `brokk-architecture-persistence`, whose copy is normative. A layout change is a two-file copy, never a re-derivation.
 
 ## When to Use
 
-- Dispatched as the **scaffold step of the architecture workflow** — in both document modes, on both the standalone and the delegated path, before anything is drafted into the architecture Workfile.
-- Dispatched again to re-scaffold from scratch when an architecture Workfile's headings, header block, or appendix structure no longer match this skeleton and the file has no content worth keeping.
-- Loaded by a reviewer or by the requesting agent to check an instantiated architecture document against the skeleton it was built from.
-- **Not for** filling, revising, or reviewing an architecture document — the drafting step fills it and the review step judges it.
-- **Not for** writing into the project tree, and **not for** deciding what the document should say. This skill carries a skeleton and the procedure for instantiating it, no architecture method, no review rubric, and no project-specific content.
+- Dispatched as the **scaffold step of the architecture workflow** — in both document modes, on both the standalone and the delegated path, before anything is drafted. The step is never skipped, so a run over an already-scaffolded project is the normal case, not the exception.
+- Dispatched over an existing target: a complete folder-layout directory is **verified** and nothing is written; one that lacks section folders is **extended** with only those folders' indices.
+- Loaded by the review of this session, or by the requesting agent, to check a scaffolded structure or a drafted document against the arc42 structure reference.
+- **Not for** filling, revising, or reviewing an architecture document — the drafting step fills it, the review step judges it, and the persistence step places it.
+- **Not for** writing a Workfile, and **not for** deciding what the document should say. This skill carries a structure reference, a layout specification, and the procedure for instantiating them — no architecture method, no review rubric, and no project-specific content.
+- **Not for** migrating a legacy document. You classify and report; the user directs, and the persistence step moves.
 
 ## Workflow
 
 **Input.** The brief carries one control line:
 
 ```text
-Scaffold: mode=<document-existing | decide-new>, source=<direction | inference>, workfile=<NN-architecture-arc42.md path>, location=<docs/architecture/ | path>, objective=<text | none>
+Scaffold: mode=<document-existing | decide-new>, source=<direction | inference>, location=<docs/architecture/ | path>, objective=<text | none>
 ```
 
-`source` is how the mode was arrived at — `direction` when a user or a caller stated it, `inference` when the requesting agent derived it. It is a brief field of its own, immediately after `mode`, because the header you write carries the mode **and its source** on one line and you copy both from here rather than re-deriving either.
+`source` is how the mode was arrived at — `direction` when a user or a caller stated it, `inference` when the requesting agent derived it. It is a brief field of its own, immediately after `mode`, because the top index you write carries the mode **and its source** on one line and you copy both from here rather than re-deriving either.
 
-A missing `mode`, a missing `source`, or a missing `workfile` → **ask the requesting agent**. Do not guess any of the three: the mode drives the header and the appendix treatment, the source is a header field the reviewer checks against this brief, and the workfile path is the only thing you may write.
+A missing `mode` or a missing `source` → **ask the requesting agent**. Do not guess either: both are top-index fields the reviewer checks against this brief, and a wrong guess is invisible in the tree.
 
-**Output.** One Workfile at the briefed path, plus the `Scaffold result:` line of step 5. Nothing else is written, anywhere.
+**Output.** The scaffolded structure in the target project — thirteen files on `created`, the missing folders' indices on `extended`, nothing at all on `verified` — plus the `Scaffold result:` line of step 5. No Workfile, ever.
 
 1. **Read the brief and fix the two mode values.** Record `mode` and its source exactly as the brief states them — you neither infer the mode nor revise it from what you find in the repository. `objective` and `location` are context for steps 2 and 4; an `objective=none` is legitimate in document-existing mode.
 
-2. **Resolve the target and classify its shape.** Search in this order: the brief's `location`, then `docs/architecture/`, `docs/arc42*`, `architecture/`, `doc/`, and the README's documentation links. Classify the first architecture document you find as one of four shapes — the same four the persistence step uses, so that the scaffolder, the drafter, and the persister share one vocabulary:
+2. **Resolve the target and classify its shape.** Search in this order: the brief's `location`, then `docs/architecture/`, `docs/arc42*`, `architecture/`, `doc/`, and the README's documentation links. Classify the first architecture document you find by the **identity rules** of § The Persisted Layout — `directory` (the folder layout), `flat directory (legacy)`, `legacy single file`, `non-arc42`, or `none`. The contents decide, never the directory's name.
 
-   - **arc42 directory** — a directory holding both `README.md` and `01-introduction-and-goals.md`. This is the directory identity rule in `brokk-architecture-persistence` § The Persisted Layout: the contents decide, never the directory's name. Read its `README.md` and its `01-`, `04-`, `05-`, and `09-` files — far enough to state the path and confirm the shape, never far enough to summarize the architecture.
-   - **legacy arc42 single file** — one markdown file carrying the arc42 `## N.` headings.
-   - **non-arc42** — a document in another structure that nonetheless describes this system's architecture.
-   - **none** — nothing found, or a briefed `location` that does not exist.
+   For a `directory` target, read its top index and the indices of §1, §4, §5, and §9 — far enough to state the path, confirm the shape, and list which folders are present, never far enough to summarize the architecture. `document-scope` is **update delta** for all four found shapes and **seed** only for `none`. Record the target path for the result line's `existing=` field.
 
-   `document-scope` is **update delta** for all three found shapes and **seed** only for `none`. Record the target path for the header's `Existing document:` line, naming the directory index `README.md` for a directory target.
+   **Seed collision rule.** If the resolved location already exists and holds a `README.md` whose H1 does not end with `— Architecture (arc42)`, scaffold into `docs/architecture/arc42/` instead and report the fallback. Never write over a `README.md` that is not this document's index.
 
-3. **Resolve the decision records and the next number.** Look in `<target>/decisions/`, `docs/architecture/decisions/`, `docs/adr/`, `docs/decisions/`, and `adr/`. Read the highest record number in use **across every directory you find**, and set `next-adr` to that number plus one, zero-padded to four digits; the next record must not collide with an existing one whichever directory the persistence step later writes to. No record anywhere → `next-adr=0001`. Report every decision directory you found, not just the winner.
+3. **Resolve the decision records and the next number.** Look in `<target>/09-architecture-decisions/`, `<target>/decisions/`, `docs/architecture/decisions/`, `docs/adr/`, `docs/decisions/`, and `adr/`. Read the highest record number in use **across every directory you find**, and set `next-adr` to that number plus one, zero-padded to four digits; the next record must not collide with an existing one whichever directory the persistence step later writes to. No record anywhere → `next-adr=0001`. Report every decision directory you found, not just the winner.
 
-4. **Write the Workfile.** Copy everything below the horizontal rule in § Skeleton to the briefed path, with exactly these instantiations and no others:
+4. **Act on the target — one action per shape, and only one.**
 
-   - **Title.** Promote the skeleton's title heading to a top-level `#` and substitute the system or subsystem name — taken from the existing document's H1 when one was found, otherwise from the repository or project directory name. Leave the `— Architecture (arc42)` suffix as written. Every other heading stays at the level the skeleton sets.
-   - **Attribution.** Copy this skill's `Attribution and license` block verbatim, directly under the title. It is always present in a scaffold, because a scaffold always carries every guidance block.
-   - **Header block**, directly under the attribution block, with these lines and no others:
+   | Shape found | Action | `structure=` |
+   | --- | --- | --- |
+   | `none` | Create the full structure: the top index, the twelve section folders, and their indices. | `created` |
+   | `directory`, all twelve folders present | Write nothing. | `verified` |
+   | `directory`, some folders missing | Add only the missing folders and their indices; touch no existing file. | `extended` |
+   | `flat directory (legacy)` | Write nothing. Append `— migration required` to the result line. | `verified` |
+   | `legacy single file` | Write nothing. Append `— migration required` to the result line. | `verified` |
+   | `non-arc42` | Write nothing. | `verified` |
 
-     ```text
-     - **Status:** Proposed
-     - **Date:** <today, YYYY-MM-DD>
-     - **Document scope:** <seed | update delta>
-     - **Mode:** <document-existing | decide-new> (source: <direction | inference>)
-     - **Section scope:** pending
-     - **Existing document:** <path> (<directory index README.md | legacy single file | non-arc42>)
-     ```
+   **`created` writes exactly thirteen files** — one top index and twelve section indices, §9's being the decision log. Nothing else: no topic document, no `.gitkeep`, no placeholder.
 
-     `Status` is always `Proposed` — ratification is neither yours nor the drafter's to grant. `Document scope` comes from step 2, `Mode` and its source verbatim from the brief, `Section scope` is the literal word `pending` because scope is the drafter's verdict, and `Existing document:` appears **if and only if** `Document scope` is `update delta`.
-   - **Sections §1–§12**, every numbered heading and subsection heading at the skeleton's level, with **every** fenced `arc42 guidance §N` block and **every** `> **Yggdrasil:**` note intact. The drafter reads that guidance while filling and deletes it section by section.
-   - **Appendices, by mode.** With `mode=decide-new`, write Appendices A, B, and C exactly as the skeleton has them, table shells and `Package check:` block included. With `mode=document-existing`, write the Appendix A heading with its note, then the Appendix B and Appendix C headings each followed by the single line `_Not applicable — document-existing mode_` and nothing else — no note, no table shell.
-   - **No content and no pruning.** Do not write a section body, do not resolve an angle-bracket placeholder outside the header block, do not add or delete a table row, and do not remove a heading. A section this objective will not touch still arrives with its heading and its guidance; marking it omitted is the drafter's judgment, recorded with the drafter's own marker wording.
+   The **top index**, `<target>/README.md`:
+
+   ```markdown
+   # <System / Subsystem> — Architecture (arc42)
+
+   - **Status:** Scaffolded
+   - **Date:** <today, YYYY-MM-DD>
+   - **Document scope:** seed
+   - **Mode:** <document-existing | decide-new> (source: <direction | inference>)
+
+   _Generated index — regenerated by the architecture persistence step. Edit the topic documents and the records, not this file._
+
+   ## Sections
+
+   | § | Section | State | Docs | Last updated |
+   | --- | --- | --- | --- | --- |
+   | 1 | [Introduction and Goals](01-introduction-and-goals/README.md) | pending | 0 | — |
+   | … one row per section, all twelve, every row `pending` … |
+   | 12 | [Glossary](12-glossary/README.md) | pending | 0 | — |
+
+   ## Change Log
+
+   | Date | Scope | Sections written | Decisions added |
+   | --- | --- | --- | --- |
+   | <today> | scaffolded | — | — |
+   ```
+
+   `Status: Scaffolded` is the invariant that tells the persistence step this structure has never been filled; only that step promotes it to `Accepted`. The system or subsystem name comes from an existing document's H1 when one was found, otherwise from the repository or project directory name.
+
+   Each **section index**, `<target>/NN-<section-slug>/README.md`:
+
+   ```markdown
+   # N. <Title>
+
+   _Part of [<System / Subsystem> — Architecture (arc42)](../README.md)._
+
+   <the section's one-line description, verbatim from § Structure Reference>
+
+   _Pending — not yet drafted_
+   ```
+
+   Folder names, section titles, and descriptions come from § Structure Reference and the fixed folder table; nothing is renamed, renumbered, or dropped. `09-architecture-decisions/README.md` is the one variant: it carries the same four parts and then the **empty decision-log table**, because that index is the log.
+
+   ```markdown
+   # 9. Architecture Decisions
+
+   _Part of [<System / Subsystem> — Architecture (arc42)](../README.md)._
+
+   The decision log — one row per architecturally significant decision, with its full record beside it in this folder.
+
+   _Pending — not yet drafted_
+
+   | ID | Title | Status | Date | Link |
+   | --- | --- | --- | --- | --- |
+   ```
+
+   On `extended`, generate only the indices of the folders you added, and change no byte of any file that was already there — regenerating an existing index is the persistence step's act, not yours.
 
 5. **Report the result line** to the requesting agent, followed by anything you could not resolve:
 
    ```text
-   Scaffold result: workfile=<path>, document-scope=<seed | update delta>, existing=<path (directory index README.md | legacy single file | non-arc42) | none>, next-adr=<NNNN>, attribution=present
+   Scaffold result: target=<path>, structure=<created | verified | extended>, shape=<directory | flat directory (legacy) | legacy single file | non-arc42 | none>, document-scope=<seed | update delta>, existing=<path (README.md index) | none>, next-adr=<NNNN>
    ```
 
-   Then list, in one line each: every candidate architecture document you rejected and why; every decision directory you found; and any path the brief named that did not resolve. The review of this session re-derives the shape and `next-adr` from the same paths, so state the paths you used.
+   Append ` — migration required` to the end of the line for a `flat directory (legacy)` or a `legacy single file`, so the requesting agent obtains the user's direction before persistence: the persistence step refuses to write either shape without it.
+
+   Then list, in one line each: every candidate architecture document you rejected and why; every decision directory you found; the fallback path if the seed collision rule fired; and any path the brief named that did not resolve. The review of this session re-derives the shape and `next-adr` from the same paths, so state the paths you used.
 
 **Failure handling:**
 
-- The brief omits `mode`, its source, or `workfile` → ask the requesting agent; write nothing until it answers.
-- The briefed `workfile` path already exists and holds content → do not overwrite. Report it and ask: the file is either a finished draft or another session's work.
-- Two candidate documents resolve — a directory and a legacy file, say → take the arc42 directory as the target, report the other as an ambiguity finding with both paths, and let the requesting agent settle it before drafting.
-- A candidate target exists but cannot be read → report it and stop. Classifying a document you could not open as `none` would silently turn an update delta into a seed, and the persistence step would then write over a document nobody reviewed.
+- The brief omits `mode` or its source → ask the requesting agent; write nothing until it answers.
+- A candidate target exists but cannot be read → report it and stop. Classifying a document you could not open as `none` would silently turn an update delta into a seed and scaffold a second structure beside a real one.
+- Two candidate documents resolve — a folder layout and a legacy file, say → take the folder layout as the target, report the other as an ambiguity finding with both paths, and let the requesting agent settle it before drafting.
+- The resolved location holds a partial structure you cannot classify — a `README.md` with this document's H1 but no `01-introduction-and-goals/` and no `01-introduction-and-goals.md` → report it as an unclassifiable target and stop. Do not "repair" it into either shape.
 - The project's decision numbering is inconsistent — gaps, duplicates, or non-numeric names → use the highest number you can parse, and report the inconsistency with the directory path.
+- A later step of the workflow is blocked and the structure you created is never filled → it **stays**. You created project files; removing them is a user direction, not a cleanup. The workflow discloses the unfilled structure in its result and its response.
 
 ## Quality Criteria
 
-- All twelve numbered arc42 headings and their subsection headings are present in the Workfile, at the heading levels this skeleton sets, none renamed, renumbered, or dropped.
-- No section carries content: every fenced `arc42 guidance §N` block and every `> **Yggdrasil:**` note is intact, and no prose, table row, or resolved placeholder was added outside the header block.
-- The skeleton's title is promoted to a top-level `#`; every other heading level is left exactly as the skeleton sets it. The persistence step promotes each section by one further level when it becomes its own file.
-- The header block carries exactly `Status: Proposed`, `Date`, `Document scope`, `Mode … (source …)`, `Section scope: pending`, and — if and only if the scope is update delta — `Existing document: <path> (<shape>)`.
-- `Mode` and its source match the brief character for character.
-- `Document scope` and the `Existing document:` shape are re-derivable by a reviewer from the same paths you searched: the classification follows the directory identity rule, not the directory's name.
+- On `created`, exactly thirteen files exist under the target and nothing else: the top index and the twelve section indices, §9's being the decision log. `git status --short` for the target shows additions only.
+- On `verified`, not one byte was written: `git status --short` for the target is empty.
+- On `extended`, only the missing section folders' indices were added, and every file that was already present is byte-identical to its prior state.
+- The top index reads `Status: Scaffolded`, and carries `Date`, `Document scope`, and `Mode … (source …)` matching the brief character for character, a Sections table with all twelve rows and every state `pending`, and a Change Log with exactly one `scaffolded` row.
+- Every section index carries its H1 `# N. <Title>`, the backlink to the top index, its one-line description verbatim from § Structure Reference, and the `_Pending — not yet drafted_` state line; `09-architecture-decisions/README.md` additionally carries the empty decision-log table and nothing more.
+- No topic document, no section body, no decision record, no table row of content, and no `arc42 guidance §N` text exists anywhere under the target (grep = 0) — and therefore no attribution notice in any file under it either.
+- The twelve folder names are exactly the fixed folder table's, none renamed, renumbered, or dropped, and all twelve exist after `created`.
+- The shape is re-derivable by a reviewer from the same paths you searched, using the identity rules rather than the directory's name; `document-scope` follows from it — `seed` for `none`, `update delta` for every found shape.
 - `next-adr` is one above the highest record number in use anywhere in the project's decision directories, and `0001` only when no record exists.
-- The appendix treatment matches the brief's mode: A, B, and C as the skeleton has them for `decide-new`; A plus the two `_Not applicable — document-existing mode_` markers for `document-existing`.
-- The `Attribution and license` block is present, verbatim, directly under the title — every scaffold carries guidance, so every scaffold carries the notice.
-- Nothing outside the briefed Workfile path was created or modified.
-- The `Scaffold result:` line is complete, and every field in it matches the file on disk and the paths actually searched.
+- No pre-existing project file was modified, moved, or deleted, and a `README.md` that is not this document's index was never written over.
+- The task directory gained no file: this session wrote no Workfile.
+- The `Scaffold result:` line is complete, every field in it matches the tree and the paths actually searched, and ` — migration required` is appended for a flat legacy directory or a legacy single file.
 
 ## Anti-Patterns
 
-- **Filling while scaffolding** — writing a sentence of §1.1 or a first risk row "to get the drafter started". The drafter cannot tell your prose from its own, and the review of this session blocks on any filled section.
-- **Pruning by anticipation** — deleting §7 because the objective "obviously" has no deployment impact. Omission is a judgment recorded with a marker; a missing heading is a defect nobody can distinguish from an accident.
-- **Guessing an under-specified brief** — inventing `decide-new` or a mode source that was never stated. Both drive the header and the appendices, and a wrong guess is invisible in the Workfile.
-- **Classifying by directory name** — calling `docs/architecture/` an arc42 directory without confirming it holds `README.md` and `01-introduction-and-goals.md`, or calling a directory `none` because it is named something else.
+- **Writing a Workfile** — a skeleton, a shape report, or a summary in the task directory. Your medium is the target project; the result line goes to the requesting agent, not into a file.
+- **Writing arc42 guidance into the project** — copying § Skeleton's guidance blocks into an index "so the drafter can read them". The licensed text stays in this skill; a target that carries it would also have to carry the notice, and an aborted run would leave licensed text in the user's tree.
+- **Filling while scaffolding** — a sentence of §1.1, a first risk row, or an `01-<section-slug>.md` created empty "so the folder is not lonely". The drafter cannot tell your prose from its own, and a topic document you invent is structure nobody reviewed.
+- **Pruning by anticipation** — skipping `07-deployment-view/` because the objective "obviously" has no deployment impact. Omission is a judgment recorded in an index's state line; a missing folder is a defect nobody can distinguish from an accident.
+- **Scaffolding over a legacy shape** — creating folders beside a flat directory's section files, or "upgrading" a single file in place. A legacy target is classified and reported with `migration required`; the move happens later, under cited user direction.
+- **Regenerating an index you did not create** — refreshing an existing section index on `verified` or `extended`. Index regeneration belongs to the persistence step, which knows what the folder now holds; yours would erase it.
+- **Classifying by directory name** — calling `docs/architecture/` the folder layout without confirming `README.md` and `01-introduction-and-goals/README.md`, or calling a directory `none` because it is named something else.
 - **Restarting the record sequence** — reporting `next-adr=0001` in a project that already holds `0007`, which collides at persistence and corrupts the decision log.
-- **Reading the existing document as research** — summarizing a found architecture document instead of classifying it. You need its path and its shape; its content is the drafter's input, not your finding.
-- **Writing into the project tree** — editing, moving, or seeding `docs/architecture/` from this step. The scaffold is a Workfile; persistence happens after review and ratification.
-- **Guidance stripped early** — deleting the `arc42 guidance §N` blocks or the `> **Yggdrasil:**` notes to hand over a "clean" file, which removes the per-section instructions the drafter fills from.
-- **Attribution by omission** — writing the skeleton with its guidance blocks but without the notice, which leaves arc42 text in a document that does not carry its license.
-- **Renumbering or renaming the arc42 sections** — the numbering is the shared vocabulary; a §5 that is not the building block view breaks every cross-reference and every reader's expectation.
-- **Editing the skeleton instead of the Workfile** — § Skeleton is the payload; instantiate a copy of it and leave it intact.
+- **Deleting the structure on failure** — removing the folders you created because a later step blocked. The workflow discloses an unfilled structure and leaves it; deletion is a user direction.
+- **Guessing an under-specified brief** — inventing `decide-new` or a mode source that was never stated. Both are top-index fields the reviewer checks against the brief.
+- **Reading the existing document as research** — summarizing a found architecture document instead of classifying it. You need its path, its shape, and its record numbering; its content is the drafter's input, not your finding.
+- **Renumbering or renaming the arc42 sections** — the numbering is the shared vocabulary; a §5 that is not the building block view breaks every cross-reference, every index link, and every reader's expectation.
+- **Editing the reference instead of the target** — § Structure Reference and § Skeleton are the payload; generate from them and leave them intact.
 - **Splitting this content into a companion file** — reference material a skill needs must live in the skill's own `SKILL.md` or in another skill loaded by name; a companion file beside a `SKILL.md` is not reliably readable at runtime — this concerns the skill's own reference material; the *persisted* architecture document is deliberately multi-file.
+
+## Structure Reference
+
+> **Yggdrasil:** this table is original content of this repository. The arc42 section numbers and titles are arc42's vocabulary; the subsection inventory, the one-line descriptions, and this table's form are not part of the arc42 template, and the descriptions reproduce none of its guidance text.
+
+The section indices are generated from this table: the H1 from the section heading, the one-line description verbatim from the last column. The subsection column is the structure the drafting step is expected to use inside a section; it is reference only — you never write a subsection heading anywhere.
+
+| § | Section heading | Subsections | One-line description (the section index's third line) |
+| --- | --- | --- | --- |
+| 1 | `1. Introduction and Goals` | 1.1 Requirements Overview · 1.2 Quality Goals · 1.3 Stakeholders | What this system must achieve, the ranked quality goals every decision is judged against, and who cares about the outcome. |
+| 2 | `2. Architecture Constraints` | — | What the architecture is not free to choose: technology mandates, platform floors, regulatory rules, team conventions, existing contracts. |
+| 3 | `3. Context and Scope` | 3.1 Business Context · 3.2 Technical Context | The system's boundary: the external actors and neighbouring systems it exchanges information with, and the channels that carry it. |
+| 4 | `4. Solution Strategy` | — | The shape of the solution in half a page: the technology choices, the decomposition approach, and the tactic adopted per quality goal. |
+| 5 | `5. Building Block View` | 5.1 Whitebox Overall System (with 5.1.\<n\> Blackbox \<Building Block\>) · 5.2 Level 2 · 5.3 Level 3 | The static decomposition: what the system is made of, level by level, and what each block provides and requires. |
+| 6 | `6. Runtime View` | 6.\<n\> \<Scenario name\> | How the building blocks collaborate at runtime, one scenario per flow that matters, including its error path. |
+| 7 | `7. Deployment View` | — | The infrastructure the system runs on: the nodes and runtimes, and what is deployed where. |
+| 8 | `8. Cross-cutting Concepts` | 8.\<n\> \<Concept name\> | The concepts that cut across building blocks: error handling, persistence, security, validation, logging, transactions, testing. |
+| 9 | `9. Architecture Decisions` | — | The decision log — one row per architecturally significant decision, with its full record beside it in this folder. |
+| 10 | `10. Quality Requirements` | 10.1 Quality Requirements Overview · 10.2 Quality Scenarios | The quality goals made measurable: scenarios with a stimulus, a response, and a measure carrying a number and a unit. |
+| 11 | `11. Risks and Technical Debts` | — | The risks this system carries and the debts it has taken on, each with a mitigation or an explicit acceptance. |
+| 12 | `12. Glossary` | — | The terms this document uses, and the ones the project and its requirements use differently. |
+
+Appendix headings the drafting step adds to its Workfile — `Appendix A — Architecture Decision Records`, `Appendix B — Work Packages`, `Appendix C — Traceability`, `Appendix D — Layout Map` — have **no folder and no index**. Appendix A is the source of the records in `09-architecture-decisions/`; B, C, and D are never persisted.
+
+**§ Skeleton below is reference material, and this paragraph governs it.** Its opening line — "Copy everything below the horizontal rule into the architecture Workfile" — describes the superseded mechanic in which this skill wrote a skeleton Workfile; the block is retained verbatim because it is licensed arc42 text that must not be paraphrased, and its instruction no longer applies. **You copy none of it, anywhere.** Read it when a reviewer or a maintainer asks what arc42's own guidance for a section says; generate everything you write from § Structure Reference and § The Persisted Layout above.
 
 ## Skeleton
 
@@ -774,3 +921,4 @@ Package check: packages=<n>, disjoint write sets=<yes/no>, contracts fixed upfro
 
 | AC | Building block(s) | ADR(s) | Package |
 | --- | --- | --- | --- |
+
