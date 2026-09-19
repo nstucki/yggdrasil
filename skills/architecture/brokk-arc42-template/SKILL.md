@@ -48,7 +48,7 @@ You are the **scaffolder**. You create the empty directory the drafting step wil
 
 **You write structure, never content.** No topic document, no section body, no decision record, and not one byte of arc42 guidance text goes into the target. Every file you create is a generated index: an H1, a backlink, a one-line description, and a state line saying the section is not yet drafted. Content arrives later, after review and ratification, from the persistence step.
 
-**Judgment is not yours.** Which sections this objective affects, what the quality goals are, which decisions are significant, how a section splits into topic documents, and what any of them says are the drafting step's calls. **Pruning in particular stays there:** a folder you omitted and a section the drafter deliberately omitted look identical to a reviewer, so you create all twelve and fill none.
+**Judgment is not yours.** Which sections an objective affects, what the quality goals are, which decisions are significant, how a section splits into topic documents, and what any of them says are the drafting step's calls. **Pruning in particular stays there:** a folder you omitted and a section the drafter deliberately omitted look identical to a reviewer, so you create all twelve and fill none.
 
 **You never delete or modify what you did not create.** A structure that already exists is verified, or extended with only the folders it lacks. A legacy shape — a flat directory, a single file, a non-arc42 document — is classified and reported with `migration required`, never rewritten: migrating a shipped document is a project decision the user makes, executed later by the persistence step under cited direction.
 
@@ -135,7 +135,7 @@ docs/architecture/
 **Input.** The brief carries one control line:
 
 ```text
-Scaffold: mode=<document-existing | decide-new>, source=<direction | inference>, location=<docs/architecture/ | path>, objective=<text | none>
+Scaffold: mode=<document-existing | decide-new>, source=<direction | inference>, location=<docs/architecture/ | path>
 ```
 
 `source` is how the mode was arrived at — `direction` when a user or a caller stated it, `inference` when the requesting agent derived it. It is a brief field of its own, immediately after `mode`, because the top index you write carries the mode **and its source** on one line and you copy both from here rather than re-deriving either.
@@ -144,7 +144,7 @@ A missing `mode` or a missing `source` → **ask the requesting agent**. Do not 
 
 **Output.** The scaffolded structure in the target project — thirteen files on `created`, the missing folders' indices on `extended`, nothing at all on `verified` — plus the `Scaffold result:` line of step 5. No Workfile, ever.
 
-1. **Read the brief and fix the two mode values.** Record `mode` and its source exactly as the brief states them — you neither infer the mode nor revise it from what you find in the repository. `objective` and `location` are context for steps 2 and 4; an `objective=none` is legitimate in document-existing mode.
+1. **Read the brief and fix the two mode values.** Record `mode` and its source exactly as the brief states them — you neither infer the mode nor revise it from what you find in the repository. `location` is context for steps 2 and 4.
 
 2. **Resolve the target and classify its shape.** Search in this order: the brief's `location`, then `docs/architecture/`, `docs/arc42*`, `architecture/`, `doc/`, and the README's documentation links. Classify the first architecture document you find by the **identity rules** of § The Persisted Layout — `directory` (the folder layout), `flat directory (legacy)`, `legacy single file`, `non-arc42`, or `none`. The contents decide, never the directory's name.
 
@@ -264,7 +264,7 @@ A missing `mode` or a missing `source` → **ask the requesting agent**. Do not 
 - **Writing a Workfile** — a skeleton, a shape report, or a summary in the task directory. Your medium is the target project; the result line goes to the requesting agent, not into a file.
 - **Writing arc42 guidance into the project** — copying § Skeleton's guidance blocks into an index "so the drafter can read them". The licensed text stays in this skill; a target that carries it would also have to carry the notice, and an aborted run would leave licensed text in the user's tree.
 - **Filling while scaffolding** — a sentence of §1.1, a first risk row, or an `01-<section-slug>.md` created empty "so the folder is not lonely". The drafter cannot tell your prose from its own, and a topic document you invent is structure nobody reviewed.
-- **Pruning by anticipation** — skipping `07-deployment-view/` because the objective "obviously" has no deployment impact. Omission is a judgment recorded in an index's state line; a missing folder is a defect nobody can distinguish from an accident.
+- **Pruning by anticipation** — skipping `07-deployment-view/` because the project "obviously" has nothing to deploy. Omission is a judgment recorded in an index's state line; a missing folder is a defect nobody can distinguish from an accident.
 - **Scaffolding over a legacy shape** — creating folders beside a flat directory's section files, or "upgrading" a single file in place. A legacy target is classified and reported with `migration required`; the move happens later, under cited user direction.
 - **Regenerating an index you did not create** — refreshing an existing section index on `verified` or `extended`. Index regeneration belongs to the persistence step, which knows what the folder now holds; yours would erase it.
 - **Classifying by directory name** — calling `docs/architecture/` the folder layout without confirming `README.md` and `01-introduction-and-goals/README.md`, or calling a directory `none` because it is named something else.
@@ -904,7 +904,7 @@ Potentially more columns in case you need translations.
 
 ## Appendix B — Work Packages
 
-> **Yggdrasil:** one row per package, each a vertical slice that delivers observable behavior. Shared-surface churn (dependency registration, routing, migrations, lockfiles, generated code, shared fixtures) belongs to a single sequential scaffold package. *Workfile content — not persisted.*
+> **Yggdrasil:** one row per package, each a vertical slice that delivers observable behavior. Shared-surface churn (dependency-injection registration, route tables, migrations, lockfiles, generated code, shared fixtures) belongs to a single sequential scaffold package that runs before any parallel wave. *Workfile content — not persisted.*
 
 | Package | Write set | Owned ACs | Contracts provided | Contracts consumed | Test seam | Depends on | Done criterion |
 | --- | --- | --- | --- | --- | --- | --- | --- |

@@ -31,7 +31,7 @@ The mode is also a header field you write into the Workfile — `- **Mode:** <mo
 - **seed** — the project has no architecture document. You write the in-scope sections from scratch.
 - **update delta** — one exists; its path and shape are in the result line's `existing=` and `shape=` fields. You write only the sections this objective changes, as a delta the persistence step merges document-by-document into the existing architecture directory (or section-by-section into a legacy single-file document). Update delta applies in both modes: a document-existing run over an existing arc42 directory is a refresh delta.
 
-**Decisions are definite.** Each ADR names exactly one recommended option and states it in the indicative, not as a menu. You advise and the requesting agent ratifies, so every ADR and the document header ship with `Status: Proposed`; ratification at the plan checkpoint and promotion to `Status: Accepted` on persistence belong to the requesting agent and the implementation phase. A hedged recommendation forces the ratifier to redo your analysis.
+**Decisions are definite.** Each ADR names exactly one recommended option and states it in the indicative, not as a menu. You advise and the requesting agent ratifies, so every ADR and the document header ship with `Status: Proposed`; ratification happens at the requesting agent's ratification checkpoint and promotion to `Status: Accepted` happens only at the persistence step — neither is yours. A hedged recommendation forces the ratifier to redo your analysis.
 
 ## Boundaries
 
