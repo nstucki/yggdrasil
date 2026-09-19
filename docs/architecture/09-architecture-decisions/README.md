@@ -4,6 +4,8 @@ _Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.
 
 The decision log — one row per architecturally significant decision, with its full record beside it in this folder.
 
+> **History note.** This file was renamed from `09-architecture-decisions.md` in the 2026-09-19 flat-to-folder migration, and the same commit rewrote the `Link` column of every row. That is enough churn to put the rename under git's default 50% similarity threshold, so `git log --follow` on this file stops at the migration commit. Use `git log --follow -M30%` to trace it back to the seed commit `726f1f8`. The records beside it, and every other migrated file, follow at the default threshold.
+
 | ID | Title | Status | Date | Link |
 | --- | --- | --- | --- | --- |
 | ADR-0001 | `kvasir-software-architecture` extended in place with a `Mode:` brief line | Accepted | 2026-09-18 | [0001-kvasir-software-architecture-extended-in-place-with-a-mode-brief-line.md](0001-kvasir-software-architecture-extended-in-place-with-a-mode-brief-line.md) |
