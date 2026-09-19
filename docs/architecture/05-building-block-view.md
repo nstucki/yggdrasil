@@ -78,7 +78,7 @@ Motivation: one feature directory per workflow family, each holding its Odin doc
     ```text
     Architecture result: mode=<…>, source=<…>, workfile=<path>, review=<path> — <PASS | PASS-WITH-NOTES>, section-scope=<included=…, omitted=…>, package-check=<verdict | n/a>, shape=<directory | legacy single file | non-arc42 | none>, persisted=<path | deferred | declined | not-reached>, gaps=<n>
     ```
-    Failure contract: a `BLOCKED` review after § Failed Review Classification exhausts one resume → return `review=<path> — BLOCKED` and stop; no persistence, no Response claiming success (AC-12). `persisted=` on that exit: `deferred` on a composite call (the caller still owns ratification and persistence timing, unchanged by the block), `not-reached` on a standalone run (steps 6–8 were never entered, so neither a caller nor the user ever decided persistence — `not-reached` exists for exactly this case and no other). *(Backported from the persisted document's 2026-09-19 delta.)*
+    Failure contract: a `BLOCKED` review after § Failed Review Classification exhausts one resume → return `review=<path> — BLOCKED` and stop; no persistence, no Response claiming success (AC-12). `persisted=` on that exit: `deferred` on a composite call (the caller still owns ratification and persistence timing, unchanged by the block), `not-reached` on a standalone run (steps 6–8 were never entered, so neither a caller nor the user ever decided persistence — `not-reached` exists for exactly this case and no other).
   - **I-4 Trigger verdict** (stated by Odin, defined in 5.1.3): `Architecture check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`.
   - **Fixed Deliverable:** `Deliverable: response=yes, artifact=yes — persisted arc42 directory (absent only when persistence=deferred to a caller or declined by the user in decide-new mode), source=workflow-fixed`.
   - **I-5 Scaffold brief and result** (step 3):
@@ -163,7 +163,7 @@ Motivation: one feature directory per workflow family, each holding its Odin doc
 
 ### 5.1.7 Consumed block `brokk-architecture-persistence`
 
-- Moved to `skills/architecture/brokk-architecture-persistence/SKILL.md` by WP-0 (the move itself changed no content): inputs unchanged (reviewed Workfile, ratification record, baseline, location, migration flag). Document mode supplies a ratification record listing the as-is ADR IDs ratified. **Open issue closed:** the index footer and the When to Use entry were reworded to name both callers. Content has changed since delivery — those two wording fixes, plus the two-level heading-promotion rule for decision records and the not-persisted disposition of Workfile-level process metadata. *(Backported from the persisted 2026-09-19 delta.)* `brokk-arc42-template` — see 5.1.11.
+- Moved to `skills/architecture/brokk-architecture-persistence/SKILL.md` by WP-0 (the move itself changed no content): inputs unchanged (reviewed Workfile, ratification record, baseline, location, migration flag). Document mode supplies a ratification record listing the as-is ADR IDs ratified. **Open issue closed:** the index footer and the When to Use entry were reworded to name both callers. Content has changed since delivery — those two wording fixes, plus the two-level heading-promotion rule for decision records and the not-persisted disposition of Workfile-level process metadata. `brokk-arc42-template` — see 5.1.11.
 
 ### 5.1.8 Blackbox `mimir-architecture-context` (R4: renamed and re-scoped from `mimir-codebase-context`)
 
