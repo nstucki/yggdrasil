@@ -41,7 +41,7 @@ sequenceDiagram
   O-->>U: Response + Artifact; Architecture result line
 ```
 
-Error path: a second `BLOCKED` or a plan-level mismatch stops before persistence and surfaces the review (AC-12).
+Error path: a second `BLOCKED` or a plan-level mismatch stops before persistence and surfaces the review — the run returns `review=<path> — BLOCKED` with `persisted=not-reached`, steps 6–8 never having been entered and no caller waiting to own the persistence decision (AC-12).
 
 ## 6.2 Delegation from the engineering workflow (AC-8, AC-9, AC-10, AC-12, AC-19, AC-20)
 
