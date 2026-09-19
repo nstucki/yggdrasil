@@ -5,8 +5,9 @@
 # OPENCODE_CONFIG_BASE or -c/--config-base).
 #
 # Idempotent. Merges by add/overwrite only, with one exception: the stale copies
-# of skills relocated to another feature directory are removed (see
-# RELOCATED_ENGINEERING_SKILLS). Nothing else is deleted from the destination;
+# of skills relocated to another feature directory, or renamed inside their own,
+# are removed (see RELOCATED_ENGINEERING_SKILLS and RENAMED_ARCHITECTURE_SKILLS).
+# Nothing else is deleted from the destination;
 # other stale files from renamed or retired upstream content must be removed
 # manually (see README, "Upgrades").
 
@@ -363,14 +364,27 @@ done
 # another feature directory — or was renamed on the way — would stay installed
 # twice, once at its old path and once at the new one. Two directories offering
 # the same skill `name` make skill loading ambiguous, so remove the known stale
-# copies. This list is the only place setup.sh deletes; extend it whenever a
-# skill directory is relocated or renamed.
+# copies. These lists are the only places setup.sh deletes; extend them
+# whenever a skill directory is relocated or renamed.
 RELOCATED_ENGINEERING_SKILLS="kvasir-software-architecture kvasir-arc42-template brokk-architecture-persistence mimir-codebase-context"
 for slug in $RELOCATED_ENGINEERING_SKILLS; do
     stale_dir="${DST_SKILLS}/engineering/${slug}"
     if [ -d "$stale_dir" ]; then
         rm -rf "$stale_dir"
         info "Removed relocated skill copy: engineering/${slug} (now installed under architecture/)"
+    fi
+done
+
+# Renamed-in-place skills: a skill renamed inside the feature directory it
+# already lives in leaves the same kind of stale copy, and the old directory
+# keeps advertising the old `name` to skill loading and to the regenerated
+# capability inventory. Same rule as above, one list per feature directory.
+RENAMED_ARCHITECTURE_SKILLS="mimir-codebase-context"
+for slug in $RENAMED_ARCHITECTURE_SKILLS; do
+    stale_dir="${DST_SKILLS}/architecture/${slug}"
+    if [ -d "$stale_dir" ]; then
+        rm -rf "$stale_dir"
+        info "Removed renamed skill copy: architecture/${slug} (reinstalled under its new name)"
     fi
 done
 

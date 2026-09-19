@@ -1,5 +1,5 @@
 ---
-name: mimir-codebase-context
+name: mimir-architecture-context
 description: Gather fact-rich, framing-poor codebase context scoped to a software engineering objective — module boundaries, entry points, existing interfaces, current behavior, conventions, test infrastructure, and existing architecture documentation — each finding proven by path and line.
 ---
 
