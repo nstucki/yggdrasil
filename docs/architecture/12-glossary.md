@@ -15,3 +15,6 @@ _Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)
 | `Focus: scaffold` / `Focus: document` / `Focus: persistence` | The three artifact types `heimdall-architecture-review` reviews: the scaffolded skeleton, the filled arc42 Workfile (with `Mode:`), and the persisted directory. |
 | Scaffold | The arc42 Workfile as written by Brokk before drafting: pre-filled header, all headings with guidance, appendix treatment by mode, attribution notice, no section content (I-5). |
 | Scaffolder / drafter / persister | The three Brokk–Kvasir–Brokk roles that touch the arc42 Workfile in sequence (§8.7). |
+| Architecture context (R4) | `NN-context-architecture-<area>.md`, produced by `mimir-architecture-context`: structural facts for §5/§6/§8 and as-is documentation. |
+| Engineering context (R4) | `NN-context-engineering-<area>.md`, produced by `mimir-engineering-context`: behavior, engineering conventions, test infrastructure, executed baseline, interfaces under test. |
+| Boundary interface (R4) | A provided or required surface of a module/component — what §5 blackboxes quote; distinct from an "interface under test", the signature a TDD session calls. |
