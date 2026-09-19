@@ -72,9 +72,9 @@ Motivation: one feature directory per workflow family, each holding its Odin doc
     Inference rule: an objective naming a change (add/replace/migrate/introduce/split …) → `decide-new`; document/describe/as-is/"how is it structured" language or no change objective → `document-existing`; ambiguous → clarification per Communication Policy (Interactive asks; Guided/Autonomous take `document-existing` and record `source=inference`).
   - **I-3 Return block** (to the user log or the composite caller):
     ```text
-    Architecture result: mode=<…>, source=<…>, workfile=<path>, review=<path> — <PASS | PASS-WITH-NOTES>, section-scope=<included=…, omitted=…>, package-check=<verdict | n/a>, shape=<directory | legacy single file | non-arc42 | none>, persisted=<path | deferred | declined>, gaps=<n>
+    Architecture result: mode=<…>, source=<…>, workfile=<path>, review=<path> — <PASS | PASS-WITH-NOTES>, section-scope=<included=…, omitted=…>, package-check=<verdict | n/a>, shape=<directory | legacy single file | non-arc42 | none>, persisted=<path | deferred | declined | not-reached>, gaps=<n>
     ```
-    Failure contract: a `BLOCKED` review after § Failed Review Classification exhausts one resume → return `review=<path> — BLOCKED` and stop; no persistence, no Response claiming success (AC-12).
+    Failure contract: a `BLOCKED` review after § Failed Review Classification exhausts one resume → return `review=<path> — BLOCKED` and stop; no persistence, no Response claiming success (AC-12). `persisted=` on that exit: `deferred` on a composite call (the caller still owns ratification and persistence timing, unchanged by the block), `not-reached` on a standalone run (steps 6–8 were never entered, so neither a caller nor the user ever decided persistence — `not-reached` exists for exactly this case and no other).
   - **I-4 Trigger verdict** (stated by Odin, defined in 5.1.3): `Architecture check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`.
   - **Fixed Deliverable:** `Deliverable: response=yes, artifact=yes — persisted arc42 directory (absent only when persistence=deferred to a caller or declined by the user in decide-new mode), source=workflow-fixed`.
   - **I-5 Scaffold brief and result** (step 3):

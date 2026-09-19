@@ -57,10 +57,15 @@ Architecture request: mode=<document-existing | decide-new | infer>, objective=<
 You return exactly one line to the caller or the user log:
 
 ```text
-Architecture result: mode=<…>, source=<…>, workfile=<path>, review=<path> — <PASS | PASS-WITH-NOTES>, section-scope=<included=…, omitted=…>, package-check=<verdict | n/a>, shape=<directory | legacy single file | non-arc42 | none>, persisted=<path | deferred | declined>, gaps=<n>
+Architecture result: mode=<…>, source=<…>, workfile=<path>, review=<path> — <PASS | PASS-WITH-NOTES>, section-scope=<included=…, omitted=…>, package-check=<verdict | n/a>, shape=<directory | legacy single file | non-arc42 | none>, persisted=<path | deferred | declined | not-reached>, gaps=<n>
 ```
 
-**Failure contract:** when a review is `BLOCKED` after § Failed Review Classification has exhausted the one permitted resume, return `review=<path> — BLOCKED` and **stop**. Never persist, and never draft a Response claiming success. On a composite call the block reads `persisted=deferred`, unchanged from the shape verdict; on a standalone run the persistence step was never reached, so report the field as the shape verdict left it rather than claiming an outcome.
+**Failure contract:** when a review is `BLOCKED` after § Failed Review Classification has exhausted the one permitted resume, return `review=<path> — BLOCKED` and **stop**. Never persist, and never draft a Response claiming success. The `persisted=` field then states which of two situations holds:
+
+- **Composite call** — `persisted=deferred`, unchanged from the shape verdict. The caller already owns ratification and persistence timing, and a block does not take that ownership away.
+- **Standalone run** — `persisted=not-reached`. Steps 6–8 were never entered, so nothing about persistence was decided by anyone; `deferred` would name a caller that does not exist, and `declined` would attribute a refusal the user never made.
+
+`not-reached` appears on no other exit path: a completed standalone run reports the persisted path or `declined`.
 
 These two lines are the only coupling surface. A caller may reference them; it may never restate the steps below.
 
@@ -98,7 +103,7 @@ These two lines are the only coupling surface. A caller may reference them; it m
 
     Expect a skeleton only: a pre-filled header, all twelve headings with their guidance, mode-driven appendix treatment, and the attribution notice — **no section content and no pruned sections**; pruning is the drafter's judgment. Record the returned line; `document-scope`, `existing`, and `next-adr` are inputs to later steps and to the return block's `shape=` field.
 
-    Its standing review is a fresh Heimdall session with `heimdall-architecture-review` and `Focus: scaffold`, writing `NN-review-architecture-scaffold.md`. A `BLOCKED` verdict here goes through § Failed Review Classification — resume the Brokk session once for an execution defect (wrong shape, wrong next number, a filled or missing heading); if it stays BLOCKED, stop and return the failure contract. **Never dispatch step 4 against an unreviewed or blocked skeleton.**
+    Its standing review is a fresh Heimdall session with `heimdall-architecture-review` and `Focus: scaffold`, writing `NN-review-architecture-scaffold.md`. A `BLOCKED` verdict here goes through § Failed Review Classification — resume the Brokk session once for an execution defect (wrong shape, wrong next number, a filled or missing heading); if it stays BLOCKED, stop and return the failure contract — `persisted=not-reached` on a standalone run, `persisted=deferred` on a composite call. **Never dispatch step 4 against an unreviewed or blocked skeleton.**
 
 4. **Drafting.** Dispatch Kvasir with `kvasir-software-architecture`, the control line `Mode: <mode>`, `Scaffold: <path>`, the `Scaffold result` line from step 3, the objective, and the requirements and context Workfile paths when they exist. The session fills `NN-architecture-arc42.md` **in place** — the scaffold is the hand-off, and no second Workfile is created. Record the returned `Section scope:` and `Package check:` lines (`Package check: n/a` in `document-existing` mode) and the investigation gaps.
 
@@ -106,7 +111,7 @@ These two lines are the only coupling surface. A caller may reference them; it m
 
 5. **Design review gate (mandatory — never skipped, in either mode, on either path).** Dispatch a fresh Heimdall session with `heimdall-architecture-review`, `Focus: document`, the `Mode:` line echoed from the shape verdict, the architecture Workfile path, the requirements and context Workfile paths, and the pinned baseline. Writes `NN-review-architecture.md`. This precedes the checkpoint so the user ratifies a reviewed document, and precedes any hand-off so no caller consumes an unreviewed contract.
 
-    A `BLOCKED` verdict goes through § Failed Review Classification: resume the Kvasir session **once** for an execution defect; a plan-level mismatch, or a second `BLOCKED`, ends the run under the failure contract — return `review=<path> — BLOCKED` and stop. No persistence, no Response claiming success.
+    A `BLOCKED` verdict goes through § Failed Review Classification: resume the Kvasir session **once** for an execution defect; a plan-level mismatch, or a second `BLOCKED`, ends the run under the failure contract — return `review=<path> — BLOCKED` with `persisted=not-reached` on a standalone run or `persisted=deferred` on a composite call, and stop. No persistence, no Response claiming success.
 
 6. **Ratification checkpoint (skipped when `persistence=deferred`).** Surface a readable summary: the mode and its source, the section scope, the decisions awaiting ratification with their one-line rationales, the review verdict and any non-blocking notes, the open risks, the persistence location, and the remaining dispatch cost. Whether to pause for steering or auto-proceed is governed by your Communication Policy; when auto-proceeding, ratify by adoption and let the summary ride the Deliverable disclosure.
 
