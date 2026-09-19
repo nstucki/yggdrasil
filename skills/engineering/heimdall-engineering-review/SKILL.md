@@ -1,6 +1,6 @@
 ---
 name: heimdall-engineering-review
-description: Review the artifacts of the software engineering workflow — codebase-context findings, test-driven work-package evidence, and multi-package integration results — selecting the checklist by a Focus line in the brief; architecture documents and their persisted form belong to the dedicated architecture-review skill.
+description: Review the artifacts of the software engineering workflow — engineering-context findings (behavior, conventions, test infrastructure), test-driven work-package evidence, and multi-package integration results — selecting the checklist by a Focus line in the brief; architecture-context findings, architecture documents, and their persisted form belong to the dedicated architecture-review skill.
 ---
 
 # Engineering Review
@@ -11,11 +11,11 @@ Independent verification at each gate of the software engineering workflow. Thre
 
 | `Focus:` | Artifact under review | The gate it guards |
 | --- | --- | --- |
-| `context` | a codebase-context report | nothing downstream reasons from unproven structure |
+| `context` | an engineering-context report — current behavior, engineering conventions, test infrastructure with an executed baseline | no test is written and no criterion is checked against unproven behavior, and no session rediscovers the test command |
 | `package` | one work package's red-green-refactor evidence block, its diff, and its tests | no behavior is accepted without proof it was observed failing first |
 | `integration` | a multi-package integration pass and the architecture directory and decision records it persisted | no red suite and no unreviewed design reach the repository |
 
-**Not for** architecture documents and their persisted form — reviewed by the dedicated architecture-review skill (`heimdall-architecture-review`), which owns every checklist for an architecture artifact. `Focus: integration` loads that skill by name for the persisted directory its session wrote.
+**Not for** architecture artifacts — the architecture-context Workfile (module boundaries, boundary interfaces, embodied concepts, the existing-documentation inventory), the arc42 document, its decision records, and its persisted form. All of them are reviewed by the dedicated architecture-review skill (`heimdall-architecture-review`), which owns every checklist for an architecture artifact. `Focus: context` here is the engineering shape only; a structural context report briefed to this skill is routed there, not squeezed into the checklist below. `Focus: integration` loads that skill by name for the persisted directory its session wrote.
 
 **Ground truth, not self-report.** Every verdict rests on files you read at review time, commands you executed yourself, and paths you resolved. A producing session's claim about its own output is the thing under review, never evidence for it.
 
@@ -45,7 +45,7 @@ The verdict is yours. What follows from it — resuming the session, re-dispatch
 - Dispatched by the requesting agent as a review gate of the software engineering workflow, with a `Focus:` line naming exactly one of `context`, `package`, `integration`.
 - The brief also carries the originating session's brief or package contract, the paths of the artifacts to review, and the **pinned baseline** — the pre-change file state or the recorded test run this review measures against.
 - When the reviewed session ran with `Phase:` and `Mode:` control lines, the brief echoes them: `Focus: package` covers a tests-only `Phase: red` session, a `Phase: green+refactor` session, and an integrated one alike.
-- **Not for** an architecture document, its decision records, or its persisted directory as a dispatch of their own: load `heimdall-architecture-review` for those.
+- **Not for** an architecture-context Workfile, an architecture document, its decision records, or its persisted directory as a dispatch of their own: load `heimdall-architecture-review` for those.
 - **Not for** deciding what should have been built, re-running the investigation, or pronouncing on a step whose artifact does not exist yet.
 
 ## Workflow
@@ -55,6 +55,7 @@ The verdict is yours. What follows from it — resuming the session, re-dispatch
 **Step 0 — Read the control line and pin the baseline.**
 
 - `Focus: context | package | integration`. Missing or ambiguous → ask the requesting agent. Do not guess, and do not hedge by applying all three. A brief naming `architecture` names no Focus this skill has: route it to `heimdall-architecture-review` and say so rather than improvising a checklist.
+- Under `Focus: context`, confirm the artifact is an **engineering**-context report before applying the checklist below. A Workfile whose sections are an area map, boundary interfaces, embodied cross-cutting concepts, or an architecture-document inventory is the architecture shape: stop, route it to `heimdall-architecture-review` `Focus: context`, and report that rather than blocking it for the test-infrastructure facts it was never contracted to carry.
 - Resolve every artifact path the brief names. A named path that does not exist is a blocking finding by itself.
 - Pin the baseline: the pre-change file state, the recorded baseline test run, or `new file` for a creation. Every regression and every byte-identical claim is measured against it.
 - Re-read the artifacts from disk now. Session memory of an earlier draft is not the artifact.
@@ -68,16 +69,17 @@ The verdict is yours. What follows from it — resuming the session, re-dispatch
 
 ### Focus: context
 
-- **Scope declaration.** A preamble restates the objective and names what was investigated, what was deliberately excluded, and why. Without it, you cannot distinguish a thin report from a narrow one.
-- **Output contract complete.** Area map; entry points and call paths; interfaces and types the objective touches; current behavior of those paths; conventions; test infrastructure; existing architecture documentation and decision records; relevant dependency facts; and an explicit not-examined list. A missing part is a finding; a missing test-infrastructure part on a code-touching objective is blocking.
+The artifact is the engineering-context Workfile: what the touched paths do today, the conventions the new code will sit beside, and the test infrastructure a test-first session will drive — with the baseline actually executed.
+
+- **Scope declaration.** A preamble restates the objective and carries the **touched-path list** with its source declared — the ratified work packages' write sets and consumed contracts, or the objective itself when no architecture document exists — plus what was deliberately excluded and why. Without it, you cannot distinguish a thin report from a narrow one. An undeclared source is a finding: a path list said to come from a design that does not exist is the one claim here that cannot be spot-checked later.
+- **Output contract complete.** Scope with the touched-path list; entry points and call paths for those paths; the interfaces the tests will call; current behavior of the touched paths; engineering conventions; test infrastructure with an executed baseline run; the test-runner and runtime dependencies those paths use; and an explicit not-examined list. A missing part is a finding; a missing test-infrastructure part on a code-touching objective is blocking.
 - **Every finding proven.** `path:line`, or a command plus its captured output. "The service layer", "tests live under `test/`", "validation happens somewhere in the handler" are vague citations, not proofs.
 - **Fact-rich, framing-poor.** No recommendation, no prioritization, no "should", no proposed design. Framing content is blocking: downstream steps must inherit facts to decide from, not conclusions already drawn for them.
-- **Resolve at least two proofs yourself**, chosen from the most load-bearing findings — module boundaries, the interfaces the objective touches, the test command. The path exists, the line numbers are accurate, and a quoted signature matches the live file character for character.
+- **Resolve at least two proofs yourself**, chosen from the most load-bearing findings — the interfaces the tests will call, the current behavior a criterion depends on, the test command. The path exists, the line numbers are accurate, and a quoted signature matches the live file character for character.
 - **Run the recorded test command.** It exists, it executes, and the recorded baseline result reproduces — or the difference is explained. A baseline reported as executed that does not reproduce is fabricated evidence, not a stale note.
 - **Signatures quoted, not summarized.** A paraphrased signature cannot be tested against.
 - **`[UNVERIFIED]` discipline.** Each carries the reason verification was not possible, and they are at most a quarter of the findings.
-- **Documentation facts resolve.** Named architecture-document and decision-record paths exist, and the highest existing record number is right — the architecture step numbers its own records from it.
-- **Diagrams.** Every element traces to a stated finding. A proposed or target-state element inside a current-state view is framing.
+- **Not checked here:** the area map, boundary interfaces, cross-cutting concepts as embodied, the existing architecture-document and decision-record inventory, and the current-state view. This shape carries none of them by contract; their absence is never a finding and never blocking.
 - **BLOCKED on:** a proof that does not resolve or names a nonexistent path; a recorded baseline run that does not reproduce; recommendation or prioritization content; absent test-infrastructure facts for a code-touching objective; unverified findings above a quarter of the total.
 
 ### Focus: package
@@ -113,7 +115,7 @@ The verdict is yours. What follows from it — resuming the session, re-dispatch
 
 **Step 2 — Write the review Workfile.**
 
-Write to the path the brief names, following the pattern `NN-review-<focus>-<name>.md` — `NN-review-context-<area>.md`, `NN-review-package-<name>.md`, `NN-review-integration.md` — in this order:
+Write to the path the brief names, following the pattern `NN-review-<focus>-<name>.md` — `NN-review-context-engineering-<area>.md`, `NN-review-package-<name>.md`, `NN-review-integration.md` — in this order:
 
 1. The verdict line.
 2. **Blocking findings**, worst first: location, the evidence that establishes each, and the change that clears it.
@@ -127,7 +129,7 @@ Then report the Workfile path and the verdict line to the requesting agent.
 - Exactly one Focus was applied, and the verdict line names it.
 - Every finding has a location and the evidence that establishes it, and states what would clear it — the producing session knows precisely what to change.
 - Ground truth beat self-report: at least the spot-checks this Focus names were actually executed, and the review distinguishes what was verified by execution from what was verified by reading.
-- The joint to the previous stage was checked rather than assumed. The workflow is one traceability chain — context facts → acceptance criteria → building blocks and decision records → work packages → tests → the integrated suite — and each Focus owns one link plus the seam behind it.
+- The joint to the previous stage was checked rather than assumed. The workflow is one traceability chain — acceptance criteria → building blocks and decision records → engineering-context facts → work packages → tests → the integrated suite — and each Focus owns one link plus the seam behind it.
 - Blocking findings are separated from notes, so the requesting agent can tell a re-dispatch from a nicety.
 - The producer's work was validated, not repeated: no re-investigation, no re-design, and no re-implementation appears in the review.
 - An artifact that could not be verified is reported as unverifiable with the reason. An unresolved check is never rounded up to PASS.
@@ -140,6 +142,7 @@ Then report the Workfile path and the verdict line to the requesting agent.
 - **Reviewing from session memory**: re-reviewing a corrected artifact against what you remember of it instead of the file as it now stands.
 - **Applying every checklist at once**: three Focus passes crammed into one dispatch produce a long review that verifies none of them properly.
 - **Re-doing the producer's work**: investigating the codebase yourself, redesigning the architecture, or fixing the code you were dispatched to review.
+- **Reviewing a structural context report against this checklist**: blocking an architecture-context Workfile for a missing baseline run or behavior characterization. It is contracted to carry neither; it belongs to the architecture-review skill's own `Focus: context`.
 - **Filling the gap you found**: writing the missing evidence field, section, or test, and then passing the artifact that lacked it.
 - **Nitpicking as a verdict**: a page of style notes with the write-set breach or the fabricated red unmentioned.
 - **Negotiating a blocker**: downgrading BLOCKED to a note because the wave is nearly finished — the cost of a broken cycle or a corrupted tree lands later and larger.

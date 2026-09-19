@@ -1,35 +1,36 @@
 ---
 name: heimdall-architecture-review
-description: Review the artifacts of the architecture workflow — the scaffolded arc42 skeleton, the filled arc42 document with its decision records in either mode, and the persisted architecture directory — selecting the checklist by a Focus line in the brief.
+description: Review the artifacts of the architecture workflow — the structural context findings an arc42 document is grounded in, the scaffolded arc42 skeleton, the filled arc42 document with its decision records in either mode, and the persisted architecture directory — selecting the checklist by a Focus line in the brief.
 ---
 
 # Architecture Review
 
 ## Purpose
 
-Independent verification of every architecture artifact. Three artifact shapes pass through this skill, one per dispatch, selected by the brief's `Focus:` line:
+Independent verification of every architecture artifact. Four artifact shapes pass through this skill, one per dispatch, selected by the brief's `Focus:` line:
 
 | `Focus:` | Artifact under review | The gate it guards |
 | --- | --- | --- |
+| `context` | an architecture-context report — the structural evidence base the document is written from | nothing is documented or decided from unproven structure |
 | `scaffold` | the scaffolded arc42 Workfile — headings, pre-filled header, appendix treatment, attribution, no content | nothing is drafted into a skeleton whose header or shape classification is wrong |
 | `document` | the filled arc42 document and its decision records, in `decide-new` or `document-existing` mode | no consumer receives an unreviewed contract, and no as-is record smuggles in a proposal |
 | `persistence` | the persisted architecture directory and the decision records it wrote, against the persistence manifest | no unreviewed content and no unratified status reach the repository |
 
-**Every checklist for an architecture artifact lives here.** A review of one of these three artifacts is this skill's dispatch — not an adjacent review skill's — and this skill carries the complete method for all three. A gap in it is a report item to the requesting agent, not license to improvise from another checklist.
+**Every checklist for an architecture artifact lives here.** A review of one of these four artifacts is this skill's dispatch — not an adjacent review skill's — and this skill carries the complete method for all four. A gap in it is a report item to the requesting agent, not license to improvise from another checklist.
 
 **Ground truth, not self-report.** Every verdict rests on files you read at review time, commands you executed yourself, and paths you resolved. A producing session's claim about its own output is the thing under review, never evidence for it.
 
 **Verdict grammar.** One line, the first line of the review Workfile:
 
 ```text
-Verdict: <PASS | PASS-WITH-NOTES | BLOCKED> — focus=<scaffold|document|persistence>, mode=<decide-new|document-existing|n/a>, artifact=<path>, <one-clause reason>
+Verdict: <PASS | PASS-WITH-NOTES | BLOCKED> — focus=<context|scaffold|document|persistence>, mode=<decide-new|document-existing|n/a>, artifact=<path>, <one-clause reason>
 ```
 
 - **PASS** — the artifact meets its contract and the spot-checks this Focus names all resolved.
 - **PASS-WITH-NOTES** — it meets its contract with non-blocking gaps, named and located; it may be consumed as it stands.
 - **BLOCKED** — one of this Focus's blocking conditions holds. Name it, locate it, and state what re-establishes it.
 
-`mode=` carries the document mode under `Focus: document` and `n/a` under the other two.
+`mode=` carries the document mode under `Focus: document` and `n/a` under the other three.
 
 The verdict is yours. What follows from it — resuming the session, re-dispatching it, or returning to the shape verdict — belongs to the requesting agent.
 
@@ -45,11 +46,12 @@ The verdict is yours. What follows from it — resuming the session, re-dispatch
 
 ## When to Use
 
-- Dispatched as a review gate of the architecture workflow, with a `Focus:` line naming exactly one of `scaffold`, `document`, `persistence`.
-- Dispatched as the standing review of a scaffold session (`Focus: scaffold`) or of a persistence session (`Focus: persistence`), standalone or inside a composite run.
+- Dispatched as a review gate of the architecture workflow, with a `Focus:` line naming exactly one of `context`, `scaffold`, `document`, `persistence`.
+- Dispatched as the standing review of an architecture-context session (`Focus: context`), a scaffold session (`Focus: scaffold`), or a persistence session (`Focus: persistence`), standalone or inside a composite run.
 - Loaded by name from another review skill that needs the `Focus: persistence` checklist for an architecture directory its own session persisted. Apply that Focus exactly as written here, including its blocking conditions.
 - With `Focus: document`, the brief also carries `Mode: decide-new | document-existing`. An absent `Mode:` line means `decide-new`.
 - The brief also carries the producing session's brief, the paths of the artifacts to review, and the **pinned baseline** — the pre-change file state, or `new file` for a creation.
+- **Not for** an engineering-context Workfile — the behavior, engineering-convention, and test-infrastructure report a test-first session is briefed from. It has a different contract and a different reviewer; route it to the engineering-review skill and say so.
 - **Not for** deciding what the architecture should have been, re-running the context investigation, reviewing code or tests, or pronouncing on a step whose artifact does not exist yet.
 
 ## Workflow
@@ -58,8 +60,8 @@ The verdict is yours. What follows from it — resuming the session, re-dispatch
 
 **Step 0 — Read the control lines and pin the baseline.**
 
-- `Focus: scaffold | document | persistence`. Missing or ambiguous → ask the requesting agent. Do not guess, and do not hedge by applying all three.
-- Under `Focus: document`, read `Mode: decide-new | document-existing`; an absent line means `decide-new`. A `Mode:` line under `Focus: scaffold` or `Focus: persistence` is context for the mode-driven items there, not a second checklist selector.
+- `Focus: context | scaffold | document | persistence`. Missing or ambiguous → ask the requesting agent. Do not guess, and do not hedge by applying all four.
+- Under `Focus: document`, read `Mode: decide-new | document-existing`; an absent line means `decide-new`. A `Mode:` line under `Focus: context`, `Focus: scaffold`, or `Focus: persistence` is context for the mode-driven items there, not a second checklist selector.
 - Resolve every artifact path the brief names. A named path that does not exist is a blocking finding by itself.
 - Pin the baseline: the pre-change file state, or `new file` for a creation. Every byte-identical claim and every diff is measured against it.
 - Re-read the artifacts from disk now. Session memory of an earlier draft is not the artifact.
@@ -70,6 +72,22 @@ The verdict is yours. What follows from it — resuming the session, re-dispatch
 - The originating brief was honored: the inputs it named were used, its scope was not exceeded, and gaps were reported rather than invented.
 - Every claim your verdict rests on is verified against ground truth — a resolved path, an executed command, or a line you quote from the live file.
 - Every finding carries a location (`path:line`, section number, criterion ID) plus the evidence that establishes it and the change that would clear it.
+
+### Focus: context
+
+The artifact is the architecture-context Workfile: the structural evidence base the arc42 document is written from — module boundaries, entry points, boundary interfaces, the concepts the system already embodies, and what is already documented. Judge it as evidence. Whether the structure it reports is *good* structure is not this review's question.
+
+- **Scope declaration.** A preamble names what was investigated — the whole system, a named subsystem, or the objective's structural footprint — and what was deliberately excluded, with a reason per exclusion. Without it you cannot distinguish a thin report from a narrow one, so its absence is blocking rather than a finding.
+- **Output contract complete.** Scope; area map; entry points and call paths; boundary interfaces; cross-cutting concepts as embodied; existing architecture and decision records; dependencies; a current-state view or the explicit line saying why none was earned; and a not-examined list. A missing part is a finding.
+- **Boundary interfaces quoted, not summarized.** Each provided and required surface of a module the document will describe is reproduced verbatim in a fenced block with its `path:line`. A paraphrase cannot be copied into a building-block entry and cannot be written against, so a summarized load-bearing interface is blocking.
+- **Every finding proven.** `path:line`, or a command plus its captured output. "The service layer", "the modules talk over HTTP", "errors bubble up somewhere" are vague citations, not proofs.
+- **Fact-rich, framing-poor.** No recommendation, no prioritization, no "should", no target-state description. Framing content is blocking: the drafting step must inherit facts to decide from, not conclusions already drawn for it.
+- **Resolve at least two proofs yourself**, chosen from the module boundaries and the boundary interfaces — the two findings the building-block view rests on. The path exists, the line numbers are accurate, and a quoted interface matches the live file character for character.
+- **Documentation facts resolve.** Every named architecture-document and decision-record path exists. When the scaffold step's `Scaffold result` line is also available, the reported document shape and highest record number must agree with it. **Resolve the target yourself and decide which side is wrong** — the finding goes against that side, never against whichever report you read second, and never split as a note on both.
+- **`[UNVERIFIED]` discipline.** Each carries the reason verification was not possible, and they are at most a quarter of the findings.
+- **Diagrams.** Every element of a current-state view traces to a stated finding. A proposed or target-state element inside it is framing.
+- **Not checked here:** test infrastructure, a baseline test run, and current-behavior characterization. This shape carries none of them by contract. Their absence is never a finding and never blocking — they belong to the engineering-context shape and to the engineering-review skill that owns it.
+- **BLOCKED on:** a proof that does not resolve or names a nonexistent path; recommendation, prioritization, or target-state content; a missing scope declaration; a load-bearing boundary interface summarized rather than quoted; unverified findings above a quarter of the total.
 
 ### Focus: scaffold
 
@@ -146,7 +164,7 @@ Inputs are the persistence manifest, the reviewed architecture Workfile, the rat
 
 **Step 2 — Write the review Workfile.**
 
-Write to the path the brief names, following the pattern for this Focus — `NN-review-architecture-scaffold.md` for `scaffold`, `NN-review-architecture.md` for `document`, `NN-review-architecture-persistence.md` for `persistence` — in this order:
+Write to the path the brief names, following the pattern for this Focus — `NN-review-context-architecture-<area>.md` for `context`, `NN-review-architecture-scaffold.md` for `scaffold`, `NN-review-architecture.md` for `document`, `NN-review-architecture-persistence.md` for `persistence` — in this order:
 
 1. The verdict line.
 2. **Blocking findings**, worst first: location, the evidence that establishes each, and the change that clears it.
@@ -162,7 +180,7 @@ Then report the Workfile path and the verdict line to the requesting agent.
 - Ground truth beat self-report: at least the spot-checks this Focus names were actually executed, and the review distinguishes what was verified by execution from what was verified by reading.
 - The mode-specific items were applied and the inapplicable ones were not: a `document-existing` document was never blocked for a missing options table, work-package appendix, or traceability row.
 - `Focus: scaffold` stayed mechanical — at most eight items, at most a page, and no re-derivation beyond path resolution and the highest-record lookup.
-- The joint to the previous stage was checked rather than assumed: the scaffold against its brief, the document against the scaffold's header and its input Workfiles, the persisted directory against the reviewed Workfile and the ratification record.
+- The joint to the previous stage was checked rather than assumed: the context report against its scope declaration and the live tree, the scaffold against its brief, the document against the scaffold's header and its input Workfiles, the persisted directory against the reviewed Workfile and the ratification record.
 - Blocking findings are separated from notes, so the requesting agent can tell a re-dispatch from a nicety.
 - The producer's work was validated, not repeated: no re-deciding, no re-scoping, no re-persisting appears in the review.
 - An artifact that could not be verified is reported as unverifiable with the reason. An unresolved check is never rounded up to PASS.
@@ -179,7 +197,8 @@ Then report the Workfile path and the verdict line to the requesting agent.
 - **Format-only attribution check**: confirming a notice exists without searching the document for surviving guidance blocks, or the reverse. The rule is an if-and-only-if and needs both answers.
 - **Promoting statuses by inference**: accepting `Accepted` because the run reached persistence, instead of checking the cited ratification record decision by decision.
 - **Reviewing from session memory**: re-reviewing a corrected artifact against what you remember of it instead of the file as it now stands.
-- **Applying every checklist at once**: three Focus passes crammed into one dispatch produce a long review that verifies none of them properly.
+- **Applying every checklist at once**: four Focus passes crammed into one dispatch produce a long review that verifies none of them properly.
+- **Blocking a context report for engineering facts**: reporting a missing test command, baseline run, or behavior characterization in an architecture-context Workfile. The contract excludes them; demanding them makes the split pointless and forces a dispatch that gathers facts nobody downstream will read.
 - **Re-doing the producer's work**: re-deciding the architecture, re-scoping the sections, or fixing the manifest you were dispatched to review.
 - **Filling the gap you found**: writing the missing header field, marker, or section, and then passing the artifact that lacked it.
 - **Nitpicking as a verdict**: a page of style notes with the overwritten document or the single-option decision unmentioned.
