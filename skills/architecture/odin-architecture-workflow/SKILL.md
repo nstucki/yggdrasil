@@ -7,24 +7,24 @@ description: Orchestration doctrine for the Architecture workflow — arc42 arch
 
 ## Purpose
 
-Define the orchestration doctrine for the Architecture workflow — a trigger-gated workflow that produces one arc42 architecture document in one of two modes, reviews it, and persists it into the target project. This skill is the single source of doctrine for architecture work: mode selection, the conditional context gate, the scaffold step, the drafting dispatch, the mandatory design-review gate, ratification, persistence, and the Response — plus the contract a composite caller uses to reuse all of it.
+Define the orchestration doctrine for the Architecture workflow — a trigger-gated workflow that produces one arc42 architecture document in one of two modes, reviews it, and persists it into the target project. This skill is the single source of doctrine for architecture work: mode selection, the conditional context gate, the scaffold of the target directory, the drafting dispatch, the mandatory design-review gate, ratification, persistence, and the Response — plus the contract a composite caller uses to reuse all of it.
 
 **The two modes are the whole shape of the workflow:**
 
 - `document-existing` — reverse-engineer and record the current architecture as-is, proposing nothing.
 - `decide-new` — decide forward-looking architecture for a bounded objective, with decision records at `Status: Proposed` and a work-package breakdown.
 
-The workflow packages the pattern `Shape verdict → [Context → Review] → Scaffold → Review → Draft → Design Review → Checkpoint → Persist → Review → Response`. Two properties make it more than "Draft → Review → Persist": the **mode and its source are decided and recorded before any dispatch**, and **the arc42 Workfile is scaffolded by one role and filled by another** — mechanics and judgment have separate owners.
+The workflow packages the pattern `Shape verdict → [Context → Review] → Scaffold → Review → Draft → Design Review → Checkpoint → Persist → Review → Response`. Two properties make it more than "Draft → Review → Persist": the **mode and its source are decided and recorded before any dispatch**, and **structure, document, and fill are three roles working in two media** — one session scaffolds the arc42 structure in the target project, a second authors the architecture Workfile in the workspace, a third fills the scaffold from that Workfile after ratification. Mechanics and judgment have separate owners, and no role writes in another's medium.
 
-This skill is dispatch doctrine only. `mimir-architecture-context`, `brokk-arc42-template`, `kvasir-software-architecture`, `heimdall-architecture-review`, and `brokk-architecture-persistence` are the per-step methodologies, loaded by the dispatched sessions themselves. Briefs name the skill, the inputs, and the Workfile to write — **never the method**. In particular, how a skeleton is instantiated, how document shape is classified, and how the next decision number is resolved are the scaffolding skill's rules, not yours.
+This skill is dispatch doctrine only. `mimir-architecture-context`, `brokk-arc42-template`, `kvasir-software-architecture`, `heimdall-architecture-review`, and `brokk-architecture-persistence` are the per-step methodologies, loaded by the dispatched sessions themselves. Briefs name the skill, the inputs, and the output to write — the Workfile for a workspace session, the target directory for a project session — **never the method**. In particular, what a scaffolded structure contains, how the target's shape is classified, how the next decision number is resolved, and how a reviewed document is laid out on disk are those skills' rules, not yours.
 
-**Fixed Deliverable (per § Deliverables and § Deliverable Determination in your system prompt):** a Response (drafted by Bragi, step 8) and an Artifact (the persisted arc42 architecture directory — one file per section, one per decision record, plus its index). This fixes the Deliverable at Odin's top level:
+**Fixed Deliverable (per § Deliverables and § Deliverable Determination in your system prompt):** a Response (drafted by Bragi, step 8) and an Artifact (the persisted arc42 architecture directory — a folder per section holding its documents and index, the decision records in their own folder, and the top index). This fixes the Deliverable at Odin's top level:
 
 ```text
-Deliverable: response=yes, artifact=yes — persisted arc42 directory (absent only when persistence=deferred to a caller or declined by the user in decide-new mode), source=workflow-fixed
+Deliverable: response=yes, artifact=yes — persisted arc42 directory (absent only when persistence=deferred to a caller, declined by the user in decide-new mode, or refused by the persistence step pending a migration direction), source=workflow-fixed
 ```
 
-`document-existing` mode always persists — the user may choose the location, not whether to record it. Appendices B and C of the arc42 Workfile are transient planning content and are never persisted.
+`document-existing` mode always persists — the user may choose the location, not whether to record it. Appendices B, C, and D of the arc42 Workfile are transient planning content and are never persisted.
 
 **Kvasir Consultation Check:** this workflow is exempt (`Kvasir check: substantive Subtasks=<n>, criteria=<…> → skip — packaged workflow`). Its strategic consultation is internal — the drafting step (`kvasir-software-architecture`) — and its ratification checkpoint is the user's steering point. When this workflow is one stage of a larger composite plan, the composite is still evaluated by the Check as usual. Mid-Execution Consultation and Failed Review Classification remain in force inside the workflow.
 
@@ -49,7 +49,7 @@ Architecture request: mode=<document-existing | decide-new | infer>, objective=<
 ```
 
 - **The context gate (step 2) is yours alone** — no caller can pre-empt or skip it. The contract carries no context Workfile, because no caller produces the architecture-scoped one the gate exists to obtain. A request line carrying an unrecognized field — a legacy `context=<path>` among them — is a malformed brief: ask the caller what it means, and never read it as a skip.
-- `persistence=deferred` ⇒ steps 6, 7, and 8 are skipped; the caller owns ratification, persistence, and the Response, and invokes step 7 later with its own ratification record.
+- `persistence=deferred` ⇒ steps 6, 7, and 8 are skipped; the caller owns ratification, persistence, and the Response, and invokes step 7 later with its own ratification record and the `Scaffold result` line it recorded from this run.
 - `mode=infer` ⇒ apply the inference rule in step 1.
 - The scaffold step (3) is **never** skipped — in either mode, on either invocation path.
 - Standalone defaults when no line is supplied: `mode=infer`, `persistence=inline`, `location=docs/architecture/`, everything else `none`.
@@ -57,7 +57,7 @@ Architecture request: mode=<document-existing | decide-new | infer>, objective=<
 You return exactly one line to the caller or the user log:
 
 ```text
-Architecture result: mode=<…>, source=<…>, workfile=<path>, review=<path> — <PASS | PASS-WITH-NOTES>, section-scope=<included=…, omitted=…>, package-check=<verdict | n/a>, shape=<directory | legacy single file | non-arc42 | none>, persisted=<path | deferred | declined | not-reached>, gaps=<n>
+Architecture result: mode=<…>, source=<…>, workfile=<path>, review=<path> — <PASS | PASS-WITH-NOTES>, section-scope=<included=…, omitted=…>, package-check=<verdict | n/a>, shape=<directory | flat directory (legacy) | legacy single file | non-arc42 | none>, scaffold=<path> — <created | verified | extended>, persisted=<path | deferred | declined | not-reached | refused>, gaps=<n>
 ```
 
 **Failure contract:** when a review is `BLOCKED` after § Failed Review Classification has exhausted the one permitted resume, return `review=<path> — BLOCKED` and **stop**. Never persist, and never draft a Response claiming success. The `persisted=` field then states which of two situations holds:
@@ -65,7 +65,11 @@ Architecture result: mode=<…>, source=<…>, workfile=<path>, review=<path> �
 - **Composite call** — `persisted=deferred`, unchanged from the shape verdict. The caller already owns ratification and persistence timing, and a block does not take that ownership away.
 - **Standalone run** — `persisted=not-reached`. Steps 6–8 were never entered, so nothing about persistence was decided by anyone; `deferred` would name a caller that does not exist, and `declined` would attribute a refusal the user never made.
 
-`not-reached` appears on no other exit path: a completed standalone run reports the persisted path or `declined`.
+`not-reached` appears on no other exit path: a completed standalone run reports the persisted path, `declined`, or `refused`.
+
+**`persisted=refused` is a different exit — steps 6–8 all ran.** It is the value when the scaffold step classified the target as `flat directory (legacy)` or `legacy single file`, no migration direction was obtained, step 6 ratified as usual, step 7 was dispatched, and the persistence session refused on its own precondition and wrote nothing. Use it in **both modes**, and never substitute one of the other three: `not-reached` is defined for a run where steps 6–8 were never entered, `deferred` names a caller that owns persistence, and `declined` names a user refusal — here the user refused nothing and the precondition did the refusing, which is also why `refused` is reachable in `document-existing` mode where `declined` never applies. `refused` states exactly this: persistence was attempted, the persister refused it pending a user direction, nothing was written. Do not retry inside the run; a later run that cites the migration direction proceeds through migration to `persisted=<path>`.
+
+On either exit, `scaffold=` reads `<path> — created (unfilled)` when step 3 created the structure: a `Status: Scaffolded` skeleton with no content is now in the target project and no session filled it. **Never delete it** — this workflow does not remove project files it created; removal is the user's direction. Name that path wherever you surface the failure, so nothing is left behind undisclosed.
 
 These two lines are the only coupling surface. A caller may reference them; it may never restate the steps below.
 
@@ -90,22 +94,22 @@ These two lines are the only coupling surface. A caller may reference them; it m
 3. **Scaffold (always — both modes, both invocation paths).** Dispatch Brokk with `brokk-arc42-template` and:
 
     ```text
-    Scaffold: mode=<document-existing | decide-new>, source=<direction | inference>, workfile=<NN-architecture-arc42.md path>, location=<docs/architecture/ | path>, objective=<text | none>
+    Scaffold: mode=<document-existing | decide-new>, source=<direction | inference>, location=<docs/architecture/ | path>, objective=<text | none>
     ```
 
-    **Carry `mode` and `source` forward verbatim from the shape verdict recorded in step 1 — never re-derive either here.** The scaffolded header's `Mode … (source …)` line is written from this brief and checked against it at the scaffold review, so a value invented at dispatch time surfaces as a BLOCKED review rather than a wrong document.
+    **Carry `mode` and `source` forward verbatim from the shape verdict recorded in step 1 — never re-derive either here.** The scaffolded top index's `Mode … (source …)` line is written from this brief and checked against it at the scaffold review, so a value invented at dispatch time surfaces as a BLOCKED review rather than a wrong document. The brief carries **no `workfile=` field**: this session writes Artifacts into the target project and never a Workfile.
 
-    The session writes the arc42 skeleton into that Workfile and returns:
+    The session acts on the target project and returns:
 
     ```text
-    Scaffold result: workfile=<path>, document-scope=<seed | update delta>, existing=<path (directory index README.md | legacy single file | non-arc42) | none>, next-adr=<NNNN>, attribution=present
+    Scaffold result: target=<path>, structure=<created | verified | extended>, shape=<directory | flat directory (legacy) | legacy single file | non-arc42 | none>, document-scope=<seed | update delta>, existing=<path (README.md index) | none>, next-adr=<NNNN>
     ```
 
-    Expect a skeleton only: a pre-filled header, all twelve headings with their guidance, mode-driven appendix treatment, and the attribution notice — **no section content and no pruned sections**; pruning is the drafter's judgment. Record the returned line; `document-scope`, `existing`, and `next-adr` are inputs to later steps and to the return block's `shape=` field.
+    Expect changes to the target project and to nothing else: an empty structure at `Status: Scaffolded` when `structure=created`, only the missing folders when `extended`, no change at all when `verified` — **no section content, no decision record, and no Workfile**; what a scaffolded structure holds is the scaffolding skill's rule. A legacy shape (`flat directory (legacy)`, `legacy single file`) is reported with `migration required` and is never written to: obtain the user's migration direction before step 7, because persistence refuses that target without it. Record the returned line verbatim — it is an input to steps 4 and 7, `target` and `structure` are the return block's `scaffold=` field, and `shape` is its `shape=` field.
 
-    Its standing review is a fresh Heimdall session with `heimdall-architecture-review` and `Focus: scaffold`, writing `NN-review-architecture-scaffold.md`. A `BLOCKED` verdict here goes through § Failed Review Classification — resume the Brokk session once for an execution defect (wrong shape, wrong next number, a filled or missing heading); if it stays BLOCKED, stop and return the failure contract — `persisted=not-reached` on a standalone run, `persisted=deferred` on a composite call. **Never dispatch step 4 against an unreviewed or blocked skeleton.**
+    Its standing review is a fresh Heimdall session with `heimdall-architecture-review` and `Focus: scaffold`, writing `NN-review-architecture-scaffold.md`; it reviews the target project's tree against the pinned baseline. A `BLOCKED` verdict here goes through § Failed Review Classification — resume the Brokk session once for an execution defect (wrong shape, wrong next decision number, a missing section folder, content where an empty structure was due, or any Workfile written); if it stays BLOCKED, stop and return the failure contract — `persisted=not-reached` on a standalone run, `persisted=deferred` on a composite call. **Never dispatch step 4 against an unreviewed or blocked scaffold** — the drafting session mirrors the target's structure, so an unchecked tree becomes a wrong document.
 
-4. **Drafting.** Dispatch Kvasir with `kvasir-software-architecture`, the control line `Mode: <mode>`, `Scaffold: <path>`, the `Scaffold result` line from step 3, the objective, and the requirements and architecture-context Workfile paths when they exist. The session fills `NN-architecture-arc42.md` **in place** — the scaffold is the hand-off, and no second Workfile is created. Record the returned `Section scope:` and `Package check:` lines (`Package check: n/a` in `document-existing` mode) and the investigation gaps.
+4. **Drafting.** Dispatch Kvasir with `kvasir-software-architecture`, the control line `Mode: <mode>`, the `Scaffold result` line from step 3 verbatim, the path of the Workfile to **create** (`NN-architecture-arc42.md`), the objective, and the requirements and architecture-context Workfile paths when they exist. The result line is the hand-off: it carries the target, the structure, the document scope, and the next decision number, so the session never re-derives them. The session authors that one Workfile — header, the twelve sections, the appendices its mode requires, and the **Appendix D layout map** that assigns every heading to one document of the scaffolded structure. Record the returned `Section scope:` and `Package check:` lines (`Package check: n/a` in `document-existing` mode) and the investigation gaps.
 
     **Each decision record carries one definite decision at `Status: Proposed`; ratification is not the author's to grant** — the user ratifies at step 6 under Interactive, you ratify by adoption under Guided and Autonomous, and promotion to `Status: Accepted` happens only at persistence. This session receives no dedicated review; step 5 is its gate.
 
@@ -115,15 +119,17 @@ These two lines are the only coupling surface. A caller may reference them; it m
 
 6. **Ratification checkpoint (skipped when `persistence=deferred`).** Surface a readable summary: the mode and its source, the section scope, the decisions awaiting ratification with their one-line rationales, the review verdict and any non-blocking notes, the open risks, the persistence location, and the remaining dispatch cost. Whether to pause for steering or auto-proceed is governed by your Communication Policy; when auto-proceeding, ratify by adoption and let the summary ride the Deliverable disclosure.
 
-    In `decide-new` mode the user may decline persistence — record `persistence=declined`, skip step 7, and return `persisted=declined`. In `document-existing` mode the document is always persisted; the user may redirect the location, not decline the Artifact.
+    In `decide-new` mode the user may decline persistence — record `persistence=declined`, skip step 7, and return `persisted=declined`. In `document-existing` mode the document is always persisted; the user may redirect the location, not decline the Artifact — the one way such a run still ends without an Artifact is the persister's refusal at step 7 (`persisted=refused`), which is its precondition talking, not the user's choice.
 
-7. **Persistence (skipped when `persistence=deferred` or `declined`).** Dispatch Brokk with `brokk-architecture-persistence` and the brief: the reviewed architecture Workfile path, the ratification record from step 6, the pinned baseline, the location (default `docs/architecture/`, or the caller's `location=`), and whether the user explicitly directed migration of a legacy single-file document (default: no). In `document-existing` mode the ratification record lists the as-is decision IDs ratified. The session returns the persistence manifest.
+7. **Persistence (skipped when `persistence=deferred` or `declined`).** Dispatch Brokk with `brokk-architecture-persistence` and the brief: the reviewed architecture Workfile path, the ratification record from step 6, the pinned baseline, the `Scaffold result` line recorded at step 3, and the migration direction (`none | migrate flat directory | migrate single file`; `none` unless the user directed otherwise). The result line's `target=` is the location — the session fills that already-scaffolded structure from the Workfile's Appendix D and creates no structure of its own. In `document-existing` mode the ratification record lists the as-is decision IDs ratified. The session returns the persistence manifest.
+
+    **The session checks its own preconditions and writes nothing when they fail** — a target that was never scaffolded, or a legacy shape (`flat directory (legacy)`, `legacy single file`) with no migration direction cited. Never re-brief it to create or migrate what it was not directed to, and never retry it inside this run. Carry the refusal into step 8, and return `persisted=refused`.
 
     Its standing review is a fresh Heimdall session with `heimdall-architecture-review` and `Focus: persistence`, receiving the manifest, the reviewed Workfile, the ratification record, and the pinned baseline, and writing `NN-review-architecture-persistence.md`.
 
-    **A composite caller running this step later supplies its own ratification record and runs the same standing review** — the step is defined here and nowhere else.
+    **A composite caller running this step later supplies its own ratification record, the same `Scaffold result` line it recorded from the delegated run, and runs the same standing review** — the step is defined here and nowhere else.
 
-8. **Deliverable (Response; skipped when `persistence=deferred`).** Dispatch Bragi to draft the user-facing response from the reviewed outputs: the **mode and its source stated explicitly**, what the document covers and what it omits and why, the architecture summary (§4 Solution Strategy in a paragraph), the persisted directory path (its `README.md`) and the decision-record paths — and, when a legacy single-file document was updated in place, one line noting that directory migration is available on request — the open risks from §11, the investigation gaps, and what the user should verify. Writes `NN-response-draft.md`.
+8. **Deliverable (Response; skipped when `persistence=deferred`).** Dispatch Bragi to draft the user-facing response from the reviewed outputs: the **mode and its source stated explicitly**, what the document covers and what it omits and why, the architecture summary (§4 Solution Strategy in a paragraph), the persisted directory's top index path and the decision-record paths, the open risks from §11, the investigation gaps, and what the user should verify. **When the persistence step refused pending a migration direction, the Response states the refusal, says that nothing was written, and puts the decision now owed by the user — direct the migration, or leave the legacy document as it stands — in front of them.** When the user declined persistence instead, the Response says so; in either case it names the structure step 3 created and left unfilled, when it created one. Writes `NN-response-draft.md`.
 
 Finally, state the return block. On `persistence=deferred`, steps 6–8 are skipped and the block reads `persisted=deferred`.
 
@@ -142,9 +148,9 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 
 - **The shape verdict is recorded before any dispatch**, and every skipped step carries its reason in that line — the reason is what the user steers against at the checkpoint and what a caller audits in the return block.
 - **Mode is set once and echoed everywhere** — shape verdict, every brief, the Workfile header, the return block, the Response. The reviewer BLOCKs on a missing or mismatched `Mode:` header, so a drifted echo fails the gate rather than reaching the repo.
-- **The scaffold is reviewed before it is filled.** Judgment never starts on a skeleton whose shape, heading set, or next decision number is wrong.
+- **The scaffold is reviewed before drafting starts.** Judgment never starts against a target whose shape, structure, or next decision number is wrong.
 - **The document is reviewed before anything consumes it** — before ratification, before persistence, before a caller forms a plan from it. No unreviewed architecture reaches the repo or an implementation session.
-- **`document-existing` output always persists.** Persistence is conditional only on a caller deferring it or, in `decide-new` mode, the user declining it.
+- **`document-existing` output always persists.** Persistence is conditional only on a caller deferring it, on the user declining it in `decide-new` mode, or on the persister refusing a legacy target that carries no migration direction (`persisted=refused`, both modes).
 - **Ratification is explicit** — every persisted decision was ratified at the checkpoint or by recorded adoption, and only then promoted to `Accepted`.
 - **Both invocation paths are identical** up to the skipped steps: same scaffold, same drafting brief shape, same review gate, same Workfile names. A standalone run and a delegated run of the same objective differ only in steps 6–8 — the context gate is decided by the same rule on both paths, never by the caller.
 - **The return block is stated on every exit path**, success or `BLOCKED`. A caller that receives no return block must treat the run as failed.
@@ -156,14 +162,15 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 - **Silent mode selection.** Dispatching without the recorded `Architecture shape:` verdict, or inferring a mode without recording `source=inference` — a reader who cannot tell as-is from forward-looking cannot use the document safely.
 - **Asking which mode under the wrong policy.** Interactive asks on genuine ambiguity; Guided and Autonomous take `document-existing` and record the inference. Blocking an Autonomous run on a mode question is a policy violation, and guessing silently in Interactive is the mirror failure.
 - **Proposals in `document-existing` mode.** An as-is record that suggests a change is two documents wearing one header. Improvement ideas belong in §11 as technical debt.
-- **Skipping the scaffold step.** It is unconditional by design. Letting the drafting session instantiate its own skeleton returns skeleton mechanics and repository look-up to the one session whose boundary forbids substantive investigation.
-- **Dispatching the drafting step against an unreviewed skeleton.** The scaffold review is cheap and mechanical precisely so that a wrong shape or a wrong next decision number is caught before the expensive session runs.
-- **Restating the scaffolding method in a brief.** Name the skill, the `Scaffold:` line, and the Workfile; shape classification, header pre-fill, and attribution placement are the scaffolding skill's rules and exist in exactly one file.
+- **Skipping the scaffold step.** It is unconditional by design. Letting the drafting session derive the target's shape and next decision number itself returns repository look-up to the one session whose boundary forbids substantive investigation — and leaves persistence with no structure to fill.
+- **Dispatching the drafting step against an unreviewed scaffold.** The scaffold review is cheap and mechanical precisely so that a wrong shape, a wrong next decision number, or stray content in the project tree is caught before the expensive session runs.
+- **Restating the scaffolding or layout method in a brief.** Name the skill, the `Scaffold:` line, and the inputs; shape classification, what a scaffolded structure holds, and how a reviewed document is laid out on disk are the dispatched skills' rules and exist in exactly one file each.
 - **Skipping the design review gate.** One dispatch guards a document that becomes a repo Artifact and, in a composite run, the contract every implementation session builds against.
 - **Persisting after a `BLOCKED` verdict**, or drafting a Response that reports success over a blocked review. The failure contract returns the review path and stops.
 - **More than one resume per blocked node.** One resume for an execution defect; a plan-level mismatch or a second `BLOCKED` ends the run and surfaces the review.
+- **Deleting the scaffold on abort.** A run that stops at a blocked review leaves a `Status: Scaffolded` structure in the project. Disclose it — `scaffold=<path> — created (unfilled)` in the return block, named again wherever the failure reaches the user — and leave it in place. Removal is the user's direction: a workflow that tidies up after itself destroys a structure the next run would have reused and hides what it did to the project.
 - **Treating an engineering-context Workfile as structural evidence.** Behavior, conventions, and a baseline test run do not establish module boundaries, entry points, or boundary interfaces, so skipping the gate on such a Workfile leaves §5 ungrounded and makes the recorded skip reason false. Skip step 2 only for the reasons the shape verdict admits — structure already established in the conversation, or a greenfield objective.
 - **Persisting on a deferred contract.** `persistence=deferred` means the caller owns ratification timing; persisting early promotes decisions the caller has not ratified.
 - **Restating this workflow's steps in a caller's doctrine.** The caller states the request line and consumes the result line — nothing else.
-- **Creating a second architecture Workfile.** The scaffolded file is filled in place; a parallel draft guarantees two documents that disagree.
+- **Creating a second architecture Workfile.** One run, one Workfile: the drafting session creates `NN-architecture-arc42.md` and every later step reads that same file. A parallel draft guarantees two documents that disagree.
 - **Skipping the Final Review Gate.** The Deliverable — the Response and the persisted architecture directory — is user-facing output and must pass the gate like any other.
