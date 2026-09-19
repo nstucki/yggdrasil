@@ -60,6 +60,10 @@ docs/architecture/
 
 **What is not persisted.** The work-package appendix and the traceability appendix are transient planning material and are never written into the project. The decision-record appendix is not persisted as a file either — it is the *source* of the files under the decision directory.
 
+**Workfile-level process metadata is not persisted as a section.** The Workfile header can carry an account of how the document was produced rather than what the architecture is: `Revision N:` log entries, a `Contradictions found` blockquote, an inputs note, a completeness line. None of it has a field in the index format, and none of it gets a section file. Do not invent a home for it — the index carries `Status`, `Date`, `Document scope`, the Sections table, and the Change Log, and the fixed filename table admits no thirteenth section.
+
+Its durable *substance* already has homes, written by the drafting step, not by you: a decision that changed belongs in that decision's own `Context` and `Consequences`, and an unresolved contradiction or a cost accepted under it belongs in §11 Risks and Technical Debts. Where the substance is in neither, that is a **gap to report** — the reviewed Workfile is what failed to carry it forward. Raw revision-log text pasted into a section file, or a `README.md` grown a "Revision History" heading, is the same invention this step never makes.
+
 ### Per-File Format
 
 A filled section file:
@@ -89,8 +93,24 @@ Rules that hold for every section file:
 - **Markers are copied verbatim.** Never reword, summarize, or drop a marker.
 - **Per-file attribution.** If a section file still contains an `arc42 guidance §N` block, copy the Workfile's `Attribution and license` block directly under that file's H1 — in that file only. The if-and-only-if rule is per file: no surviving guidance in a file means no notice in it. Record which files carry it in the index.
 - **`09-architecture-decisions.md`** carries the §9 decision-log table with its `Link` column rewritten from the Workfile's appendix anchor to the relative decision-file path — `decisions/0004-<slug>.md`, or `../adr/0007-<slug>.md` when the project's own decision directory is used. Each row's `Status` matches its decision file's own `Status:` line.
-- **`decisions/NNNN-<slug>.md`** is the decision-record text from the Workfile's appendix verbatim, except `Status:` promoted to `Accepted` for decisions the cited ratification record actually ratified. The slug is the kebab-case decision title.
+- **`decisions/NNNN-<slug>.md`** is the decision-record text from the Workfile's appendix verbatim, with every heading promoted by **two** levels — not one — and `Status:` promoted to `Accepted` for decisions the cited ratification record actually ratified. The slug is the kebab-case decision title. A decision file carries no backlink line; it is not a section of the document.
 - **Prose `§N` references are left as written.** The numbered vocabulary is the navigation aid; rewriting prose cross-references into file links is error-prone and unreviewable. Navigation between files is the index's job.
+
+**Heading promotion: one level for section files, two for decision records.** The promotion distance is the depth the content sits at in the Workfile, and the two shapes do not sit at the same depth.
+
+- A **section** is a `## N. <Title>` heading, so its file's headings all move up exactly one level: `## 5. Building Block View` becomes the H1 `# 5. Building Block View`, and `### 5.1 …` inside it becomes `## 5.1 …`.
+- A **decision record** is nested two levels deeper: `### ADR-NNNN: <title>` under the `## Appendix A` heading, with its `#### Context`, `#### Options Considered`, `#### Decision`, `#### Consequences`, and `#### Related` parts beneath it. Every heading in the record therefore moves up exactly **two** levels:
+
+    ```text
+    ### ADR-0004: <title>   →   # ADR-0004: <title>
+    #### Context            →   ## Context
+    #### Options Considered →   ## Options Considered
+    #### Decision           →   ## Decision
+    #### Consequences       →   ## Consequences
+    #### Related            →   ## Related
+    ```
+
+Promoting a record by one level leaves the file with no H1 at all and its parts stranded at `###` — the file's title no longer matches the §9 row that links to it, and the one-H1-per-file rule that holds for every other file in the directory silently does not hold for the decision records.
 
 ### Index Format
 
@@ -150,7 +170,7 @@ Files carrying the arc42 attribution notice: <comma-separated list, or `none`>.
 
 3. **Resolve the decision-record directory.** An existing `docs/adr/`, `docs/decisions/`, `adr/`, or `<target>/decisions/` always wins, in that order of search; otherwise create `<target>/decisions/`. Read the highest number already in use and continue that sequence — never restart at `0001` in a directory that already holds records.
 
-4. **Seed mode.** For each of §1–§12, write the file the fixed filename table names, in the per-file format: H1, backlink line, then either the promoted section body or the omission marker verbatim for a stub. Insert the attribution block under the H1 of any file in which an `arc42 guidance §N` block survives. Write one decision file per record in the Workfile's decision appendix, `Status: Accepted` if and only if that ID appears in the ratification record. Rewrite the §9 `Link` column to the relative decision-file paths **before** writing `09-architecture-decisions.md`. Generate `README.md` with one Change Log row, scope `seed`.
+4. **Seed mode.** For each of §1–§12, write the file the fixed filename table names, in the per-file format: H1, backlink line, then either the promoted section body or the omission marker verbatim for a stub. Insert the attribution block under the H1 of any file in which an `arc42 guidance §N` block survives. Write one decision file per record in the Workfile's decision appendix, every heading in it promoted by two levels (`### ADR-NNNN: …` → `# ADR-NNNN: …`, `#### Decision` → `## Decision`), and `Status: Accepted` if and only if that ID appears in the ratification record. Rewrite the §9 `Link` column to the relative decision-file paths **before** writing `09-architecture-decisions.md`. Generate `README.md` with one Change Log row, scope `seed`.
 
 5. **Update-delta mode, directory target.** Write exactly the section files named in the Workfile's `Section scope: included=` list, by **whole-file replacement** in the same per-file format; filling a previous stub is that same replacement. One exception: for `09-architecture-decisions.md`, **append** the new rows and their one-line summaries at the end of the existing table — never rewrite or reorder an existing row, and never edit an existing decision file (a superseding record says so in its own text and in its own §9 row). Write the new decision files at the next free numbers. Regenerate the `README.md` header and Sections table from the resulting tree and append exactly one Change Log row. Every other file in the directory stays byte-identical.
 
@@ -182,12 +202,14 @@ Files carrying the arc42 attribution notice: <comma-separated list, or `none`>.
 - Every filled section file equals its Workfile section exactly, modulo the one-level heading promotion and the added backlink line. No content was reworded, trimmed, or added.
 - Every stub carries the Workfile's marker verbatim, under the same H1 and backlink line as a filled file.
 - The attribution block appears in a section file if and only if that file still contains an `arc42 guidance §N` block, and the index lists exactly those files.
+- Every decision file equals its Workfile record exactly, modulo the two-level heading promotion and the promoted `Status:` — one H1 reading `# ADR-NNNN: <title>` and its `Context`, `Options Considered`, `Decision`, `Consequences`, and `Related` parts at `##`.
 - `Status: Accepted` appears only for decision IDs the cited ratification record ratified; a ratified decision never persists still reading `Proposed`.
 - Every §9 row's link resolves relative to `09-architecture-decisions.md`, and the row's ID, title, status, and date match that file's own header. Every persisted decision file has a §9 row.
 - In update-delta mode the set of changed paths is exactly: the `included=` section files, `09-architecture-decisions.md` (appended rows only), `README.md`, and the new decision files. Everything else is byte-identical to the pinned baseline.
 - `README.md`'s Change Log grew by exactly one row, and the pre-existing rows are unchanged.
 - A legacy single-file document was converted only when the brief cited explicit user direction; otherwise it was updated in place and reported as `legacy single file`.
 - The work-package and traceability appendices were not written into the project.
+- No file, section, or index field was created to hold the Workfile header's process metadata — its revision log, its contradictions blockquote, its inputs note — and no section file's body was padded with that text.
 - The manifest accounts for every file in the target, action by action, and matches what the diff actually shows.
 
 ## Anti-Patterns
