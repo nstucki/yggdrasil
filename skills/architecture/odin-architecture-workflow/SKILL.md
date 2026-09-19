@@ -24,7 +24,7 @@ This skill is dispatch doctrine only. `mimir-architecture-context`, `brokk-arc42
 Deliverable: response=yes, artifact=yes — persisted arc42 directory (absent only when persistence=deferred to a caller, declined by the user in decide-new mode, or refused by the persistence step pending a migration direction), source=workflow-fixed
 ```
 
-`document-existing` mode always persists — the user may choose the location, not whether to record it. Appendices B, C, and D of the arc42 Workfile are transient planning content and are never persisted.
+`document-existing` mode always persists — the user may choose the location, not whether to record it, and the one exit that still leaves it unrecorded is the persistence step's own refusal (`persisted=refused`), never a choice anyone made. Appendices B, C, and D of the arc42 Workfile are transient planning content and are never persisted.
 
 **Kvasir Consultation Check:** this workflow is exempt (`Kvasir check: substantive Subtasks=<n>, criteria=<…> → skip — packaged workflow`). Its strategic consultation is internal — the drafting step (`kvasir-software-architecture`) — and its ratification checkpoint is the user's steering point. When this workflow is one stage of a larger composite plan, the composite is still evaluated by the Check as usual. Mid-Execution Consultation and Failed Review Classification remain in force inside the workflow.
 
