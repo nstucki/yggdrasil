@@ -1,6 +1,6 @@
 # 5. Building Block View
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§5](README.md)._
 
 ## 5.1 Whitebox Overall System
 

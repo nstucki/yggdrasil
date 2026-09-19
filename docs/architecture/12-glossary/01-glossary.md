@@ -1,6 +1,6 @@
 # 12. Glossary
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§12](README.md)._
 
 | Term | Definition |
 | --- | --- |

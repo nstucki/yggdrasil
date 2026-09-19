@@ -1,6 +1,6 @@
 # 3. Context and Scope
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§3](README.md)._
 
 ## 3.1 Business Context
 

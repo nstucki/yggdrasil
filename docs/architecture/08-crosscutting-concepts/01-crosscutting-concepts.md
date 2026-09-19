@@ -1,6 +1,6 @@
 # 8. Cross-cutting Concepts
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§8](README.md)._
 
 ## 8.1 Mode line propagation
 

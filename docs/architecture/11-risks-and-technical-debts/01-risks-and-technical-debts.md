@@ -1,6 +1,6 @@
 # 11. Risks and Technical Debts
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§11](README.md)._
 
 | Risk / debt | Impact | Likelihood | Mitigation or acceptance |
 | --- | --- | --- | --- |

@@ -1,6 +1,6 @@
 # 1. Introduction and Goals
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§1](README.md)._
 
 ## 1.1 Requirements Overview
 

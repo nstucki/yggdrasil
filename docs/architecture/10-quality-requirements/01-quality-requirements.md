@@ -1,6 +1,6 @@
 # 10. Quality Requirements
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§10](README.md)._
 
 ## 10.1 Quality Requirements Overview
 

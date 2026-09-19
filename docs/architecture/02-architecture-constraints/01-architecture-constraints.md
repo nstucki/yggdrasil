@@ -1,6 +1,6 @@
 # 2. Architecture Constraints
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§2](README.md)._
 
 | Constraint | Source | Effect |
 | --- | --- | --- |

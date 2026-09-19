@@ -1,6 +1,6 @@
 # 6. Runtime View
 
-_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](README.md)._
+_Part of [Architecture Workflow (Yggdrasil) — Architecture (arc42)](../README.md) · [§6](README.md)._
 
 ## 6.1 Standalone document-existing (AC-1, AC-3, AC-4, AC-5, AC-11, AC-12, AC-13, AC-18)
 
