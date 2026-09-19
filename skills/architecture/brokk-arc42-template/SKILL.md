@@ -299,11 +299,9 @@ The section indices are generated from this table: the H1 from the section headi
 
 Appendix headings the drafting step adds to its Workfile — `Appendix A — Architecture Decision Records`, `Appendix B — Work Packages`, `Appendix C — Traceability`, `Appendix D — Layout Map` — have **no folder and no index**. Appendix A is the source of the records in `09-architecture-decisions/`; B, C, and D are never persisted.
 
-**§ Skeleton below is reference material, and this paragraph governs it.** Its opening line — "Copy everything below the horizontal rule into the architecture Workfile" — describes the superseded mechanic in which this skill wrote a skeleton Workfile; the block is retained verbatim because it is licensed arc42 text that must not be paraphrased, and its instruction no longer applies. **You copy none of it, anywhere.** Read it when a reviewer or a maintainer asks what arc42's own guidance for a section says; generate everything you write from § Structure Reference and § The Persisted Layout above.
-
 ## Skeleton
 
-Copy everything below the horizontal rule into the architecture Workfile.
+**Reference material — never output.** Everything below the horizontal rule — the twelve sections, their subsections, and arc42's own guidance for each — is **never copied anywhere**: not into a Workfile, not into the target project. Read it when a reviewer or a maintainer asks what arc42's guidance for a section says; generate everything you write from § Structure Reference and § The Persisted Layout above.
 
 ---
 
