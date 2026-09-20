@@ -1,13 +1,13 @@
 {
-  "_comment": "AC-7/8/9 scope Markdown linting to well-formed syntax. Prose and style linting is explicitly deferred by the requirements (Out of Scope 5; Deferred 2, which names line length and heading hierarchy). The rules below are therefore disabled; every other markdownlint rule stays active.",
+  "_comment": { "note": "AC-7/8/9 scope Markdown linting to well-formed syntax. Prose and style linting is explicitly deferred by the requirements (Out of Scope 5; Deferred 2, which names line length and heading hierarchy). The rules below are therefore disabled; every other markdownlint rule stays active. Comment values are objects, not strings, because the markdownlint config schema constrains every non-$schema key to boolean or object." },
 
-  "_comment_deferred_prose_and_heading_style": "Deferred 2 - prose/style linting pending a style guide.",
+  "_comment_deferred_prose_and_heading_style": { "note": "Deferred 2 - prose/style linting pending a style guide." },
   "MD013": false,
   "MD024": false,
   "MD026": false,
   "MD041": false,
 
-  "_comment_formatting_conventions": "Whitespace and list/fence formatting conventions; they do not affect whether the Markdown parses.",
+  "_comment_formatting_conventions": { "note": "Whitespace and list/fence formatting conventions; they do not affect whether the Markdown parses." },
   "MD005": false,
   "MD012": false,
   "MD029": false,
@@ -15,7 +15,7 @@
   "MD032": false,
   "MD040": false,
 
-  "_comment_false_positives": "MD033 fires on angle-bracket placeholders such as <paths> used in prose; MD038 fires on em-dashes inside code spans. Neither is inline HTML or a malformed code span in this repository.",
+  "_comment_false_positives": { "note": "MD033 fires on angle-bracket placeholders such as <paths> used in prose; MD038 fires on em-dashes inside code spans. Neither is inline HTML or a malformed code span in this repository." },
   "MD033": false,
   "MD038": false
 }
