@@ -67,6 +67,12 @@ OUTPUT_DIR="$REPO_ROOT/agents"
 # All subagent names
 SUBAGENTS="bragi brokk heimdall kvasir mimir"
 
+# Subagents that author Workfiles, and therefore receive tooling.fragment.md.
+# Brokk is deliberately excluded: it writes project Artifacts rather than
+# Workfiles, and its Boundaries section disables workspace writes outright, so
+# Workfile tooling doctrine would contradict its own prompt.
+WORKFILE_AUTHORS="bragi heimdall kvasir mimir"
+
 # Verify template files exist
 if [ ! -f "$TEMPLATE_DIR/memory.fragment.md" ]; then
   echo "Error: shared fragment not found: $TEMPLATE_DIR/memory.fragment.md" >&2
@@ -76,6 +82,44 @@ if [ ! -f "$TEMPLATE_DIR/workspace.fragment.md" ]; then
   echo "Error: shared fragment not found: $TEMPLATE_DIR/workspace.fragment.md" >&2
   exit 1
 fi
+if [ ! -f "$TEMPLATE_DIR/tooling.fragment.md" ]; then
+  echo "Error: shared fragment not found: $TEMPLATE_DIR/tooling.fragment.md" >&2
+  exit 1
+fi
+
+# Helper: does this agent author Workfiles?
+authors_workfiles() {
+  local agent="$1" candidate
+  for candidate in $WORKFILE_AUTHORS; do
+    if [ "$candidate" = "$agent" ]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Helper: emit one assembled subagent document to stdout.
+#
+# Assembly order: template head → workspace fragment → [tooling fragment] →
+# memory fragment → workflow tail. Every agent receives the workspace and
+# memory fragments; only Workfile-authoring agents receive the tooling
+# fragment, which lands immediately after the Yggdrasil Workspace section
+# whose subject it extends.
+emit_subagent() {
+  local agent="$1" template="$2" workflow="$3"
+
+  cat "$template"
+  printf '\n'
+  cat "$TEMPLATE_DIR/workspace.fragment.md"
+  printf '\n'
+  if authors_workfiles "$agent"; then
+    cat "$TEMPLATE_DIR/tooling.fragment.md"
+    printf '\n'
+  fi
+  cat "$TEMPLATE_DIR/memory.fragment.md"
+  printf '\n'
+  cat "$workflow"
+}
 
 # Helper: generate one subagent file
 generate_subagent_file() {
@@ -95,27 +139,10 @@ generate_subagent_file() {
 
   local output_file="$OUTPUT_DIR/$agent.md"
 
-  # Assembly order: template head → workspace fragment → memory fragment → workflow tail.
-  # All agents get both shared fragments inserted between the template head and workflow tail.
-
   if [ "$PRINT_ONLY" -eq 1 ]; then
-    cat "$template"
-    printf '\n'
-    cat "$TEMPLATE_DIR/workspace.fragment.md"
-    printf '\n'
-    cat "$TEMPLATE_DIR/memory.fragment.md"
-    printf '\n'
-    cat "$workflow"
+    emit_subagent "$agent" "$template" "$workflow"
   else
-    {
-      cat "$template"
-      printf '\n'
-      cat "$TEMPLATE_DIR/workspace.fragment.md"
-      printf '\n'
-      cat "$TEMPLATE_DIR/memory.fragment.md"
-      printf '\n'
-      cat "$workflow"
-    } > "$output_file"
+    emit_subagent "$agent" "$template" "$workflow" > "$output_file"
   fi
 }
 
