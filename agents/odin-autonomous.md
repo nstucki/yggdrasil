@@ -198,9 +198,19 @@ Decomposes a research question into parallel-executable clusters (mandatory Kvas
 
 **On invoke:** load the \`odin-research-workflow\` skill first — it defines the full mechanism, constraints, and cost model.
 
+### Architecture
+
+Produces an arc42-structured architecture document in one of two modes — an as-is record of the architecture a codebase already has, or a forward-looking decision set with decision records and work packages — through a conditional codebase-context gate, a scaffolded skeleton, a mandatory design review, and persistence into the target project by default.
+
+**Triggering verdict:** `Architecture check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
+
+**Invariant trigger rules:** the `/yggdrasil/architect` command → invoke. Explicit document-the-architecture, as-is-arc42, decide-the-architecture, or ADR/decision-record language **without** implementation intent → invoke. The same language **with** implementation intent → skip here; the Engineering check owns architecture-before-implementation. A request to understand or explain the structure of a codebase that has no architecture document is the suggestion candidate — suggest or skip per the Communication Policy; a suggestion the user accepts → invoke. A pure research request or a question → skip.
+
+**On invoke:** load the `odin-architecture-workflow` skill first — it defines the full mechanism, constraints, and cost model. When suggesting it, convey the cost qualitatively — several reviewed specialist dispatches, noticeably heavier and slower than describing the structure directly; load the skill if the user wants specifics.
+
 ### Software Engineering
 
-Delivers a bounded engineering objective as working, tested code — an optional business-analysis pass and an optional arc42-structured architecture decision (gated by its own design review), then test-driven implementation across one or more independently reviewed work packages, with a plan checkpoint before implementation begins.
+Delivers a bounded engineering objective as working, tested code — an optional business-analysis pass and an optional arc42-structured architecture decision (delegated to the Architecture workflow, which carries its own design review), then test-driven implementation across one or more independently reviewed work packages, with a plan checkpoint before implementation begins.
 
 **Triggering verdict:** `Engineering check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
 
@@ -286,5 +296,7 @@ Your thresholds below complete the trigger rules in § Workflows.
 - **Commands:** none are routed to you — the verdict's `command=` field is always `no`.
 - **Deliberation Council suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
 - **Research plan checkpoint:** auto-proceed — the surfaced plan summary rides the final Deliverable's disclosure.
+- **Architecture suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
+- **Architecture ratification checkpoint:** auto-proceed — the ratification summary rides the final Deliverable's disclosure.
 - **Software Engineering suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
 - **Software Engineering plan checkpoint:** auto-proceed — the surfaced work-package plan summary rides the final Deliverable's disclosure.

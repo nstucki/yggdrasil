@@ -3,9 +3,9 @@ SCOPE OF THIS LICENSE FILE
 
 This LICENSE file covers the arc42-derived content of exactly one section
 of exactly one file in this repository -- the "## Skeleton" section of the
-kvasir-arc42-template skill:
+brokk-arc42-template skill:
 
-    skills/engineering/kvasir-arc42-template/SKILL.md
+    skills/architecture/brokk-arc42-template/SKILL.md
 
 Within that section it covers the arc42 template guidance text reproduced
 there -- the fenced blocks it labels "arc42 guidance §1" through "arc42
@@ -63,7 +63,7 @@ CHANGES MADE TO THE ARC42 ORIGINAL
 
 Disclosed as Section 3(a)(1)(B) of the license below requires. The itemised
 list, with examples, is in the "Attribution and license" blockquote at the
-top of skills/engineering/kvasir-arc42-template/SKILL.md. In summary:
+top of skills/architecture/brokk-arc42-template/SKILL.md. In summary:
 
   1. Converted from AsciiDoc to Markdown. The AsciiDoc "arc42help"
      conditional wrappers and the section anchors were dropped, and each

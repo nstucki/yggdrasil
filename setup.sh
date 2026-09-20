@@ -4,9 +4,9 @@
 # OpenCode config directories (default base: ~/.config/opencode; override via
 # OPENCODE_CONFIG_BASE or -c/--config-base).
 #
-# Idempotent. Merges by add/overwrite only — NEVER deletes anything from the
+# Idempotent. Merges by add/overwrite only. Nothing is deleted from the
 # destination; stale files from renamed or retired upstream content must be
-# removed manually (see README, "Upgrades").
+# removed manually.
 
 set -o errexit
 set -o nounset
@@ -164,7 +164,7 @@ DST_GENERATOR="${DST_CONFIG_HOME}/generate-capabilities.sh"
 # always-installed commands and Odin's workflow/memory mechanisms depend on
 # these skills with no fallback (see README). Every other skills/ subdirectory
 # holds optional skills, gated by the prompt below.
-MANDATORY_SKILL_DIRS="research memories deliberation engineering"
+MANDATORY_SKILL_DIRS="research memories deliberation engineering architecture"
 
 # ── Pre-flight checks ───────────────────────────────────────────────────────
 
@@ -356,11 +356,12 @@ for feature in $MANDATORY_SKILL_DIRS; do
     mkdir -p "${DST_SKILLS}/${feature}"
     cp -R "${SRC_SKILLS}/${feature}/." "${DST_SKILLS}/${feature}/"
 done
+
 ok "Mandatory skills installed."
 
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: the mandatory skills (research/, memories/, deliberation/, engineering/) install"
-    warn "regardless of your answer — Odin's workflows and the commands depend on them."
+    warn "Note: the mandatory skills (research/, memories/, deliberation/, engineering/, architecture/)"
+    warn "install regardless of your answer — Odin's workflows and the commands depend on them."
 fi
 
 # ── Install optional skills ─────────────────────────────────────────────────
