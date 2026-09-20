@@ -4,4 +4,6 @@ _Part of [Yggdrasil — Architecture (arc42)](../README.md)._
 
 The quality goals made measurable: scenarios with a stimulus, a response, and a measure carrying a number and a unit.
 
-_Pending — not yet drafted_
+| # | Document | Root heading | Last updated |
+| --- | --- | --- | --- |
+| 01 | [Quality Requirements](01-quality-requirements.md) | 10. Quality Requirements | 2026-09-20 |

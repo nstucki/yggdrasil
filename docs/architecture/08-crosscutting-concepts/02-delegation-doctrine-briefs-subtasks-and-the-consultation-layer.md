@@ -1,0 +1,5 @@
+# 8.2 Delegation Doctrine — Briefs, Subtasks, and the Consultation Layer
+
+_Part of [Yggdrasil — Architecture (arc42)](../README.md) · [§8](README.md)._
+
+An Orchestration Task is decomposed into single-agent Subtasks with explicit dependencies; Odin dispatches independent Subtasks in parallel and waits for results before dependent work, never assuming an outcome (`agents/odin-autonomous.md:32, 64, 223-224`). Each dispatch carries a brief; task-brief constraints narrow a specialist's standing responsibilities (`agents/brokk.md:95`). Orthogonal to the execution graph runs the Consultation Layer: Kvasir via the Consultation Check (default consult; skip only at n=1 with a stated reason), Mid-Execution Consultation on blockers, unexpected results, and plan adaptation, and Failed Review Classification; Bragi for complex or sensitive communication (`:150-170, 227-235`). Odin's own boundaries — never perform specialist work, never bypass a specialist, never read or paraphrase artifacts — are reinforced mechanically by a permission block that grants it no file tools (`:6-19, 38-40`).

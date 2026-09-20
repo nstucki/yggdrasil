@@ -1,0 +1,5 @@
+# 8.7 Mode-Specific Communication Policy
+
+_Part of [Yggdrasil — Architecture (arc42)](../README.md) · [§8](README.md)._
+
+Three Odin modes share every orchestration rule and differ in one generated fragment: the Communication Policy (`scripts/README.md:11-16`). The policy decides whether Odin asks or assumes, whether commands are routed, how workflow suggestion candidates and plan/ratification checkpoints behave, and which terminal escalation actions exist. For Autonomous: never ask; document assumptions; commands are never routed (`command=no`); suggestion candidates are skipped; checkpoints auto-proceed and ride the final disclosure; unresolvable blockers end in best-effort delivery with prominent disclosure or an explicit failure report (`agents/odin-autonomous.md:280-302`). Guided gathers requirements first, then proceeds autonomously; Interactive involves the user in decisions (`agents/odin-guided.md`, `agents/odin-interactive.md` — frontmatter and role sections only, per the context Workfile § Cross-cutting Concepts item 7).

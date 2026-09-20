@@ -1,0 +1,5 @@
+# 8.5 Trigger-Gated Packaged Workflows
+
+_Part of [Yggdrasil — Architecture (arc42)](../README.md) · [§8](README.md)._
+
+Four workflows — Deliberation Council, Research, Architecture, Software Engineering — are invoked whole rather than composed. Each has invariant trigger rules in Odin's shared body (command → invoke; explicit language → invoke; a named suggestion candidate → per Communication Policy; factual or executable request → skip), a one-line triggering verdict, and a dedicated `odin-*` skill that Odin loads on `invoke` and that carries the full mechanism, constraints, cost model, and return-line grammar (`agents/odin-autonomous.md:172-219`; `skills/architecture/odin-architecture-workflow/SKILL.md:1-12, 60-63`). Standing rules: every workflow ends at the Final Review Gate; the Kvasir Consultation Check records `skip — packaged workflow`; a workflow nested in a composite plan does not exempt the composite (`:176-179`). Workflows are composable: Software Engineering delegates its architecture step to the Architecture workflow, which carries its own design review (`:213`).

@@ -4,4 +4,6 @@ _Part of [Yggdrasil — Architecture (arc42)](../README.md)._
 
 The infrastructure the system runs on: the nodes and runtimes, and what is deployed where.
 
-_Pending — not yet drafted_
+| # | Document | Root heading | Last updated |
+| --- | --- | --- | --- |
+| 01 | [Deployment View](01-deployment-view.md) | 7. Deployment View | 2026-09-20 |
