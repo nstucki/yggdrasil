@@ -1,0 +1,107 @@
+name: CI
+
+# Triggers (AC-13, AC-14, AC-15):
+#   - pull_request with no branch filter -> every PR, against any target branch
+#   - push restricted to main -> pushes to other branches do not start a run;
+#     those changes are validated through their pull request instead.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# AC-26 / quality goal 5 (minimal permissions surface): the pipeline only ever
+# reads the checked-out tree. No secrets are referenced anywhere in this file.
+permissions:
+  contents: read
+
+# NFR 2 (GitHub Actions minutes budget): superseded runs on the same ref are
+# cancelled so a rapid push sequence costs one run, not one per push.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MARKDOWNLINT_VERSION: 0.45.0
+  # Pinned to 3.12.2 deliberately: the 3.13.x line prints "dead links found"
+  # but always exits 0, which would make the link-check step incapable of
+  # failing the build (AC-23). 3.12.2 exits non-zero on dead links.
+  MARKDOWN_LINK_CHECK_VERSION: 3.12.2
+  YAMLLINT_VERSION: 1.37.1
+
+# The three jobs run in parallel; wall-clock time is the slowest job, not the
+# sum, which keeps the run inside the <2 minute budget (AC-25, NFR 1).
+jobs:
+  structure:
+    name: Structural validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # AC-1, AC-2, AC-3: the repository's own read-only structural validator.
+      - name: Validate repository structure
+        run: bash scripts/validate.sh
+
+      # Generator parity smoke tests: agents/ is generated output, so these
+      # fail the build whenever a generated file is hand-edited or stale.
+      - name: Smoke test - Odin agent generator
+        run: bash scripts/ci-smoke-odin-generator.sh
+
+      - name: Smoke test - subagent generator
+        run: bash scripts/ci-smoke-subagent-generator.sh
+
+      - name: Smoke test - capability generator
+        run: bash scripts/ci-smoke-generator.sh
+
+  lint:
+    name: Lint (shell, Markdown, YAML)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # AC-4, AC-5, AC-6: every .sh file in the tree - scripts/, the repo root
+      # (setup.sh) and config-home/. --severity=warning is the ratified
+      # decision (open question 5): the build fails on warnings as well as
+      # errors, not on errors alone.
+      - name: Lint shell scripts (shellcheck)
+        run: |
+          find . -path ./.git -prune -o -name '*.sh' -print0 \
+            | xargs -0 -r shellcheck --severity=warning --format=gcc
+
+      - name: Install Markdown and YAML linters
+        run: |
+          npm install -g "markdownlint-cli@${MARKDOWNLINT_VERSION}"
+          python3 -m pip install --quiet "yamllint==${YAMLLINT_VERSION}"
+
+      # AC-7, AC-8, AC-9: rule selection is in .markdownlint.json.
+      - name: Lint Markdown (markdownlint)
+        run: markdownlint --ignore node_modules '**/*.md'
+
+      # AC-10, AC-11, AC-12: rule selection is in .yamllint. Scanning '.'
+      # covers config-home/custom-capabilities.yaml and this workflow itself.
+      - name: Lint YAML (yamllint)
+        run: yamllint --format github .
+
+  links:
+    name: Markdown link check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install markdown-link-check
+        run: npm install -g "markdown-link-check@${MARKDOWN_LINK_CHECK_VERSION}"
+
+      # AC-22, AC-23, AC-24: internal cross-references and external URLs in
+      # every tracked Markdown file. Retry/timeout behaviour is configured in
+      # .markdown-link-check.json so transient rate limiting does not turn
+      # into a false failure (NFR 6, quality goal 2).
+      - name: Check Markdown links
+        run: |
+          rc=0
+          while IFS= read -r file; do
+            markdown-link-check --quiet --config .markdown-link-check.json \
+              "$file" || rc=1
+          done < <(find . -path ./.git -prune -o -name '*.md' -print | sort)
+          exit "$rc"

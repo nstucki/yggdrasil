@@ -1,0 +1,21 @@
+# AC-10/11/12 scope YAML linting to well-formed syntax (indentation, quoting,
+# key/value structure). The overrides below keep the tool on that scope.
+extends: default
+
+ignore: |
+  .yggdrasil-workspace/
+  node_modules/
+
+rules:
+  # Line length is prose/style, explicitly deferred by the requirements
+  # (Deferred 2). The repository's YAML carries long explanatory comments.
+  line-length: disable
+
+  # The repository's YAML files intentionally open with a comment banner
+  # rather than a '---' document-start marker.
+  document-start: disable
+
+  # GitHub Actions uses 'on:' as a mapping key. YAML 1.1 resolves a bare 'on'
+  # to boolean true, which the truthy rule would flag on every workflow file.
+  truthy:
+    check-keys: false
