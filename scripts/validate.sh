@@ -197,13 +197,12 @@ frontmatter_has_key() {
 check_frontmatter() {
   heading "Check 1: Frontmatter parse (agents + skills)"
 
-  local file err
+  local file
 
   # Agents: require a well-formed block containing at least `name` and `description`.
   for file in "$AGENTS_DIR"/*.md; do
     [ -e "$file" ] || continue
     if ! extract_frontmatter "$file" >/dev/null 2>&1; then
-      err=$?
       fail_msg "$(rel "$file"): malformed frontmatter (missing opening/closing '---')"
       FAIL_FRONTMATTER=$((FAIL_FRONTMATTER + 1))
       continue
@@ -259,8 +258,7 @@ check_sections() {
     headers=$(grep -E '^## ' "$file" | sed -E 's/^##[[:space:]]+//; s/[[:space:]]+$//' || true)
 
     local missing="" out_of_order=0
-    local expected_idx=0   # index into REQUIRED_SECTIONS we expect to see next
-    local req last_seen_pos=-1
+    local req
 
     # First pass: report any missing required section.
     while IFS= read -r req; do
@@ -350,7 +348,6 @@ check_slug_match() {
 ODIN_FILES='odin-autonomous.md odin-guided.md odin-interactive.md'
 ODIN_GENERATOR="$REPO_ROOT/scripts/generate-odin-agents.sh"
 SUBAGENT_GENERATOR="$REPO_ROOT/scripts/generate-subagents.sh"
-SUBAGENT_FILES='bragi.md brokk.md heimdall.md kvasir.md mimir.md'
 SUBAGENT_NAMES='bragi brokk heimdall kvasir mimir'
 
 check_agent_freshness() {
@@ -366,7 +363,7 @@ check_agent_freshness() {
   # Create temp directory for regenerated files
   local tmp
   tmp=$(mktemp -d)
-  trap "rm -rf '$tmp'" RETURN
+  trap 'rm -rf "$tmp"' RETURN
 
   # Regenerate all three files
   local mode
@@ -509,7 +506,8 @@ check_capabilities() {
   # dynamically-generated capability-inventory skill).
   local name_leaks=0
   while IFS= read -r -d '' skill_file; do
-    local description=$(frontmatter_value "$skill_file" "description" 2>/dev/null || true)
+    local description
+    description=$(frontmatter_value "$skill_file" "description" 2>/dev/null || true)
     if [ -z "$description" ]; then
       continue
     fi
@@ -550,7 +548,11 @@ check_capabilities() {
   # Check 6d: skills/shared/ must remain empty in the repo. Generated files like
   # capability-inventory belong in the installed copy only ($CONFIG_BASE/skills/yggdrasil/shared/).
   # The repo's skills/shared/ directory should contain no SKILL.md files.
-  local shared_skills_count=$(find "$SKILLS_DIR/shared" -name "SKILL.md" 2>/dev/null | wc -l)
+  # `|| true` keeps this exit-status neutral under `set -euo pipefail`: the
+  # directory is absent in a clean checkout, so `find` exits non-zero and
+  # pipefail would otherwise abort the script. `wc -l` still reports 0.
+  local shared_skills_count
+  shared_skills_count=$(find "$SKILLS_DIR/shared" -name "SKILL.md" 2>/dev/null | wc -l || true)
   if [ "$shared_skills_count" -gt 0 ]; then
     fail_msg "$(rel "$SKILLS_DIR/shared"): must remain empty (no generated skills in repo)"
     fail_msg "  Generated files like capability-inventory belong in the installed copy: \$CONFIG_BASE/skills/yggdrasil/shared/"
@@ -661,7 +663,7 @@ check_commands() {
     return
   fi
 
-  local file agent subtask body_empty
+  local file agent subtask
   while IFS= read -r -d '' file; do
     # Check frontmatter parses and has required fields.
     if ! extract_frontmatter "$file" >/dev/null 2>&1; then
@@ -692,10 +694,10 @@ check_commands() {
     if frontmatter_has_key "$file" "subtask"; then
       subtask=$(frontmatter_value "$file" "subtask")
       case "$subtask" in
-        false|"false")
+        false)
           # Valid.
           ;;
-        true|"true")
+        true)
           fail_msg "$(rel "$file"): subtask must be 'false' or omitted (not 'true')"
           FAIL_COMMANDS=$((FAIL_COMMANDS + 1))
           ;;

@@ -136,7 +136,7 @@ chmod +x "$tmp/yggdrasil/generate-capabilities.sh"
 # Run the script from the temp location without env var (to test self-location).
 # Also set HOME to an empty temp dir to ensure the default tier (tier 4) is not used.
 tmp_home=$(mktemp -d)
-trap "rm -rf \"$tmp_home\"" EXIT
+trap 'rm -rf "$tmp_home"' EXIT
 
 echo "Running installed script via self-location (HOME unset to exclude tier 4)..."
 output_self=$(env -u OPENCODE_CONFIG_BASE HOME="$tmp_home" "$tmp/yggdrasil/generate-capabilities.sh" --print 2>/dev/null)
