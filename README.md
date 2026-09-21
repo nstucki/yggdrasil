@@ -8,14 +8,14 @@
 
 ## What Is Yggdrasil?
 
-**Yggdrasil** is a configuration framework for [OpenCode](https://github.com/sst/opencode) that provides a pantheon of six specialized, role-defined AI agents for orchestrated software development. It is not a standalone application — `setup.sh` installs agent definitions, skills, and commands into your OpenCode configuration (`~/.config/opencode/`).
+**Yggdrasil** is a configuration framework for [OpenCode](https://github.com/sst/opencode) that provides a pantheon of seven specialized, role-defined AI agents for orchestrated software development. It is not a standalone application — `setup.sh` installs agent definitions, skills, and commands into your OpenCode configuration (`~/.config/opencode/`).
 
 The name is drawn from the immense ash tree of Norse mythology at the center of the cosmos, whose roots and branches connect the nine realms — with the Well of Wisdom, Mímisbrunnr, at its base.
 
 ## Why Use It
 
 - **Orchestrated, not single-agent.** A complete task lifecycle — research, strategy, implementation, review — handled by specialists rather than one generalist.
-- **Review built in.** Every Brokk (implementer) output is reviewed by Heimdall before it is considered final. No agent reviews its own output.
+- **Review built in.** Every Artifact-producing output — Brokk's implementations and Eitri's image assets — is reviewed by Heimdall before it is considered final. No agent reviews its own output.
 - **A Final Review Gate** validates the assembled Deliverable against your original request before anything reaches you.
 - **Persistent knowledge base.** A source-cited Yggdrasil Memory (`.yggdrasil-memory/`) persists findings across task lifecycles.
 - **Extensible.** Grant custom tools and MCPs to any specialist; add `odin-*` skills. Curated starter skills ship by default and are meant to be adapted.
@@ -29,6 +29,7 @@ The name is drawn from the immense ash tree of Norse mythology at the center of 
 | **Bragi** | The Skald | Communicator | Advises on communication strategy, drafts and presents information, provides the multi-persona Deliberation Council for high-stakes decisions. |
 | **Kvasir** | The Wise Counselor | Strategic Advisor | Synthesizes context into plans; decomposition, risk, approach. Consulted proactively by Odin. |
 | **Brokk** | The Smith | Implementer | Transforms requirements into concrete Artifacts: code, docs, tests, config. Has write access. |
+| **Eitri** | The Master-Smith | Designer | Creates and revises image assets — illustrations, diagrams, icons, visual concepts — from a written brief. Writes image files; authors SVG directly, raster formats need a granted tool. |
 | **Heimdall** | The Watchman | Reviewer | Independently validates quality, correctness, completeness. Never implements fixes. |
 
 Odin operates in three modes, adapting his autonomy to the task:
@@ -61,13 +62,17 @@ Odin operates in three modes, adapting his autonomy to the task:
 
 > *Brokk is a master dwarf smith of unmatched skill. With his brother Eitri, he forged Mjölnir (Thor's hammer), Draupnir (Odin's golden ring), and Gullinbursti (Freyr's golden boar) — treasures that shaped the fate of gods and giants alike.*
 
+#### Eitri — The Master-Smith
+
+> *Eitri is the dwarven master-smith of Svartalfheim and the brother of Brokkr. The two worked as one at the forge — Eitri shaping the form, Brokkr holding the fire — and from that wager against Loki came Mjölnir, Draupnir, and Gullinbursti, the finest treasures the gods ever received. As Eitri gave the brothers' work its shape before the metal was struck, so he gives a request its visual form.*
+
 #### Heimdall — The Watchman
 
 > *Heimdall is the ever-vigilant guardian of Bifröst, the rainbow bridge to Asgard. He sees and hears everything — his senses are so keen he can hear grass grow and see to the ends of the world. He stands watch, sounding Gjallarhorn when danger approaches.*
 
 ## How It Works
 
-The lifecycle flows through the pantheon: **Odin** receives the objective and determines the path; **Bragi** advises on communication, **Kvasir** on strategy and decomposition; **Mimir** researches and gathers context; **Brokk** implements; **Heimdall** reviews; and **Odin** evaluates the outcome and decides next steps.
+The lifecycle flows through the pantheon: **Odin** receives the objective and determines the path; **Bragi** advises on communication, **Kvasir** on strategy and decomposition; **Mimir** researches and gathers context; **Brokk** implements; **Eitri** crafts the image assets a Deliverable calls for; **Heimdall** reviews; and **Odin** evaluates the outcome and decides next steps.
 
 Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Odin also packages four complete workflows that are invoked whole rather than composed step by step: the **Deliberation Council**, deep **Research**, **Architecture** — an arc42 document recording what a system is or deciding what it should become — and **Software Engineering** — optional requirements analysis and architecture, then test-driven implementation across independently reviewed work packages. Every plan ends at a Final Review Gate, where Heimdall validates the assembled Deliverable against your original request before it reaches you.
 
@@ -83,7 +88,7 @@ Patterns can be combined, repeated, or reordered as the task demands — for exa
 
    (Use `./setup.sh -y` for non-interactive installs. See [Installation](#installation) for custom paths and upgrades.)
 
-2. **Open a project** — in your terminal, `cd` into any project you want Yggdrasil to work on. OpenCode uses the current directory as its session workspace. Restart OpenCode (or start a new session) and the six agents appear in your agent selector.
+2. **Open a project** — in your terminal, `cd` into any project you want Yggdrasil to work on. OpenCode uses the current directory as its session workspace. Restart OpenCode (or start a new session) and the seven agents appear in your agent selector.
 
 3. **Switch to Odin and make a request.** For example, switch to the **Odin (Interactive)** agent and say:
 
@@ -269,7 +274,7 @@ The repo is only needed for the initial install and framework upgrades. Once ins
 
 ### Add a New Skill to a Specialist
 
-Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown files discovered from the installed skills tree — no agent definition edits are needed; each specialist's permission allowlist already admits any skill matching its own prefix (e.g., `brokk-*`). Unlike Odin's skills, they are **not** picked up by planning automatically: after adding one, you must regenerate the capability inventory, or Odin and Kvasir will not know it exists.
+Specialist skills (Mimir, Brokk, Eitri, Heimdall, Kvasir, Bragi) are plain Markdown files discovered from the installed skills tree — no agent definition edits are needed; each specialist's permission allowlist already admits any skill matching its own prefix (e.g., `brokk-*`). Unlike Odin's skills, they are **not** picked up by planning automatically: after adding one, you must regenerate the capability inventory, or Odin and Kvasir will not know it exists.
 
 1. **Create the skill file** in the installed skills tree:
 
@@ -279,7 +284,7 @@ Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown fil
 
     Mandatory skills live in the feature directories `research/`, `memories/`, `deliberation/`, `architecture/`, and `engineering/`; optional skills install flat at `<agent>/<agent>-<name>/`.
 
-   where `<agent>` is one of `mimir`, `brokk`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
+   where `<agent>` is one of `mimir`, `brokk`, `eitri`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
 
    ```yaml
    ---
@@ -321,7 +326,7 @@ For example, `$CONFIG_BASE/skills/yggdrasil/brokk/brokk-shell-scripting/SKILL.md
    ```yaml
    custom_capabilities:
      - name: <capability-slug>
-       role: <researcher|implementer|reviewer|strategist|communicator>
+       role: <researcher|implementer|reviewer|strategist|communicator|designer>
        summary: <one-line, role-phrased description>
    ```
 
@@ -332,6 +337,28 @@ For example, `$CONFIG_BASE/skills/yggdrasil/brokk/brokk-shell-scripting/SKILL.md
    ```
 
    This updates `$CONFIG_BASE/skills/yggdrasil/shared/capability-inventory/SKILL.md`, making the new capability visible to both Odin and Kvasir immediately.
+
+### Configure the Designer's Image Model
+
+Eitri ships with **no `model:` key in his definition** — no Yggdrasil agent carries one. Like every other agent, he runs on your OpenCode session default until you say otherwise, and that default is typically a text model that cannot produce images. The framework deliberately does not choose a provider or a model for you, so nothing in the repository signals that one is missing: **this subsection is the only place that tells you to set it.**
+
+Point Eitri at a real, image-capable `provider/model-id` from your installed OpenCode provider setup by setting `agent.eitri.model` in your configuration home's `opencode.json` (`$CONFIG_BASE/opencode.json`). OpenCode merges JSON agent configuration over the Markdown agent definitions, and `setup.sh` never writes that file, so the value survives every framework upgrade:
+
+```json
+{
+  "agent": {
+    "eitri": {
+      "model": "<provider/model-id>"
+    }
+  }
+}
+```
+
+That is the whole mechanism: there is no in-repository default to replace, no code change, and nothing to regenerate. Hand-adding a `model:` key to the installed definition (`$CONFIG_BASE/agents/yggdrasil/eitri.md`) is not a supported route — no shipped agent carries that key, whether your OpenCode version honors it there is unverified, and the next `setup.sh` run overwrites the file and reverts it.
+
+The model is picked up on the Designer's next dispatch: OpenCode reads agent configuration at session start, so there is no process to restart. The model actually in effect is recorded in the image manifest Eitri writes for every run, so an override you never set — or one your host silently ignored — surfaces as `unknown` or the wrong id in the manifest's `Model` row rather than staying hidden.
+
+**Raster formats need a tool grant.** The `edit` tool writes text, so out of the box Eitri authors vector assets (`svg`) only. PNG, JPEG, WebP, and GIF paths are already permitted by his `edit` allowlist, but producing them needs an image-generation tool granted after install — register it exactly like any other custom tool, per [Grant a New Tool to a Specialist](#grant-a-new-tool-to-a-specialist).
 
 ### Built-In Capability Inventory
 
@@ -456,7 +483,7 @@ To test a change to an agent or skill: edit the source file, run `scripts/valida
    - Regenerate: `scripts/generate-odin-agents.sh`
    - Verify parity: `scripts/validate.sh` (Check 4) or `scripts/ci-smoke-odin-generator.sh`
 
-2. **For subagent files** (bragi.md, brokk.md, heimdall.md, kvasir.md, mimir.md):
+2. **For subagent files** (bragi.md, brokk.md, eitri.md, heimdall.md, kvasir.md, mimir.md):
    - Edit the source templates in `scripts/subagent-generator/`:
       - `{agent}.template.md` — agent-specific definition (frontmatter, Role, Responsibilities, Boundaries, Role Discipline, Workflow, etc.)
       - `memory.fragment.md` — shared Yggdrasil Memory section (used by all agents)

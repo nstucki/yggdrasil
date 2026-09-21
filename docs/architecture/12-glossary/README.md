@@ -6,4 +6,4 @@ The terms this document uses, and the ones the project and its requirements use 
 
 | # | Document | Root heading | Last updated |
 | --- | --- | --- | --- |
-| 01 | [Glossary](01-glossary.md) | 12. Glossary | 2026-09-20 |
+| 01 | [Glossary](01-glossary.md) | 12. Glossary | 2026-09-21 |

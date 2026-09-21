@@ -12,7 +12,7 @@
 #
 # Schema per entry (for your installed copy):
 #   - name: <capability-slug>
-#     role: <researcher|implementer|reviewer|strategist|communicator>
+#     role: <researcher|implementer|reviewer|strategist|communicator|designer>
 #     summary: <role-phrased, nameless, self-contained: what it enables; when to use it>
 #
 # Example (for your installed copy):

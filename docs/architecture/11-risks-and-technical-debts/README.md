@@ -6,4 +6,4 @@ The risks this system carries and the debts it has taken on, each with a mitigat
 
 | # | Document | Root heading | Last updated |
 | --- | --- | --- | --- |
-| 01 | [Risks and Technical Debts](01-risks-and-technical-debts.md) | 11. Risks and Technical Debts | 2026-09-20 |
+| 01 | [Risks and Technical Debts](01-risks-and-technical-debts.md) | 11. Risks and Technical Debts | 2026-09-21 |

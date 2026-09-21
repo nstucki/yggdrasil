@@ -148,6 +148,7 @@ implementer_skills=""
 reviewer_skills=""
 strategist_skills=""
 communicator_skills=""
+designer_skills=""
 
 # Iterate sorted skill files under skills/. The owning agent is derived from
 # the skill slug's <agent>- prefix (frontmatter name == directory slug,
@@ -183,6 +184,7 @@ while IFS= read -r -d '' skill_file; do
     heimdall) role="reviewer" ;;
     kvasir) role="strategist" ;;
     bragi) role="communicator" ;;
+    eitri) role="designer" ;;
     # Odin is the orchestrator, not a specialist role. Kvasir (the primary
     # consumer of this inventory) never routes work to Odin — skip silently.
     odin) continue ;;
@@ -239,6 +241,14 @@ ${entry}"
         communicator_skills="$entry"
       fi
       ;;
+    designer)
+      if [ -n "$designer_skills" ]; then
+        designer_skills="${designer_skills}
+${entry}"
+      else
+        designer_skills="$entry"
+      fi
+      ;;
   esac
 done < <(find "$SKILLS_DIR" -name SKILL.md -print0 | sort -z)
 
@@ -252,8 +262,9 @@ implementer_desc=""
 reviewer_desc=""
 strategist_desc=""
 communicator_desc=""
+designer_desc=""
 
-for agent in mimir brokk heimdall kvasir bragi; do
+for agent in mimir brokk heimdall kvasir bragi eitri; do
   agent_file="${AGENTS_DIR}/${agent}.md"
   desc=""
   if [ -f "$agent_file" ]; then
@@ -266,6 +277,7 @@ for agent in mimir brokk heimdall kvasir bragi; do
     heimdall) reviewer_desc="$desc" ;;
     kvasir) strategist_desc="$desc" ;;
     bragi) communicator_desc="$desc" ;;
+    eitri) designer_desc="$desc" ;;
   esac
 done
 
@@ -427,6 +439,23 @@ EOF
 
   if [ -n "$communicator_skills" ]; then
     echo "$communicator_skills"
+  else
+    echo "(none)"
+  fi
+
+  cat <<'EOF'
+
+### Designer
+EOF
+
+  if [ -n "$designer_desc" ]; then
+    echo ""
+    echo "$designer_desc"
+    echo ""
+  fi
+
+  if [ -n "$designer_skills" ]; then
+    echo "$designer_skills"
   else
     echo "(none)"
   fi

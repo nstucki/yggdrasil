@@ -13,20 +13,21 @@
 #   3. Slug / name-field match — each skill's `name:` frontmatter value equals
 #      its containing directory (the skill slug).
 #   4. Agent freshness — the three Odin agent files (odin-autonomous,
-#      odin-guided, odin-interactive) and the five subagent files (bragi,
-#      brokk, heimdall, kvasir, mimir) are regenerated from their templates
-#      via scripts/generate-odin-agents.sh and scripts/generate-subagents.sh
-#      into a temp directory, then diffed byte-for-byte against the committed
-#      files in agents/. Any drift fails — whether from hand-editing a
-#      generated file or from editing a template without regenerating.
+#      odin-guided, odin-interactive) and the six subagent files (bragi,
+#      brokk, eitri, heimdall, kvasir, mimir) are regenerated from their
+#      templates via scripts/generate-odin-agents.sh and
+#      scripts/generate-subagents.sh into a temp directory, then diffed
+#      byte-for-byte against the committed files in agents/. Any drift fails —
+#      whether from hand-editing a generated file or from editing a template
+#      without regenerating.
 #   5. Subagent isolation — subagent prompts (agents/<name>.md for mimir,
-#      brokk, heimdall, kvasir, bragi) and their skills (matched by slug prefix
-#      anywhere under skills/) must not reference any other agent by name
+#      brokk, heimdall, kvasir, bragi, eitri) and their skills (matched by slug
+#      prefix anywhere under skills/) must not reference any other agent by name
 #      (case-insensitive, word-boundary match). Self-references are allowed;
 #      Odin's files and skills are exempt from this scan.
 #   6. Skill description namelessness + repo scaffold emptiness — every skills/**/SKILL.md's
 #      `description:` frontmatter field must not leak any agent name (odin, mimir, brokk,
-#      heimdall, kvasir, bragi — case-insensitive, whole-word match). Also verifies the
+#      heimdall, kvasir, bragi, eitri — case-insensitive, whole-word match). Also verifies the
 #      repo's config-home/custom-capabilities.yaml and skills/shared/ remain empty (no custom tool
 #      grants or generated files in the repo).
 #   7. Odin agent invariant markers (rule strings present in generated agent) —
@@ -339,16 +340,16 @@ check_slug_match() {
 # CHECK 4 — Agent freshness (Odin + subagents).
 #
 # The three Odin agent files are generated from templates in scripts/odin-generator/
-# by scripts/generate-odin-agents.sh. The five subagent files are generated from
+# by scripts/generate-odin-agents.sh. The six subagent files are generated from
 # templates in scripts/subagent-generator/ by scripts/generate-subagents.sh.
-# This check regenerates all eight files and verifies they match the committed
+# This check regenerates all nine files and verifies they match the committed
 # versions byte-for-byte. Any drift — whether from hand-editing a generated file
 # or failing to regenerate after editing the source — is caught.
 # ---------------------------------------------------------------------------
 ODIN_FILES='odin-autonomous.md odin-guided.md odin-interactive.md'
 ODIN_GENERATOR="$REPO_ROOT/scripts/generate-odin-agents.sh"
 SUBAGENT_GENERATOR="$REPO_ROOT/scripts/generate-subagents.sh"
-SUBAGENT_NAMES='bragi brokk heimdall kvasir mimir'
+SUBAGENT_NAMES='bragi brokk eitri heimdall kvasir mimir'
 
 check_agent_freshness() {
   heading "Check 4: Agent freshness (regenerate and diff)"
@@ -424,7 +425,7 @@ check_agent_freshness() {
   fi
 
   if [ "$FAIL_ODIN_FRESHNESS" -eq 0 ]; then
-    pass_msg "all 3 Odin agents and 5 subagents match regenerated output (byte-identical)"
+    pass_msg "all 3 Odin agents and 6 subagents match regenerated output (byte-identical)"
   else
     info_msg "${C_RED}${FAIL_ODIN_FRESHNESS} freshness failure(s)${C_RESET}"
   fi
@@ -447,8 +448,8 @@ check_agent_freshness() {
 # odin-* skills are exempt (the orchestrator knows the full pantheon);
 # non-agent slugs (e.g. shared skills) are not scanned.
 # ---------------------------------------------------------------------------
-SUBAGENT_NAMES='mimir brokk heimdall kvasir bragi'
-ALL_AGENT_NAMES='odin mimir brokk heimdall kvasir bragi'
+SUBAGENT_NAMES='mimir brokk heimdall kvasir bragi eitri'
+ALL_AGENT_NAMES='odin mimir brokk heimdall kvasir bragi eitri'
 
 # Scan one file owned by agent $2 for references to any other agent name.
 scan_isolation() {
@@ -483,7 +484,7 @@ check_isolation() {
     owner="${slug%%-*}"
     case "$owner" in
       odin) continue ;;
-      mimir|brokk|heimdall|kvasir|bragi) scan_isolation "$file" "$owner" ;;
+      mimir|brokk|heimdall|kvasir|bragi|eitri) scan_isolation "$file" "$owner" ;;
       *) continue ;;
     esac
   done < <(find "$SKILLS_DIR" -name SKILL.md -print0 | sort -z)
@@ -517,7 +518,7 @@ check_capabilities() {
       line_num=$((line_num + 1))
       
       # Check for agent names (case-insensitive, whole-word) in the description.
-      for agent in odin mimir brokk heimdall kvasir bragi; do
+      for agent in odin mimir brokk heimdall kvasir bragi eitri; do
         if echo "$line" | grep -iqw "$agent"; then
           fail_msg "$(rel "$skill_file"): description contains agent name '$agent' (must be agent-neutral)"
           name_leaks=$((name_leaks + 1))

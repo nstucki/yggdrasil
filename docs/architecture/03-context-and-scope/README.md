@@ -6,4 +6,4 @@ The system's boundary: the external actors and neighbouring systems it exchanges
 
 | # | Document | Root heading | Last updated |
 | --- | --- | --- | --- |
-| 01 | [Context and Scope](01-context-and-scope.md) | 3. Context and Scope | 2026-09-20 |
+| 01 | [Context and Scope](01-context-and-scope.md) | 3. Context and Scope | 2026-09-21 |
