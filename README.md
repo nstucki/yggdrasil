@@ -342,22 +342,6 @@ For example, `$CONFIG_BASE/skills/yggdrasil/brokk/brokk-shell-scripting/SKILL.md
 
 Eitri ships with **no `model:` key in his definition** — no Yggdrasil agent carries one. Like every other agent, he runs on your OpenCode session default until you say otherwise, and that default is typically a text model that cannot produce images. The framework deliberately does not choose a provider or a model for you, so nothing in the repository signals that one is missing: **this subsection is the only place that tells you to set it.**
 
-Point Eitri at a real, image-capable `provider/model-id` from your installed OpenCode provider setup by setting `agent.eitri.model` in your configuration home's `opencode.json` (`$CONFIG_BASE/opencode.json`). OpenCode merges JSON agent configuration over the Markdown agent definitions, and `setup.sh` never writes that file, so the value survives every framework upgrade:
-
-```json
-{
-  "agent": {
-    "eitri": {
-      "model": "<provider/model-id>"
-    }
-  }
-}
-```
-
-That is the whole mechanism: there is no in-repository default to replace, no code change, and nothing to regenerate. Hand-adding a `model:` key to the installed definition (`$CONFIG_BASE/agents/yggdrasil/eitri.md`) is not a supported route — no shipped agent carries that key, whether your OpenCode version honors it there is unverified, and the next `setup.sh` run overwrites the file and reverts it.
-
-The model is picked up on the Designer's next dispatch: OpenCode reads agent configuration at session start, so there is no process to restart. The model actually in effect is recorded in the image manifest Eitri writes for every run, so an override you never set — or one your host silently ignored — surfaces as `unknown` or the wrong id in the manifest's `Model` row rather than staying hidden.
-
 **Raster formats need a tool grant.** The `edit` tool writes text, so out of the box Eitri authors vector assets (`svg`) only. PNG, JPEG, WebP, and GIF paths are already permitted by his `edit` allowlist, but producing them needs an image-generation tool granted after install — register it exactly like any other custom tool, per [Grant a New Tool to a Specialist](#grant-a-new-tool-to-a-specialist).
 
 ### Built-In Capability Inventory
