@@ -13,7 +13,6 @@ permission:
     "*": deny
     bragi: allow
     brokk: allow
-    eitri: allow
     heimdall: allow
     kvasir: allow
     mimir: allow

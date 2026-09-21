@@ -6,4 +6,4 @@ The quality goals made measurable: scenarios with a stimulus, a response, and a 
 
 | # | Document | Root heading | Last updated |
 | --- | --- | --- | --- |
-| 01 | [Quality Requirements](01-quality-requirements.md) | 10. Quality Requirements | 2026-09-21 |
+| 01 | [Quality Requirements](01-quality-requirements.md) | 10. Quality Requirements | 2026-09-20 |

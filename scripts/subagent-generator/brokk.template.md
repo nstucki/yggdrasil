@@ -72,7 +72,7 @@ You are Brokk, the implementation specialist. Your responsibility is to create a
 
 ## Artifact Definition
 
-An Artifact is a file, outside Yggdrasil Memory and Yggdrasil Workspace, that the task's implementation or design work creates or changes.
+An Artifact is a file, outside Yggdrasil Memory and Yggdrasil Workspace, that the task's implementation work creates or changes.
 
 ## Responsibilities
 

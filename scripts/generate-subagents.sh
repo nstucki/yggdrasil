@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 #
-# generate-subagents.sh — Generate the six subagent files from templates
+# generate-subagents.sh — Generate the five subagent files from templates
 #
-# This script assembles the six subagent files (bragi, brokk, eitri, heimdall,
-# kvasir, mimir) from per-agent template heads, shared fragments, and per-agent
-# workflow tails. Output is deterministic (LC_ALL=C) and byte-identical to the
-# committed files.
+# This script assembles the five subagent files (bragi, brokk, heimdall, kvasir,
+# mimir) from per-agent template heads, shared fragments, and per-agent workflow
+# tails. Output is deterministic (LC_ALL=C) and byte-identical to the committed files.
 #
 # Usage:
-#   generate-subagents.sh              # regenerate all six files in agents/
-#   generate-subagents.sh --print       # print all six to stdout (for testing)
+#   generate-subagents.sh              # regenerate all five files in agents/
+#   generate-subagents.sh --print       # print all five to stdout (for testing)
 #   generate-subagents.sh --agent mimir --print  # print one agent to stdout
 #
 # The generator resolves the template directory relative to this script's location.
@@ -33,7 +32,7 @@ while [ "${1:-}" != "" ]; do
     --agent)
       shift
       if [ -z "${1:-}" ]; then
-        echo "Error: --agent requires an argument (bragi, brokk, eitri, heimdall, kvasir, or mimir)" >&2
+        echo "Error: --agent requires an argument (bragi, brokk, heimdall, kvasir, or mimir)" >&2
         exit 1
       fi
       AGENT="$1"
@@ -66,13 +65,13 @@ TEMPLATE_DIR="$SCRIPT_DIR/subagent-generator"
 OUTPUT_DIR="$REPO_ROOT/agents"
 
 # All subagent names
-SUBAGENTS="bragi brokk eitri heimdall kvasir mimir"
+SUBAGENTS="bragi brokk heimdall kvasir mimir"
 
 # Subagents that author Workfiles, and therefore receive tooling.fragment.md.
 # Brokk is deliberately excluded: it writes project Artifacts rather than
 # Workfiles, and its Boundaries section disables workspace writes outright, so
 # Workfile tooling doctrine would contradict its own prompt.
-WORKFILE_AUTHORS="bragi eitri heimdall kvasir mimir"
+WORKFILE_AUTHORS="bragi heimdall kvasir mimir"
 
 # Verify template files exist
 if [ ! -f "$TEMPLATE_DIR/memory.fragment.md" ]; then
@@ -149,7 +148,7 @@ generate_subagent_file() {
 
 # Generate requested agent(s)
 if [ -z "$AGENT" ]; then
-  # Generate all six agents
+  # Generate all five agents
   for agent in $SUBAGENTS; do
     if ! generate_subagent_file "$agent"; then
       exit 1
