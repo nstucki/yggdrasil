@@ -6,4 +6,4 @@ What the architecture is not free to choose: technology mandates, platform floor
 
 | # | Document | Root heading | Last updated |
 | --- | --- | --- | --- |
-| 01 | [Architecture Constraints](01-architecture-constraints.md) | 2. Architecture Constraints | 2026-09-20 |
+| 01 | [Architecture Constraints](01-architecture-constraints.md) | 2. Architecture Constraints | 2026-09-21 |
