@@ -34,7 +34,7 @@ Each type addresses a different architectural concern — system context (use ca
 3. **Add additional diagrams only when they convey distinct information** the primary diagram cannot show (§ Diagram Types). Each must visualize a distinct established structure; do not add diagrams for completeness.
 4. **Author in Mermaid** as a fenced ` ```mermaid ` code block, placed adjacent to the analysis prose it visualizes. Mermaid is the default because it renders inline in GitHub and most markdown viewers. Use PlantUML only as an explicit fallback when Mermaid cannot adequately express the architectural structure, and note the fallback reason beside the block.
 5. **Ground every element** — each component, module, service, layer, and relationship must correspond to something described in your findings. Do not invent, infer beyond evidence, or decoratively pad.
-6. **Check the markup** — verify the Mermaid syntax is well-formed so the block renders rather than degrading to raw text.
+6. **Check the markup against the diagram type's grammar** — verify the Mermaid syntax is well-formed so the block renders rather than degrading to raw text. Reserved and terminator characters are per diagram type, and the quoted-string escape that protects label text in one type may not exist in another: a character is not safe here because it was safe in the type you drew last. For example, `sequenceDiagram` reads a bare `;` in message or note text as a statement terminator and `#` as a comment start, with no quoting to escape either, whereas `flowchart`/`graph` accept `;` as an optional statement terminator and protect label text inside quoted brackets. Before considering a diagram finished, scan its label, message, and note text for the reserved characters of the type you actually used — an eye pass for "looks valid" does not reliably find one stray character.
 
 ## Quality Criteria
 
@@ -51,3 +51,4 @@ Each type addresses a different architectural concern — system context (use ca
 - **Unsourced relationships** — edges or hierarchies that appear in the diagram but not in your findings.
 - **Unjustified PlantUML** — defaulting to PlantUML (which does not render inline in most viewers) without stating why Mermaid could not express the architectural structure.
 - **Over-triggering on non-architectural content** — treating process lists, taxonomies, or conceptual hierarchies as architecture when they are not part of describing a system's design.
+- **Impression-only markup check** — eyeballing a diagram as "looks valid" instead of scanning its label, message, and note text for the reserved characters of the diagram type actually used; a single stray character degrades a rendered diagram to raw text, and a visual pass does not reliably catch it.

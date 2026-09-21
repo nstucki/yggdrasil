@@ -12,7 +12,7 @@ sequenceDiagram
     participant H as Heimdall
     participant Mem as .yggdrasil-memory/
 
-    Note over O: earlier task: Heimdall-passed research exists;<br/>Odin may add one line pointing to /yggdrasil/remember
+    Note over O: earlier task: Heimdall-passed research exists —<br/>Odin may add one line pointing to /yggdrasil/remember
     U->>O: /yggdrasil/remember (user-triggered only)
     O->>O: load odin-memory-system skill
     O->>B: brief — distill reviewed findings (brokk-memory-curation)

@@ -16,12 +16,12 @@ sequenceDiagram
     participant B as Brokk
 
     U->>C: /yggdrasil/research "topic"
-    C->>O: agent: Odin (Interactive); Topic: $ARGUMENTS; load odin-research-workflow
-    O->>O: "Research check: command=yes → invoke"; "Kvasir check: skip — packaged workflow"
+    C->>O: agent: Odin (Interactive) — Topic: $ARGUMENTS — load odin-research-workflow
+    O->>O: "Research check: command=yes → invoke" — "Kvasir check: skip — packaged workflow"
     O->>O: load odin-research-workflow skill
     O->>K: step 1 — decompose into parallel clusters
     K-->>O: cluster plan
-    O->>U: step 2 — plan checkpoint (Interactive pauses; Autonomous auto-proceeds)
+    O->>U: step 2 — plan checkpoint (Interactive pauses — Autonomous auto-proceeds)
     U-->>O: steer / confirm
     par one stream per cluster
         O->>M: step 3 — research cluster i

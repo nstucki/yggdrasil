@@ -37,7 +37,7 @@ sequenceDiagram
         O->>K: mandatory consultation before any fix
     end
     O->>B: brief (implement), reads Workfiles as input
-    B->>B: edit project files; ensure .gitignore covers workspace
+    B->>B: edit project files — ensure .gitignore covers workspace
     B-->>O: summary + Artifact paths
     O->>H: Subtask Review (Artifact, pinned baseline)
     H-->>O: verdict

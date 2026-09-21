@@ -14,7 +14,7 @@ sequenceDiagram
     participant H as Heimdall
 
     U->>O: "Create a hero illustration for the README at images/hero.svg"
-    O->>O: Deliverable: artifact=yes (images/hero.svg); capability-inventory loaded (### Designer present)
+    O->>O: Deliverable: artifact=yes (images/hero.svg) — capability-inventory loaded (Designer present)
     O->>E: task(eitri) — brief: asset path, format=svg, subject, style, references, manifest 01-image-hero.md
     E->>FS: read reference assets / design tokens (read, glob, grep)
     alt brief complete and format authorable
