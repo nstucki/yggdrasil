@@ -5,7 +5,7 @@
 # This test validates that the generator works correctly in a realistic config-base
 # scenario: it copies repo agents/skills/custom-caps to a temp location, runs the
 # generator, and asserts the output is correct (non-empty, expected sections present,
-# all roles populated, no agent-name leaks).
+# a section per role, no agent-name leaks).
 #
 # This test is OUTSIDE validate.sh to preserve validate.sh's read-only/no-temp-files
 # guarantee. Run it as part of CI or pre-commit checks to catch real generator issues.
@@ -100,13 +100,17 @@ check_contains "## Workflow" "^## Workflow$" || failures=$((failures + 1))
 check_contains "## Quality Criteria" "^## Quality Criteria$" || failures=$((failures + 1))
 check_contains "## Anti-Patterns" "^## Anti-Patterns$" || failures=$((failures + 1))
 
-# (c) Each role section has actual skills (not "(none)")
-echo "Checking role populations..."
+# (c) Every role has its own section heading. A role with no shipped skill
+# (currently Designer) still gets a heading and renders "(none)", so this
+# asserts heading presence, not population; the bullet check below covers
+# the built-in skills as a whole.
+echo "Checking role sections..."
 check_contains "researcher role" "^### Researcher$" || failures=$((failures + 1))
 check_contains "implementer role" "^### Implementer$" || failures=$((failures + 1))
 check_contains "reviewer role" "^### Reviewer$" || failures=$((failures + 1))
 check_contains "strategist role" "^### Strategist$" || failures=$((failures + 1))
 check_contains "communicator role" "^### Communicator$" || failures=$((failures + 1))
+check_contains "designer role" "^### Designer$" || failures=$((failures + 1))
 
 # Verify at least some skills are listed (look for bullet points).
 if echo "$output" | grep -q "^- \*\*.*\*\*"; then
@@ -118,7 +122,7 @@ fi
 
 # (d) No agent names leak anywhere in the output
 echo "Checking for agent-name leaks..."
-for agent in odin mimir brokk heimdall kvasir bragi; do
+for agent in odin mimir brokk heimdall kvasir bragi eitri; do
   check_absent "no '$agent' leaks" "$agent" || failures=$((failures + 1))
 done
 
