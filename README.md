@@ -15,7 +15,7 @@ The name is drawn from the immense ash tree of Norse mythology at the center of 
 ## Why Use It
 
 - **Orchestrated, not single-agent.** A complete task lifecycle — research, strategy, implementation, review — handled by specialists rather than one generalist.
-- **Review built in.** Every Brokk (implementer) output is reviewed by Heimdall before it is considered final. No agent reviews its own output.
+- **Review built in.** Every Artifact-producing output — Brokk's implementations and Eitri's image assets — is reviewed by Heimdall before it is considered final. No agent reviews its own output.
 - **A Final Review Gate** validates the assembled Deliverable against your original request before anything reaches you.
 - **Persistent knowledge base.** A source-cited Yggdrasil Memory (`.yggdrasil-memory/`) persists findings across task lifecycles.
 - **Extensible.** Grant custom tools and MCPs to any specialist; add `odin-*` skills. Curated starter skills ship by default and are meant to be adapted.
