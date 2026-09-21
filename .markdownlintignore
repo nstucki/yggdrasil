@@ -1,0 +1,24 @@
+# Path exclusions for markdownlint-cli.
+#
+# This file is the canonical exclusion mechanism for markdownlint-cli: the rule
+# configuration in .markdownlint.json has no "ignores" key, so paths are scoped
+# here and rules are scoped there. Both .github/workflows/ci.yml and
+# scripts/verify.sh pick this file up automatically — one source of truth.
+#
+# Syntax is gitignore-style.
+
+# Persisted arc42 architecture output. These documents are produced and
+# maintained by the architecture workflow, which owns their formatting; they
+# are not hand-authored against this repository's markdownlint rule selection.
+docs/
+
+# Yggdrasil Workspace — transient, task-scoped scratch files. Already ignored
+# by git (.gitignore), so CI never sees these paths at all; excluding them here
+# makes a local lint run match what CI actually checks. The same exclusion is
+# configured for yamllint in .yamllint.
+.yggdrasil-workspace/
+
+# Dependency tree, never part of the linted corpus. CI additionally passes
+# --ignore node_modules on the command line; this entry makes the exclusion
+# hold for any invocation, including local ones that omit the flag.
+node_modules/

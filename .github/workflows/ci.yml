@@ -20,6 +20,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# These pins are mirrored in scripts/verify.sh (the local CI mirror); keep the
+# two in sync.
 env:
   MARKDOWNLINT_VERSION: 0.45.0
   # Pinned to 3.12.2 deliberately: the 3.13.x line prints "dead links found"
@@ -74,7 +76,9 @@ jobs:
           npm install -g "markdownlint-cli@${MARKDOWNLINT_VERSION}"
           python3 -m pip install --quiet "yamllint==${YAMLLINT_VERSION}"
 
-      # AC-7, AC-8, AC-9: rule selection is in .markdownlint.json.
+      # AC-7, AC-8, AC-9: rule selection is in .markdownlint.json; path
+      # exclusions are in .markdownlintignore, which markdownlint reads
+      # automatically (docs/, .yggdrasil-workspace/, node_modules/).
       - name: Lint Markdown (markdownlint)
         run: markdownlint --ignore node_modules '**/*.md'
 
