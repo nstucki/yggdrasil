@@ -2,7 +2,7 @@
 #
 # ci-smoke-subagent-generator.sh — End-to-end smoke test for the subagent generator.
 #
-# This test validates that the generator works correctly: it regenerates all five
+# This test validates that the generator works correctly: it regenerates all six
 # subagent files and asserts they match the committed versions (byte-identical).
 #
 # This test is OUTSIDE validate.sh to preserve validate.sh's read-only/no-temp-files
@@ -35,9 +35,14 @@ trap 'rm -rf "$tmp"' EXIT
 echo "Testing subagent generator..."
 echo ""
 
+# The subagent roster — the single place this test names the agents. Keep it in
+# sync with SUBAGENTS in scripts/generate-subagents.sh (see "Adding a
+# specialist — roster touch list" in scripts/README.md).
+SUBAGENTS="bragi brokk eitri heimdall kvasir mimir"
+
 # Run the generator into the temp directory
 echo "Regenerating subagent files into temp directory..."
-for agent in bragi brokk heimdall kvasir mimir; do
+for agent in $SUBAGENTS; do
   "$REPO_ROOT/scripts/generate-subagents.sh" --agent "$agent" --print > "$tmp/$agent.md"
 done
 
@@ -65,11 +70,9 @@ echo "Assertions:"
 failures=0
 
 # Check each file
-check_identical "bragi.md" "$REPO_ROOT/agents/bragi.md" "$tmp/bragi.md" || failures=$((failures + 1))
-check_identical "brokk.md" "$REPO_ROOT/agents/brokk.md" "$tmp/brokk.md" || failures=$((failures + 1))
-check_identical "heimdall.md" "$REPO_ROOT/agents/heimdall.md" "$tmp/heimdall.md" || failures=$((failures + 1))
-check_identical "kvasir.md" "$REPO_ROOT/agents/kvasir.md" "$tmp/kvasir.md" || failures=$((failures + 1))
-check_identical "mimir.md" "$REPO_ROOT/agents/mimir.md" "$tmp/mimir.md" || failures=$((failures + 1))
+for agent in $SUBAGENTS; do
+  check_identical "$agent.md" "$REPO_ROOT/agents/$agent.md" "$tmp/$agent.md" || failures=$((failures + 1))
+done
 
 echo ""
 

@@ -34,16 +34,18 @@ Generates the three Odin agent files (autonomous, guided, interactive) from shar
 
 **Script:** `generate-subagents.sh`
 
-Generates the five subagent files (bragi, brokk, heimdall, kvasir, mimir) from per-agent templates and shared fragments.
+Generates the six subagent files (bragi, brokk, eitri, heimdall, kvasir, mimir) from per-agent templates and shared fragments.
 
 **Templates:**
-- `subagent-generator/{agent}.template.md` — Agent-specific definition (one per agent)
+- `subagent-generator/{agent}.template.md` — Agent-specific head: frontmatter, Role, Responsibilities, Boundaries, Role Discipline (one per agent)
+- `subagent-generator/workspace.fragment.md` — Shared Yggdrasil Workspace section (used by all agents)
+- `subagent-generator/tooling.fragment.md` — Shared Workfile Tooling section (used only by the agents listed in `WORKFILE_AUTHORS`, i.e. all but Brokk)
 - `subagent-generator/memory.fragment.md` — Shared Yggdrasil Memory section (used by all agents)
-- `subagent-generator/workspace.fragment.md` — Shared Yggdrasil Workspace section (used by all agents except Brokk)
+- `subagent-generator/{agent}.workflow.template.md` — Agent-specific Workflow tail (one per agent)
 
 **Usage:**
 ```bash
-# Regenerate all five subagents
+# Regenerate all six subagents
 ./generate-subagents.sh
 
 # Regenerate one agent
@@ -54,7 +56,7 @@ Generates the five subagent files (bragi, brokk, heimdall, kvasir, mimir) from p
 ./generate-subagents.sh --agent brokk --print
 ```
 
-**Output:** `agents/bragi.md`, `agents/brokk.md`, `agents/heimdall.md`, `agents/kvasir.md`, `agents/mimir.md`
+**Output:** `agents/bragi.md`, `agents/brokk.md`, `agents/eitri.md`, `agents/heimdall.md`, `agents/kvasir.md`, `agents/mimir.md`
 
 ## Validation and Testing
 
@@ -67,7 +69,7 @@ Read-only structural validator that performs eight checks:
 1. **Frontmatter parse** — Agent and skill files have well-formed YAML frontmatter with required keys
 2. **Required skill sections** — Skills contain the 5 required sections in correct order
 3. **Slug/name match** — Skill `name:` field matches its directory slug
-4. **Agent freshness** — All 8 agent files match regenerated output (byte-identical)
+4. **Agent freshness** — All 9 agent files (3 Odin + 6 subagents) match regenerated output (byte-identical)
 5. **Subagent isolation** — Subagent prompts and skills don't reference other agents by name
 6. **Capability mirror** — Skill descriptions don't leak agent names; repo scaffold is empty
 7. **Parity markers** — Odin agent files contain invariant orchestration markers
@@ -90,17 +92,23 @@ Supplementary tests that verify generator parity in isolation (useful for CI/pre
 - Useful for CI pipelines or pre-commit hooks
 
 **Subagent Generator Smoke Test:** `ci-smoke-subagent-generator.sh`
-- Regenerates all five subagents into a temp directory
+- Regenerates all six subagents into a temp directory
 - Asserts byte-identity with committed versions
 - Useful for CI pipelines or pre-commit hooks
+
+**Capability Generator Smoke Test:** `ci-smoke-generator.sh`
+- Builds a synthetic config base in a temp directory and runs `../config-home/generate-capabilities.sh` against it
+- Asserts the inventory's section headers, one populated section per role, and that no agent name leaks into the output
+- Also exercises the installed script's self-location path
 
 **Usage:**
 ```bash
 ./ci-smoke-odin-generator.sh
 ./ci-smoke-subagent-generator.sh
+./ci-smoke-generator.sh
 ```
 
-Both exit with code 0 on success, non-zero on failure.
+All three exit with code 0 on success, non-zero on failure.
 
 ### Local CI Mirror
 
@@ -184,9 +192,11 @@ The script targets macOS bash 3.2 as well as modern bash, avoids GNU-only flags,
 ### To modify a subagent:
 
 1. Identify which template/fragment to edit:
-      - Agent-specific content → `subagent-generator/{agent}.template.md`
+      - Agent-specific head (frontmatter, Role, Responsibilities, Boundaries, Role Discipline) → `subagent-generator/{agent}.template.md`
+      - Agent-specific Workflow tail → `subagent-generator/{agent}.workflow.template.md`
       - Shared Yggdrasil Memory section → `subagent-generator/memory.fragment.md` (affects all agents)
-       - Shared Yggdrasil Workspace section → `subagent-generator/workspace.fragment.md` (affects all agents except Brokk)
+      - Shared Yggdrasil Workspace section → `subagent-generator/workspace.fragment.md` (affects all agents)
+      - Shared Workfile Tooling section → `subagent-generator/tooling.fragment.md` (affects the `WORKFILE_AUTHORS` agents only — all but Brokk)
 
 2. Edit the template/fragment
 
@@ -203,12 +213,32 @@ The script targets macOS bash 3.2 as well as modern bash, avoids GNU-only flags,
 
 5. Commit the template/fragment changes (not the generated `agents/{agent}.md` files)
 
+### Adding a specialist — roster touch list
+
+The specialist roster is not a manifest. It is spelled out literally in the places listed below, each sitting beside the check or render step that consumes it, and **they must all agree**. A partial edit fails `validate.sh` Check 4 or Check 5 for most of these lists — but *not* for the install-side capability generator, which the repository validator never runs. Work the list top to bottom, in one commit.
+
+| # | File | What to add |
+|---|---|---|
+| 1 | `scripts/subagent-generator/{agent}.template.md` | New file: frontmatter (`name`, `description`, `mode: subagent`, `temperature`, `permission`) plus Role / Responsibilities / Boundaries / Role Discipline |
+| 2 | `scripts/subagent-generator/{agent}.workflow.template.md` | New file: the `## Workflow` tail |
+| 3 | `scripts/generate-subagents.sh` | `SUBAGENTS`; `WORKFILE_AUTHORS` (only if the agent writes Workfiles); the `--agent` error text; the header comments and their agent count |
+| 4 | `scripts/validate.sh` | Check 4 `SUBAGENT_NAMES` and its pass message count; Check 5 `SUBAGENT_NAMES`, `ALL_AGENT_NAMES`, and the skill-owner `case` arm; Check 6's namelessness loop; the header docstring |
+| 5 | `scripts/ci-smoke-subagent-generator.sh` | The regeneration loop and one `check_identical` call |
+| 6 | `scripts/odin-generator/preamble.template.md` | One `{agent}: allow` line in the orchestrator's `task:` allowlist |
+| 7 | `scripts/odin-generator/shared-body.template.md` | One Agent Selection Guide row; the Workfile-writer sentence; the review-rule clauses (preserving the invariant marker strings Check 7 greps for) |
+| 8 | `config-home/generate-capabilities.sh` | The `{agent}) role="{role}"` map arm; the `{role}_skills` accumulator; the description-harvest loop and its `case` arm; a `### {Role}` render section |
+| 9 | `config-home/custom-capabilities.yaml` | The `role:` enum in the schema comment |
+| 10 | `scripts/ci-smoke-generator.sh` | One role-section assertion and the agent name in the leak-check loop |
+| 11 | `README.md` (repo root) | Pantheon table row, mythological-identity section, agent lists, role enum, and every "N agents" count |
+
+Then regenerate (`./generate-subagents.sh`, `./generate-odin-agents.sh`) and run `./validate.sh` plus all three smoke tests.
+
 ## Generator Implementation Details
 
 Both generators are pure concatenation scripts:
 
 - **Odin:** `preamble.template.md` (with sed substitution) + newline + `shared-body.template.md` + newline + `communication-policy-{mode}.fragment.md`
-- **Subagents:** `{agent}.template.md` + newline + (newline + `workspace.fragment.md` if agent ≠ brokk) + newline + `memory.fragment.md`
+- **Subagents:** `{agent}.template.md` + newline + `workspace.fragment.md` + newline + (`tooling.fragment.md` + newline, for `WORKFILE_AUTHORS` agents only) + `memory.fragment.md` + newline + `{agent}.workflow.template.md`
 
 No complex logic — just `cat` and `sed`. This makes the generators transparent and the parity checks deterministic.
 
