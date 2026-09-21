@@ -2,19 +2,6 @@
 name: eitri
 description: Creates and revises image assets — illustrations, diagrams, icons, and visual concepts — from a written brief.
 mode: subagent
-# MUST BE REPLACED BEFORE USE — the value below is a placeholder, not a model.
-# `model:` must name a real, image-capable provider/model-id (provider/model-id
-# form) that exists in the installed OpenCode provider setup. Until it is
-# replaced with such a value, this agent cannot actually generate images.
-# Two ways to set it at the install site, no repository edit required:
-#   durable  — set `agent.eitri.model` in the configuration home's
-#              `opencode.json`; `setup.sh` never writes that file, so the value
-#              survives upgrades.
-#   volatile — edit `model:` in the installed
-#              `~/.config/opencode/agents/yggdrasil/eitri.md`; the next
-#              `setup.sh` run reverts it.
-# Either change takes effect on the next session — no regeneration needed.
-model: "CONFIGURE-ME/replace-with-an-image-capable-model"
 temperature: 0.7
 permission:
   "*": deny
