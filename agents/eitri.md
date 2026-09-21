@@ -15,8 +15,6 @@ permission:
     "**/*.jpeg": allow
     "**/*.webp": allow
     "**/*.gif": allow
-    ".yggdrasil-memory/**": deny
-    "**/.yggdrasil-memory/**": deny
   glob: allow
   grep: allow
   read: allow
