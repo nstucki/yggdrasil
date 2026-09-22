@@ -209,7 +209,6 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 └── mimir/                             # Optional skills (if accepted at install)
     ├── mimir-architecture-visualization/
     ├── mimir-codebase-analysis/
-    ├── mimir-diagnostic-analysis/
     └── mimir-security-analysis/
 ```
 
@@ -219,7 +218,7 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 - **Brokk:** Documentation writing, Git usage, Software engineering, System prompts
 - **Heimdall:** Design review, Documentation review, Implementation review, System prompt review
 - **Kvasir:** Approach evaluation, Risk assessment, Task decomposition
-- **Mimir:** Architecture visualization, Codebase analysis, Diagnostic analysis, Security analysis
+- **Mimir:** Architecture visualization, Codebase analysis, Security analysis
 
 ## Commands
 

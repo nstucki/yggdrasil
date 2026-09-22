@@ -31,16 +31,16 @@ permission:
     "git rev-parse*": allow
     "git show*": allow
     "git status*": allow
-    # git shell-escape guards
-    "git*&&*": deny
-    "git*||*": deny
-    "git*;*": deny
-    "git*|*": deny
-    "git*$()*": deny
-    "git*`*": deny
-    "git*>*": deny
-    "git*>>*": deny
-    "git*<*": deny
+    # shell-escape guards
+    "*&&*": deny
+    "*||*": deny
+    "*;*": deny
+    "*|*": deny
+    "*$(*": deny
+    "*`*": deny
+    "*>*": deny
+    "*>>*": deny
+    "*<*": deny
   edit:
     "*": deny
     ".yggdrasil-workspace/**/*.md": allow
