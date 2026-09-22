@@ -31,16 +31,6 @@ permission:
     "git rev-parse*": allow
     "git show*": allow
     "git status*": allow
-    # git shell-escape guards
-    "git*&&*": deny
-    "git*||*": deny
-    "git*;*": deny
-    "git*|*": deny
-    "git*$()*": deny
-    "git*`*": deny
-    "git*>*": deny
-    "git*>>*": deny
-    "git*<*": deny
     # test runners
     "cargo test*": allow
     "go test*": allow
@@ -52,6 +42,16 @@ permission:
     "npm run publish*": deny
     "npm run deploy*": deny
     "npm run release*": deny
+    # shell-escape guards
+    "*&&*": deny
+    "*||*": deny
+    "*;*": deny
+    "*|*": deny
+    "*$(*": deny
+    "*`*": deny
+    "*>*": deny
+    "*>>*": deny
+    "*<*": deny
   edit:
     "*": deny
     ".yggdrasil-workspace/**/*.md": allow

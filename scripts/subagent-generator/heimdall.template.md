@@ -31,16 +31,6 @@ permission:
     "git rev-parse*": allow
     "git show*": allow
     "git status*": allow
-    # git shell-escape guards
-    "git*&&*": deny
-    "git*||*": deny
-    "git*;*": deny
-    "git*|*": deny
-    "git*$()*": deny
-    "git*`*": deny
-    "git*>*": deny
-    "git*>>*": deny
-    "git*<*": deny
   # test runners
     "cargo test*": allow
     "go test*": allow
@@ -56,6 +46,16 @@ permission:
     "shellcheck*": allow
     "yamllint*": allow
     "prettier*": allow
+    # shell-escape guards
+    "*&&*": deny
+    "*||*": deny
+    "*;*": deny
+    "*|*": deny
+    "*$(*": deny
+    "*`*": deny
+    "*>*": deny
+    "*>>*": deny
+    "*<*": deny
   edit:
     "*": deny
     ".yggdrasil-workspace/**/*.md": allow
