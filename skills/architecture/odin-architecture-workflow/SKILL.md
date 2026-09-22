@@ -48,7 +48,7 @@ A composite caller states one line before executing the steps below; absent, sta
 Architecture request: mode=<document-existing | decide-new | infer>, objective=<text | none>, requirements=<Workfile path | none>, persistence=<inline | deferred>, location=<path | docs/architecture/>
 ```
 
-- **The context gate (step 2) is yours alone** — no caller can pre-empt or skip it. The contract carries no context Workfile, because no caller produces the architecture-scoped one the gate exists to obtain. A request line carrying an unrecognized field — a legacy `context=<path>` among them — is a malformed brief: ask the caller what it means, and never read it as a skip.
+- **The context gate (step 2) is yours alone** — no caller can pre-empt or skip it, because no caller produces the architecture-scoped context Workfile it exists to obtain. An unrecognized field in the request line — a legacy `context=<path>` among them — is a malformed brief: ask the caller what it means, never read it as a skip.
 - `persistence=deferred` ⇒ steps 6, 7, and 8 are skipped; the caller owns ratification, persistence, and the Response, and invokes step 7 later with its own ratification record — in the grammar `brokk-architecture-persistence` § The Ratification Record fixes, echoed at step 6 — and the `Scaffold result` line it recorded from this run.
 - `mode=infer` ⇒ apply the inference rule in step 1.
 - The scaffold step (3) is **never** skipped — in either mode, on either invocation path.
@@ -81,7 +81,7 @@ These two lines are the only coupling surface. A caller may reference them; it m
     Architecture shape: mode=<document-existing | decide-new>, source=<direction | inference>, context=<yes/no — reason>, persistence=<inline | deferred | declined>
     ```
 
-    **Mode.** User direction or a caller's `mode=` value sets the mode and `source=direction`. Otherwise apply the **inference rule**: an objective naming a change (add/replace/migrate/introduce/split …) → `decide-new`; document/describe/as-is/"how is it structured" language, or no change objective at all → `document-existing`; ambiguous → resolve per your Communication Policy — **Interactive asks** the user which mode is wanted; **Guided and Autonomous** take `document-existing` and record `source=inference`. The mode chosen here is echoed verbatim in every brief, in the Workfile header, in the return block, and in the Response; it is never re-decided later.
+    **Mode.** User direction or a caller's `mode=` value sets the mode and `source=direction`. Otherwise apply the **inference rule**: an objective naming a change (add/replace/migrate/introduce/split …) → `decide-new`; document/describe/as-is/"how is it structured" language, or no change objective at all → `document-existing`; ambiguous → resolve per your Communication Policy — **Interactive asks** the user which mode is wanted; **Guided and Autonomous** take `document-existing` and record `source=inference`. The mode chosen here is echoed verbatim in the drafting and review briefs, in the Workfile header, in the return block, and in the Response; it is never re-decided later.
 
     **Context.** Record `context=no` with the reason only when the conversation has already established the module boundaries, entry points, boundary interfaces, and existing architecture documentation of the system in scope — the user supplied them, or an earlier architecture run in this session produced a reviewed `NN-context-architecture-<area>.md` — or when the objective is greenfield with no code yet. Otherwise `context=yes`. An engineering-context Workfile is **not** a skip reason: it records behavior, conventions, and test infrastructure, none of which grounds a §5 blackbox.
 
@@ -94,10 +94,10 @@ These two lines are the only coupling surface. A caller may reference them; it m
 3. **Scaffold (always — both modes, both invocation paths).** Dispatch Brokk with `brokk-arc42-template` and:
 
     ```text
-    Scaffold: mode=<document-existing | decide-new>, source=<direction | inference>, location=<docs/architecture/ | path>
+    Scaffold: location=<docs/architecture/ | path>
     ```
 
-    **Carry `mode` and `source` forward verbatim from the shape verdict recorded in step 1 — never re-derive either here.** The scaffolded top index's `Mode … (source …)` line is written from this brief and checked against it at the scaffold review, so a value invented at dispatch time surfaces as a BLOCKED review rather than a wrong document. The brief carries **no `workfile=` field**: this session writes Artifacts into the target project and never a Workfile.
+    The brief carries **no `workfile=` field**: this session writes Artifacts into the target project and never a Workfile.
 
     The session acts on the target project and returns:
 
@@ -155,7 +155,7 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 ## Quality Criteria
 
 - **The shape verdict is recorded before any dispatch**, and every skipped step carries its reason in that line — the reason is what the user steers against at the checkpoint and what a caller audits in the return block.
-- **Mode is set once and echoed everywhere** — shape verdict, every brief, the Workfile header, the return block, the Response. The reviewer BLOCKs on a missing or mismatched `Mode:` header, so a drifted echo fails the gate rather than reaching the repo.
+- **Mode is set once and echoed everywhere it is consumed** — shape verdict, the drafting and review briefs, the Workfile header, the return block, the Response. The reviewer BLOCKs on a missing or mismatched `Mode:` header, so a drifted echo fails the gate rather than reaching the repo.
 - **The scaffold is reviewed before drafting starts.** Judgment never starts against a target whose shape, structure, or next decision number is wrong.
 - **The document is reviewed before anything consumes it** — before ratification, before persistence, before a caller forms a plan from it. No unreviewed architecture reaches the repo or an implementation session.
 - **`document-existing` output always persists.** Persistence is conditional only on a caller deferring it, on the user declining it in `decide-new` mode, or on the persister refusing a legacy target that carries no migration direction (`persisted=refused`, both modes).
