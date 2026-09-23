@@ -1,19 +1,19 @@
 ---
 name: brokk-architecture-persistence
-description: Fill a pre-scaffolded arc42 directory in the target project from a reviewed, ratified architecture Workfile and its layout map — one folder per numbered section holding its topic documents, the decision records in the decisions folder, every index regenerated and the document status promoted — merging into an existing document document-by-document, never creating the structure and never deleting.
+description: Persist a ratified arc42 architecture Workfile into the target project by its layout map — creating the fixed folder layout when the target is absent and the document is a seed, otherwise merging into the existing layout document-by-document — topic documents per section, decision records in the decisions folder, every index generated, never deleting and never deciding.
 ---
 
 # Architecture Persistence
 
 ## Purpose
 
-Fill a **pre-scaffolded** arc42 directory in the target project from a reviewed, ratified architecture Workfile and its layout map — one folder per numbered section holding its topic documents, the decision records in the decisions folder, every index regenerated and the document status promoted — merging into an existing document document-by-document, never deleting.
+Persist a ratified arc42 architecture Workfile into the target project — topic documents per section, decision records in the decisions folder, every index generated, never deleting.
 
-The Workfile is authored as a single document; the split into files is decided in that Workfile's **Appendix D — Layout Map** (`Workfile heading → target path → promotion`) and executed here. Your transformation is therefore mechanical and fully specified: copy each mapped heading and its unclaimed descendants into the path the map names, promote by the distance the map states, rewrite the decision log's link column, regenerate the indices. Nothing about the architecture — and nothing about the split — is decided in this step. A section whose content you would have to invent is a gap to report, not a file to fill; a document the map does not name is structure you must not create.
+The Workfile is authored as one document; the split into files is decided in its **Appendix C — Layout Map** (`Workfile heading → target path → promotion`) and executed here. Your transformation is mechanical and fully specified: copy each mapped heading and its unclaimed descendants into the path the map names, promote by the distance the map states, rewrite the decision log's link column, generate the indices. Nothing about the architecture — and nothing about the split — is decided here. A section whose content you would have to invent is a gap to report; a document the map does not name is structure you must not create.
 
-**You cannot create the structure.** The section folders and their indices are written before drafting, by the scaffold step (`brokk-arc42-template`). You verify that they are there and fill them. A target that fails the identity rule below, or whose top index status contradicts the Workfile's `Document scope`, is a **blocking report item** — "the scaffold step did not run" — never an invitation to create one. This is what makes the old seed-over-an-existing-document hazard structurally impossible: a step that cannot create cannot overwrite a document it mistook for absent.
+**The existence rule.** You create the folder layout in exactly one case: the target is **absent** *and* the Workfile header reads `Document scope: seed`. A present layout under a `seed` header would be overwritten; an absent target under an `update delta` header was drafted against a document that does not exist. Both are blocking report items, never something you fix by choosing a scope yourself.
 
-This section and the four that follow it — § The Persisted Layout, § Per-Document Format, § Index Format, § What Is Not Persisted — are the single source of truth for the persisted layout. Other steps of the workflow refer to it by role ("the persisted layout", "the fixed folder table"); the names and formats live here.
+**This section and the two that follow it — § The Persisted Layout and § What Is Not Persisted — are the single source of truth for the persisted layout.** Other steps refer to it by role ("the persisted layout", "the fixed folder table"); the names and formats live here.
 
 ### The Persisted Layout
 
@@ -28,318 +28,152 @@ docs/architecture/
 ├── 05-building-block-view/
 │   ├── README.md
 │   ├── 01-whitebox-overall-system.md          # topic documents: NN-<slug>.md, NN contiguous from 01 in map order
-│   ├── 02-<building-block-group>.md
-│   └── …
+│   └── 02-<building-block-group>.md
 ├── 07-deployment-view/
 │   └── README.md                              # omitted section: index only, marker verbatim in the state line
 ├── 09-architecture-decisions/
 │   ├── README.md                              # the decision log
-│   ├── 0001-<slug>.md                         # records keep NNNN — global identifiers, append-only
-│   └── 0016-<slug>.md
+│   └── 0016-<slug>.md                         # records keep NNNN — global identifiers, append-only
 └── 12-glossary/
     ├── README.md
     └── 01-glossary.md
 ```
 
-**Fixed folder table.** These twelve folder names are the shared vocabulary. No variants, no renumbering, no thirteenth section.
+**Fixed folder table.** These twelve folder names are the shared vocabulary — no variants, no renumbering, no thirteenth section. The last column is each section index's one-line description, copied verbatim into the index you generate. That column is **word-identical to the `Holds` column of the drafting step's § Document Shape**; changing a description is a two-file edit.
 
-| § | Folder | Section heading it carries |
-| --- | --- | --- |
-| 1 | `01-introduction-and-goals/` | `## 1. Introduction and Goals` |
-| 2 | `02-architecture-constraints/` | `## 2. Architecture Constraints` |
-| 3 | `03-context-and-scope/` | `## 3. Context and Scope` |
-| 4 | `04-solution-strategy/` | `## 4. Solution Strategy` |
-| 5 | `05-building-block-view/` | `## 5. Building Block View` |
-| 6 | `06-runtime-view/` | `## 6. Runtime View` |
-| 7 | `07-deployment-view/` | `## 7. Deployment View` |
-| 8 | `08-crosscutting-concepts/` | `## 8. Cross-cutting Concepts` |
-| 9 | `09-architecture-decisions/` | `## 9. Architecture Decisions` |
-| 10 | `10-quality-requirements/` | `## 10. Quality Requirements` |
-| 11 | `11-risks-and-technical-debts/` | `## 11. Risks and Technical Debts` |
-| 12 | `12-glossary/` | `## 12. Glossary` |
+| § | Folder | Section heading it carries | One-line description (the section index's third line) |
+| --- | --- | --- | --- |
+| 1 | `01-introduction-and-goals/` | `## 1. Introduction and Goals` | What the system must achieve, the ranked quality goals every decision is judged against, and who cares about the outcome and what they need from the architecture. |
+| 2 | `02-architecture-constraints/` | `## 2. Architecture Constraints` | What the architecture is not free to choose: technology mandates, platform floors, regulatory rules, team conventions, existing contracts, and every would-be decision with only one viable option. |
+| 3 | `03-context-and-scope/` | `## 3. Context and Scope` | The system's boundary: the external actors and neighbouring systems it exchanges information with, and the channels, protocols, and data formats that carry the exchange. |
+| 4 | `04-solution-strategy/` | `## 4. Solution Strategy` | The shape of the solution in half a page: the technology choices, the decomposition approach, and the tactic adopted per quality goal. |
+| 5 | `05-building-block-view/` | `## 5. Building Block View` | The static decomposition: what the system is made of, level by level, what each block provides and requires, and where its code lives. |
+| 6 | `06-runtime-view/` | `## 6. Runtime View` | How the building blocks collaborate at runtime, one scenario per flow that crosses a boundary or realizes a quality goal, including its error path. |
+| 7 | `07-deployment-view/` | `## 7. Deployment View` | The infrastructure the system runs on: the nodes and runtimes, what is deployed where, and the mapping of building blocks onto them. |
+| 8 | `08-crosscutting-concepts/` | `## 8. Cross-cutting Concepts` | The concepts that cut across building blocks — error handling, persistence, security, validation, logging, transactions, testing — as mechanisms actually in place. |
+| 9 | `09-architecture-decisions/` | `## 9. Architecture Decisions` | The decision log — one row per architecturally significant decision, with its full record beside it in this folder. |
+| 10 | `10-quality-requirements/` | `## 10. Quality Requirements` | The quality goals made measurable: scenarios with a stimulus, a response, and a measure carrying a number and a unit. |
+| 11 | `11-risks-and-technical-debts/` | `## 11. Risks and Technical Debts` | The risks this system carries and the debts it has taken on, each with a mitigation or an explicit acceptance. |
+| 12 | `12-glossary/` | `## 12. Glossary` | The terms this document uses in a specific sense, and the ones the project and its requirements use differently. |
 
-**All twelve folders always exist**, each holding at least its index. Git tracks no empty directory, so a structure committed as bare folders vanishes; and a missing folder cannot be told apart from "never scaffolded", "deleted by accident", or "deleted by someone who disagreed". A fixed folder set makes completeness a listing check.
+The descriptions and the subsection inventory behind them are original content of this repository; the section numbers and titles are arc42's vocabulary, and no arc42 guidance text is reproduced here or anywhere under a target.
 
-**Topic document.** `NN-<slug>.md`: `NN` is two digits, contiguous from `01`, in layout-map order; `<slug>` is the kebab-case of the document's root heading title. A section with one document names it `01-<section-slug>.md`. Decision records are `NNNN-<slug>.md`, four digits, continuing the project's record sequence — records are global identifiers and append-only, whereas topic ordinals are folder-local ordering fixed when the section is first filled. **In an update delta a folder's existing ordinals do not move**: a re-authored or carried-forward document keeps the ordinal it already has, and a new document continues the folder's sequence from the highest ordinal in use. Contiguity from `01` is established by the first fill, not re-established by every later delta.
+**All twelve folders always exist**, each holding at least its index. Git tracks no empty directory, and a missing folder cannot be told apart from one deleted by accident. A fixed folder set makes completeness a listing check.
 
-**Per-document format.** A document is one root heading plus those of its descendants that no other map row claims. Its H1 is the root heading promoted by `depth − 1` — a `## N.` root by 1, a `### N.m` root by 2, a `#### N.m.k` root by 3, a decision record's `### ADR-NNNN` under `## Appendix A` by 2 — and its body is promoted by that same distance. The backlink line is the second content line, `_Part of [<Title>](../README.md) · [§N](README.md)._`; records carry no backlink. Where children are carved out into their own documents, the parent document ends where the first carved-out child began, and the section index carries the reading order.
+**Identity rule (one).** Contents decide, never the directory's name: the target is the **folder layout** if and only if it holds `README.md` *and* `01-introduction-and-goals/README.md`. Anything else found at the location — an architecture document in any other structure — is **prior documentation**, not a target: you neither read it as a layout nor touch it.
 
-**Section index (generated).** `# N. <Title>`, the backlink to the top index, the one-line section description, then a state line — `_Pending — not yet drafted_` before first fill, `_Omitted — <reason>_` for an omitted section, or a Documents table (`# · Document · Root heading · Last updated`) listing every live document in the folder in ordinal order — re-authored, newly added, and carried forward alike. "Omitted subsections" (markers verbatim) and "Superseded documents" (files a later map **explicitly supersedes** with a `→ superseded — <reason>` row) follow when either applies. `09-architecture-decisions/README.md` is that section's index and the decision log in one file.
+**Collision rule.** On a seed, if the location holds a `README.md` whose H1 is not this document's, create the layout at `<Target>/arc42/` instead and report the fallback in the manifest. Never write over a `README.md` that is not this document's index.
 
-**Carried-forward document.** In update-delta scope a layout map is **document-granular**: it names only the documents the delta writes. A topic document of an included section that the map neither names nor supersedes is **carried forward byte-identical** — not opened, not rewritten, not re-ordered — and keeps its row in the regenerated Documents table at its existing ordinal. Retiring a document is the explicit act of a `→ superseded — <reason>` row; silence in the map means carry forward, never supersede.
+**Topic document.** `NN-<slug>.md`: `NN` two digits, contiguous from `01` in layout-map order, `<slug>` the kebab-case of the document's root heading title; a section with one document names it `01-<section-slug>.md`. Decision records are `NNNN-<slug>.md`, four digits, continuing the project's record sequence — records are global identifiers and append-only, whereas topic ordinals are folder-local ordering fixed at first fill. **In an update delta a folder's existing ordinals do not move**: a re-authored or carried-forward document keeps its ordinal, and a new document continues the folder's sequence.
 
-**Top index.** `README.md` at the directory root: title, `Last updated`, `Status`, a Sections table (state · docs · last updated), and the Change Log.
-
-**Omitted section = index-only folder.** No topic document; the marker travels verbatim in the index's state line. In a flat-to-folder migration the legacy stub file *becomes* that index by rename — never delete-and-recreate.
-
-**Identity rules.** Contents decide the shape of a target, never the directory's name. **Folder layout** if and only if it holds `README.md` and `01-introduction-and-goals/README.md`. **Flat directory (legacy)** if and only if it holds `README.md` and `01-introduction-and-goals.md`. **Legacy single file** when one markdown file carries the arc42 `## N.` headings. **Non-arc42** when a document in another structure describes this system's architecture. **None** when nothing is found.
-
-**Status invariant.** Seed-scope persistence requires the top index at `Status: Scaffolded`; update-delta persistence requires `Accepted`. A `created` structure reads `Scaffolded`; the first persistence promotes it to `Accepted`. A persistence step never creates a folder the scaffold did not.
-
-**No arc42 guidance text anywhere under the target, ever** — and therefore no attribution notice in any file under it. The licensed guidance text stays inside the skill that carries it.
-
-**This specification is duplicated verbatim.** The two skills that write the layout carry this section byte for byte: the scaffolding skill `brokk-arc42-template`, and `brokk-architecture-persistence`, whose copy is normative. A layout change is a two-file copy, never a re-derivation.
-
-### Per-Document Format
-
-A filled topic document:
-
-```markdown
-# 5.1 Whitebox Overall System
-
-_Part of [<System / Subsystem> — Architecture (arc42)](../README.md) · [§5](README.md)._
-
-<the document's body from the Workfile, every heading promoted by the same distance as its root>
-```
-
-A decision record:
-
-```markdown
-# ADR-0016: <title>
-
-- **Status:** Accepted
-- **Date:** 2026-09-19
-
-## Context
-
-<…>
-```
-
-Rules that hold for every document you write:
-
-- **One H1 per document**, the map row's root heading promoted by exactly `depth − 1`. Every heading in the body is promoted by that same distance, so the level *relationships* inside a document are preserved exactly.
-- **The backlink line** is the second content line, verbatim as above, with the document title and the section number substituted. Decision records carry no backlink — a record is not a section of the document.
-- **Markers are copied verbatim.** Never reword, summarize, or drop a marker.
-- **Carved-out children stop the parent.** When the map gives a child heading its own document, the parent's document ends where that child began. The section index carries the reading order that stitches them back together.
-- **`09-architecture-decisions/README.md`** carries the §9 decision-log table with its `Link` column rewritten from the Workfile's appendix anchor to the record's path relative to that index — `0016-<slug>.md`, or `../../adr/0007-<slug>.md` when the project's own decision directory is used. Each row's `Status` matches its record file's own `Status:` line.
-- **Records** are the decision-record text from the Workfile's Appendix A verbatim, with `Status:` promoted to `Accepted` for exactly the IDs in the ratification record's `ratified=` list (§ The Ratification Record). The slug is the kebab-case decision title.
-- **Prose `§N` references are left as written.** The numbered vocabulary is the navigation aid; rewriting prose cross-references into file links is error-prone and unreviewable. Navigation between documents is the index's job.
-- **No attribution notice.** No document under the target ever contains arc42 guidance text, so no document under the target ever carries the notice. If you find guidance text in the Workfile, that is a gap to report — the drafting step never had guidance to carry.
-
-**Promotion is one rule, applied four ways.** The distance is the depth the content sits at in the Workfile minus one, so a document's root always lands on H1 and the one-H1-per-document rule holds everywhere:
+**Per-document format.** A document is one root heading plus those of its descendants no other map row claims. Its H1 is the root heading promoted by `depth − 1`, and its body is promoted by that same distance:
 
 ```text
 ## 2. Architecture Constraints   →   # 2. Architecture Constraints          (depth 2 → promote 1)
 ### 5.1 Whitebox Overall System  →   # 5.1 Whitebox Overall System          (depth 3 → promote 2)
 #### 5.1.7 Consumed block …      →   # 5.1.7 Consumed block …               (depth 4 → promote 3)
 ### ADR-0016: <title>            →   # ADR-0016: <title>                    (depth 3 → promote 2)
-####   Context                   →   ##   Context
 ```
 
-Promoting by any other distance leaves the document with no H1 at all, or with two — its title then no longer matches the index row or the §9 row that links to it, and the one-H1 rule that holds for every other file in the directory silently does not hold for that one.
+Promoting by any other distance leaves the document with no H1 or with two. Further rules: the **backlink line** is the second content line, `_Part of [<Title>](../README.md) · [§N](README.md)._`, and records carry none; **markers are copied verbatim**, never reworded or dropped; **carved-out children stop the parent**, which ends where the first carved-out child began; **prose `§N` references stay as written**, because navigation is the index's job; **records** are the Appendix A text verbatim with `Status:` promoted to `Accepted` for exactly the `ratified=` IDs.
 
-### Index Format
+**Section index (generated).** `# N. <Title>`, the backlink to the top index, the **one-line description from the fixed folder table**, then a state line — `_Omitted — <marker>_` for an omitted section, or a Documents table (`# · Document · Root heading · Last updated`) listing every live document in the folder in ordinal order, re-authored, new, and carried forward alike. "Omitted subsections" (markers verbatim) and "Superseded documents" (files a map **explicitly supersedes** with a `→ superseded — <reason>` row) follow when either applies. `09-architecture-decisions/README.md` is that section's index and the decision log in one file, its `ID · Title · Status · Date · Link` table holding one row per record, with `Link` rewritten from the Workfile's appendix anchor to the record's path relative to that index.
 
-The **top index**, `README.md` at the directory root:
+**Top index.** `README.md` at the directory root: the title, `- **Last updated:** <YYYY-MM-DD>`, `- **Status:** Accepted`, the generated-index note, a Sections table (`§ · Section · State · Docs · Last updated`) whose `State` is `filled` or `omitted — <reason>`, a Decision Records line naming the record directory, and a Change Log table (`Date · Scope · Sections written · Decisions added`) whose rows are **appended, never rewritten**. A top index is `Accepted` from the moment it exists; there is no earlier state.
 
-```markdown
-# <System / Subsystem> — Architecture (arc42)
+**Carried-forward document.** In update-delta scope the map is **document-granular**: it names only the documents the delta writes. A topic document of an included section that the map neither names nor supersedes is **carried forward byte-identical** — not opened, not rewritten, not re-ordered — and keeps its Documents-table row at its existing ordinal. Silence in the map means carry forward, never supersede.
 
-- **Last updated:** <YYYY-MM-DD of the last persistence>
-- **Status:** Accepted
+**Omitted section = index-only folder.** No topic document; the marker travels verbatim in the index's state line.
 
-_Generated index — regenerated by the architecture persistence step. Edit the topic documents and the records, not this file._
-
-## Sections
-
-| § | Section | State | Docs | Last updated |
-| --- | --- | --- | --- | --- |
-| 1 | [Introduction and Goals](01-introduction-and-goals/README.md) | filled | 1 | 2026-09-18 |
-| … | … | … | … | … |
-| 7 | [Deployment View](07-deployment-view/README.md) | omitted — <reason> | 0 | 2026-09-18 |
-| … | … | … | … | … |
-| 12 | [Glossary](12-glossary/README.md) | filled | 1 | 2026-09-18 |
-
-## Decision Records
-
-<n> records in [`09-architecture-decisions/`](09-architecture-decisions/README.md) (or the project's existing directory `<path>`) — the log is that folder's index.
-
-## Change Log
-
-| Date | Scope | Sections written | Decisions added |
-| --- | --- | --- | --- |
-| 2026-09-18 | seed | 1, 4, 5, 6, 8, 9, 10, 11 (2, 3, 7, 12 omitted) | ADR-0001–ADR-0003 |
-| 2026-10-02 | update delta | 5, 8, 9 | ADR-0004 |
-```
-
-`State` is `filled`, `omitted — <reason>`, or `pending` (a section the scaffold created and no persistence has filled). `Docs` is the number of topic documents in that folder — `0` for an omitted or pending section.
-
-A **section index**, `README.md` inside a section folder:
-
-```markdown
-# 5. Building Block View
-
-_Part of [<System / Subsystem> — Architecture (arc42)](../README.md)._
-
-The static decomposition: what the system is made of, level by level, and what each block provides and requires.
-
-| # | Document | Root heading | Last updated |
-| --- | --- | --- | --- |
-| 01 | [Whitebox Overall System](01-whitebox-overall-system.md) | 5.1 Whitebox Overall System | 2026-09-19 |
-| 02 | [Blackbox …](02-….md) | 5.1.1 Blackbox … | 2026-09-19 |
-
-## Omitted subsections
-
-- _Omitted — not needed_ (5.2 Level 2)
-- _Omitted — not needed_ (5.3 Level 3)
-
-## Superseded documents
-
-- [`01-building-block-view.md`](01-building-block-view.md) — superseded 2026-09-19 by `01-whitebox-overall-system.md`; kept for history.
-```
-
-The one-line section description is the third content line, taken from the scaffolded index — the scaffold step generated it and you carry it forward. An index for a **pending** section carries `_Pending — not yet drafted_` in place of the Documents table; an index for an **omitted** section carries the Workfile's marker verbatim. The two trailing sections appear only when they apply.
-
-**Indices are fully owned by this step.** Every index you touch is regenerated from the tree, and the top index's Change Log rows are **appended, never rewritten**. Read the existing top index before regenerating it — the Change Log is the one part of it that cannot be reconstructed from the tree, and it is gone the moment you write over it blind. `Status` and the header's `Last updated` are document-level; per-section freshness is the Sections table's `Last updated` column.
+**No arc42 guidance text anywhere under the target, ever** — and therefore no attribution notice in any file under it.
 
 ### What Is Not Persisted
 
-The work-package appendix, the traceability appendix, and the **layout map appendix** are transient planning material and are never written into the project. The decision-record appendix is not persisted as a document either — it is the *source* of the record files. The layout map in particular is the instruction you executed, not content: persisting it would put a workspace-relative table into a project document that contradicts itself the moment a later delta re-splits a section.
-
-**Workfile-level process metadata is not persisted.** The Workfile header can carry an account of how the document was produced rather than what the architecture is: `Revision N:` log entries, a `Contradictions found` blockquote, an inputs note, a completeness line. None of it has a field in the index format, none of it is a mapped heading in Appendix D, and none of it gets a document. Do not invent a home for it — the top index carries `Last updated`, `Status`, the Sections table, and the Change Log, and the fixed folder table admits no thirteenth section.
-
-Its durable *substance* already has homes, written by the drafting step, not by you: a decision that changed belongs in that decision's own `Context` and `Consequences`, and an unresolved contradiction or a cost accepted under it belongs in §11 Risks and Technical Debts. Where the substance is in neither, that is a **gap to report** — the reviewed Workfile is what failed to carry it forward. Raw revision-log text pasted into a topic document, or a top index grown a "Revision History" heading, is the same invention this step never makes.
+Appendix B (work packages) and Appendix C (the layout map) are transient and never written. Appendix A is the *source* of the record files, not a document. Workfile header lines and any process metadata — revision logs, contradiction notes, inputs notes — have no home in the layout: invent none, and where their durable substance is missing from a record or from §11, report the gap rather than closing it.
 
 ## When to Use
 
-- Dispatched as the persistence step of the architecture workflow — by that workflow directly, or later by a composite caller that deferred persistence and now supplies its own ratification record — after the architecture document has been reviewed, its decisions ratified, and the structure scaffolded.
-- The brief supplies the reviewed architecture Workfile path, the ratification record (§ The Ratification Record), the pinned baseline, the scaffold step's `Scaffold result:` line, and the migration direction (default: none).
-- **Not for** creating the arc42 structure. The scaffold step creates it before drafting; a target without it is a blocking report item, not a structure for you to invent.
-- **Not for** deciding how a section splits into documents. Appendix D is that decision, already made and already reviewed.
-- **Not for** persisting requirements, work packages, traceability, or the layout map; those are transient or persisted only on separate user direction.
-- **Not for** authoring or revising architecture content. You transform and place what was reviewed; a content gap is a report item.
-- **Not for** writing a Workfile. Your outputs are files in the target project; the workspace must gain nothing from your session.
-- **Not on your own initiative.** Persisting a document nobody reviewed, or ratifying a decision nobody ratified, is out of bounds even when the Workfile is sitting there.
+- Dispatched as the persistence step of the architecture workflow, after the decisions have been ratified.
+- The brief supplies the architecture Workfile path, the `Ratification:` line, and the pinned baseline.
+- **Creating the layout is yours only under the existence rule** — never to "repair" a partial or foreign structure at the location.
+- **Not for** deciding how a section splits into documents. Appendix C is that decision, already made.
+- **Not for** authoring or revising architecture content. You transform and place what was ratified; a content gap is a report item.
+- **Not for** persisting Appendix B or C, or for converting prior documentation found beside the target.
+- **Not for** writing a Workfile. Your outputs are files in the target project; the workspace gains nothing.
+- **Not on your own initiative.** Persisting a document nobody ratified is out of bounds even when the Workfile is sitting there.
 
 ## The Ratification Record
 
-The ratification record is the one input that authorizes a status promotion. It is produced at the requesting agent's ratification checkpoint — the architecture workflow's own, or a composite caller's when that caller deferred persistence — and reaches you, and the review of your session, in the brief. Its grammar is fixed here and nowhere else: the requesting agent echoes the grammar line so it can write the record, and every other step refers to the record by name and to this section for its format.
-
-One line:
+The ratification record is the one input that authorizes a status promotion. Its grammar is fixed here and nowhere else:
 
 ```text
-Ratification: workfile=<path>, review=<path>, ratified=<ADR-NNNN[, ADR-NNNN …] | none>, withheld=<ADR-NNNN[, ADR-NNNN …] | none>, by=<user | adoption>
+Ratification: ratified=<ADR-NNNN[, ADR-NNNN …] | none>, withheld=<ADR-NNNN[, ADR-NNNN …] | none>, by=<user | adoption>
 ```
 
-- **`workfile=`** — the reviewed architecture Workfile the ratification was made against. It must equal the Workfile path the brief names; a record made against another file authorizes nothing here.
-- **`review=`** — the design-review Workfile whose verdict the ratifier saw. Its first line must read `PASS` or `PASS-WITH-NOTES`; a record citing a `BLOCKED` review is invalid.
-- **`ratified=`** — the decision IDs you promote to `Status: Accepted`. In `document-existing` mode these are the as-is decision IDs whose description was ratified.
+- **`ratified=`** — the decision IDs you promote to `Status: Accepted`.
 - **`withheld=`** — the decision IDs the ratifier declined to promote. Their records persist exactly as authored, at `Status: Proposed`.
-- **Totality.** Every `ADR-NNNN` in the Workfile's Appendix A appears in exactly one of `ratified=` and `withheld=`. An ID in neither list, in both, or absent from the Workfile makes the record invalid — a record that does not account for every decision was written against a different revision of the document.
-- **`by=`** — `user` when the user ratified at the checkpoint; `adoption` when the requesting agent ratified by adoption under a Communication Policy that auto-proceeds.
+- **Totality.** Every `ADR-NNNN` in the Workfile's Appendix A appears in exactly one of the two lists. An ID in neither, in both, or absent from the Workfile makes the record invalid — it was written against a different revision of the document.
 
-Example — a decide-new run in which the user overturned one of three decisions:
-
-```text
-Ratification: workfile=03-architecture-arc42.md, review=04-review-architecture.md, ratified=ADR-0016, ADR-0017, withheld=ADR-0018, by=user
-```
-
-A **missing or invalid** record — absent from the brief, a `workfile=` that is not the brief's Workfile, a `review=` whose verdict is `BLOCKED`, or a totality failure — means no decision may be promoted: report `ratification=missing | invalid — <what fails>` and stop; persist nothing. You never infer a ratification from the fact that the run reached you.
+A missing or invalid record means no decision may be promoted: report `ratification=missing | invalid — <what fails>` and stop; persist nothing. Never infer a ratification from the fact that the run reached you.
 
 ## Workflow
 
-1. **Collect the inputs.** The reviewed architecture Workfile path; the ratification record, in the grammar of § The Ratification Record; the pinned baseline (the pre-change state of the target); the scaffold step's `Scaffold result:` line, passed verbatim — you read its `target`, `shape`, `document-scope`, and `next-adr` fields, and nothing here depends on its `structure` field; and the migration direction — `none | migrate flat directory | migrate single file`, default `none`, valid only when the brief cites explicit user direction. A missing or invalid ratification record means no decision may be promoted to `Accepted` — report `ratification=missing | invalid — <what fails>` and stop rather than guessing.
+1. **Collect the inputs.** The architecture Workfile path, the `Ratification:` line, the pinned baseline. Read the header's `Target:`, `Document scope:`, `Records from:`, and `Section scope:` lines, and Appendix C. An invalid ratification record stops the run here.
 
-2. **Verify the target; do not create it.** Read the Workfile header's `Scaffold:` and `Document scope:` lines and its Appendix D. Then check three things against the tree, in this order, and stop on the first that fails:
+2. **Verify the target against the header; the tree is the fact, the header is a claim.** Apply the identity rule at `Target:`.
+   - **Seed** — the target must be absent: no directory, or a directory holding no `README.md`. If it holds a `README.md` whose H1 is not this document's, apply the collision rule, make `<Target>/arc42/` the target, and re-check there.
+   - **Update delta** — the target must be the folder layout, all twelve folders and their indices present, top index `Status: Accepted`.
+   - **Records** — no Appendix A ID may already exist in any decision directory, and `Records from:` must be one above the highest number in use.
 
-   - **Identity.** The target satisfies an identity rule of § The Persisted Layout, and the shape you derive equals the `shape` in the result line. Derive it yourself from the tree — the header is a claim, not evidence.
-   - **Scaffold precondition.** For a folder-layout target, all twelve section folders and their indices exist. A missing folder is a blocking report item: the scaffold step did not run, or ran and was not reviewed. You add none of them. A legacy shape has no scaffolded structure by definition, so for one of those this precondition is checked **after** the migration act of step 8 and before the delta is applied — never skipped, only deferred.
-   - **Status invariant.** `Document scope: seed` requires the top index at `Status: Scaffolded`; `Document scope: update delta` requires `Accepted`. A mismatch is blocking — a `seed` header against an `Accepted` target would overwrite a document nobody reviewed, and an `update delta` header against a `Scaffolded` target means the drafting step wrote a delta against a document that does not exist yet.
+   Any failure → report `precondition failed — <scope mismatch | partial layout | record collision>: <what the tree shows>` and persist nothing. An unresolvable target path is likewise blocking, never an invitation to write elsewhere.
 
-   Report a failure as `scaffold=absent | status invariant violated — <what the tree shows>` and persist nothing. An unresolvable target path is likewise blocking, not an invitation to seed elsewhere.
+3. **Resolve the record directory.** An existing `docs/adr/`, `docs/decisions/`, or `adr/` always wins, in that order of search; otherwise the records go in `<target>/09-architecture-decisions/`.
 
-3. **Resolve the record directory.** An existing `docs/adr/`, `docs/decisions/`, or `adr/` always wins, in that order of search; otherwise the records go in `<target>/09-architecture-decisions/`. Read the highest number already in use across every decision directory you find and continue that sequence — never restart at `0001` in a project that already holds records, and never collide with a number the result line's `next-adr` already reserved.
+4. **Seed scope — create and fill in one act.** Create the top index and the twelve section folders with their indices from the fixed folder table. Then, for every section, write the topic documents Appendix C names at the paths and promotions it states; a section the map leaves unmapped stays index-only with its marker in the state line. Write one record per Appendix A entry, `Accepted` if and only if that ID appears in `ratified=`. Rewrite §9's `Link` column **before** writing `09-architecture-decisions/README.md`. Generate every section index and the top index, `Status: Accepted`, with one Change Log row whose scope reads `seed`. The result is exactly the thirteen indices, the mapped documents, and the records — nothing else.
 
-4. **Seed scope** (top index `Status: Scaffolded`). For every section, write the topic documents Appendix D names for it, in the per-document format, at the paths the map states and with the promotion the map states. A section the map leaves without documents stays an **index-only folder** carrying its omission marker. Write one record per entry in the Workfile's Appendix A at `NNNN-<slug>.md`, promoted by two, with `Status: Accepted` if and only if that ID appears in the record's `ratified=` list. Rewrite the §9 `Link` column **before** writing `09-architecture-decisions/README.md`. Then regenerate every section index and the top index: `Status: Scaffolded → Accepted`, one Change Log row with scope `seed`.
+5. **Update-delta scope.** For each section in `Section scope: included=`, write exactly the documents Appendix C names, and regenerate that section's index. Each document of an included section falls into exactly one of three cases: **named by a path row** → replaced whole-file, or created there when the row is new, keeping existing ordinals; **named by a `→ superseded — <reason>` row** → left on disk untouched and listed under "Superseded documents" with that reason; **named by no row at all** → carried forward byte-identical. Regenerate the index from the union of the three. For `09-architecture-decisions/README.md`, **append** the new rows at the end of the existing table — never rewrite or reorder an existing row, and never edit an existing record file. Write the new records at the numbers `Records from:` reserved. Regenerate the top index's header and Sections table and append exactly one Change Log row. **Never delete**, and **never create a folder** — all twelve were verified present in step 2. Every other path stays byte-identical.
 
-5. **Update-delta scope, folder layout** (top index `Accepted`). For each section in the Workfile's `Section scope: included=` list, write **exactly the documents Appendix D names for it** by whole-file replacement — filling a previously pending folder is that same replacement — and regenerate that section's index.
-
-   The map is **document-granular**: it names only what this delta writes, so each document of an included section falls into exactly one of three cases, and each case has exactly one treatment.
-
-   - **Named by a path row** — replaced whole-file at that path, or created there when the row is new. An existing document keeps its ordinal; a new one continues the folder's sequence.
-   - **Named by a `→ superseded — <reason>` row** — left on disk untouched and listed in the regenerated section index under "Superseded documents" with that row's reason. A row is the **only** thing that makes a document superseded.
-   - **Named by no row at all** — **carried forward byte-identical**: you do not open it, rewrite it, re-order it, or list it as superseded, and it keeps its Documents-table row at its existing ordinal.
-
-   Regenerate the section index from the union of the carried-forward, re-authored, and new documents. **Never delete a topic document**, and never supersede one the map did not: a document the map is silent about is content this delta deliberately leaves alone, not content it retires. For `09-architecture-decisions/README.md`, **append** the new rows and their one-line summaries at the end of the existing table — never rewrite or reorder an existing row, and never edit an existing record file (a superseding record says so in its own text and in its own §9 row). Write the new records at the next free numbers. Regenerate the top index's header and Sections table from the resulting tree and append exactly one Change Log row. Every other path in the target stays byte-identical.
-
-6. **Update-delta scope, flat legacy directory.** The flat shape is **never written.** With cited migration direction, run step 8 and then step 5, in that order, and commit the two acts separately so the pure-rename diff is reviewable on its own. Without cited direction, stop and report `shape=flat directory (legacy) — migration direction required` as a blocking item; persist nothing. The workflow's Deliverable then offers the migration and obtains the user's decision — which is a project decision, not a by-product of shipping a delta.
-
-7. **Update-delta scope, legacy single file or non-arc42 target.**
-
-   - **Legacy single file.** Not written in its single-file shape either. With cited migration direction, run step 8's single-file variant and then step 5. Without it, stop and report `shape=legacy single file — migration direction required` as a blocking item.
-   - **Non-arc42 target.** Apply the mapping table the Workfile carries — the drafting step wrote the delta in the existing document's own structure. Write the delta where the mapping says and convert nothing. This is the one shape with no arc42 structure to scaffold, so the scaffold precondition and the status invariant do not apply to it; record `shape=non-arc42, scaffold=n/a` in the manifest so the review sees why they were not checked.
-
-8. **Migration — direction-gated, `git mv`-based.** Run this only when the brief cites explicit user direction, and record that citation in the manifest.
-
-   Migration is the **one** act in which folders come into being here, and it is not an exception to "never create a structure": every folder it produces is produced by *moving a file that already exists* into it, never by scaffolding an empty one. Because the result is a structure no scaffold step ever saw, re-run step 2's identity rule and scaffold precondition against the migrated tree before you apply the delta — and commit the migration separately, so its pure-rename diff is reviewable on its own before content lands on top of it.
-
-   **Flat directory → folder layout.** Every one of the twelve section files migrates as a **rename**; none is deleted.
-
-   - For each **filled** `NN-<section>.md`: `git mv` it to `NN-<section>/01-<section-slug>.md`. Its H1 is already the section heading promoted by one, so it is unchanged; the body is unchanged; only the backlink line is rewritten to the two-link form.
-   - For each **stub** `NN-<section>.md` (an omission marker): `git mv` it to `NN-<section>/README.md`. The stub *becomes* that omitted section's index — it already carries the index's H1, backlink, and marker, and regeneration adds only the one-line description, so git's rename detection sees a clean `R`. The folder then has no topic document, exactly as an omitted section requires.
-   - `git mv 09-architecture-decisions.md 09-architecture-decisions/README.md` and rewrite its `Link` column to `NNNN-<slug>.md`.
-   - `git mv decisions/NNNN-*.md 09-architecture-decisions/`.
-   - Generate the section index for every filled section: its Documents table lists the one migrated document. Regenerate the top index with a Change Log row `migrated from flat directory`. Remove the now-empty `decisions/`.
-   - **Verify `git log --follow` on at least two moved paths reaches the document's seed commit before you go on** — one of them a renamed stub, because that is the case a delete-and-recreate would silently lose. Then apply step 5 for the current delta.
-
-   **Legacy single file → folder layout.** Split the file at its `## N.` headings into `NN-<section>/01-<section-slug>.md`, promoting each by one; a section absent from the legacy file becomes an index-only folder reading `_Omitted — not present in the migrated document_`. Generate the indices and the top index with a Change Log row `migrated from <old path>`. Leave the records where they are, rewriting the §9 links relative to the new log. Delete the old file **only after** every folder, document, and index exists, and report the action as `deleted (migration source)`. A split is the one migration a rename cannot express, so state in the manifest that `git log --follow` evidence is unavailable for it.
-
-9. **Report a persistence manifest** in the session's evidence block:
+6. **Report the persistence manifest** in the session's evidence block:
 
    ```text
-   Persistence: target=<path>, shape=<directory | flat directory (legacy) | legacy single file | non-arc42>, scope=<seed | update delta | migrate+update delta>, scaffold=<verified | n/a>, migration=<none | flat directory → folder layout (directed <date>) | single file → folder layout (directed <date>)>
+   Persistence: target=<path>, scope=<seed | update delta>, layout=<created | existing>, collision-fallback=<none | <path>>
    | Path | Action | Source |
    | --- | --- | --- |
    | README.md | regenerated | top index |
    | 05-building-block-view/README.md | index regenerated | section index |
    | 05-building-block-view/01-whitebox-overall-system.md | created | Workfile §5.1 |
-   | 05-building-block-view/01-building-block-view.md | superseded (kept) | Appendix D `→ superseded` row |
    | 05-building-block-view/02-request-router.md | carried forward | — |
-   | 07-deployment-view/README.md | moved | 07-deployment-view.md |
-   | 09-architecture-decisions/README.md | appended 5 rows | Workfile §9 |
    | 09-architecture-decisions/0016-<slug>.md | created (Accepted) | Appendix A ADR-0016 |
    | 01-introduction-and-goals/01-introduction-and-goals.md | untouched | — |
    ```
 
-   Actions vocabulary — use these words and no others: `created`, `replaced`, `regenerated`, `index regenerated`, `appended <n> rows`, `moved`, `superseded (kept)`, `carried forward`, `untouched`, `deleted (migration source)`. `carried forward` and `superseded (kept)` are the two update-delta actions, and the map decides which applies: `carried forward` for a topic document of an `included=` section the map does not name — its `Source` column reads `—` — and `superseded (kept)` only where a `→ superseded — <reason>` row backs it, cited in that row's `Source` column. Say `untouched` for every other unchanged path, so the review can tell a document this delta considered and left alone from a path outside its scope. Two words from the flat layout are retired: `stub` (an omitted section is an index-only folder, never a stub document) and the general `deleted` (only a split legacy single file's source is ever deleted). One row per path in the target, including the untouched ones: the manifest is what the review diffs against, so a path you left alone is as much a claim as a path you wrote.
+   **Actions vocabulary — these words and no others:** `created`, `replaced`, `regenerated`, `index regenerated`, `appended <n> rows`, `superseded (kept)`, `carried forward`, `untouched`. One row per path in the target, including the untouched ones: the manifest is what the review diffs against, so a path you left alone is as much a claim as a path you wrote.
 
 ## Quality Criteria
 
-- The target held the scaffolded structure **before** the fill: an identity rule of § The Persisted Layout is satisfied, all twelve section folders and their indices were present, and the top index read `Status: Scaffolded` (seed) or `Accepted` (update delta). You created no folder the scaffold did not — on a migrated legacy target, every folder was established by the directed migration act, from files that already existed, and the precondition was re-checked against the migrated tree before any content landed.
-- After a seed, every section folder holds exactly the topic documents Appendix D names for it — or only its index when the section is omitted — and the record directory holds one record per entry in the Workfile's Appendix A.
-- Every topic document **this session wrote** equals its Workfile source exactly, modulo the `depth − 1` heading promotion and the added backlink line. No content was reworded, trimmed, or added, and this session created no document the map does not name.
-- Every document's H1 is its root heading promoted by exactly `depth − 1`, and its body is promoted by that same distance; every document has exactly one H1.
-- Every omitted section is an index-only folder whose index carries the Workfile's marker verbatim.
-- **No topic document was deleted.** Every document a previous map named is still on disk, and each one the current map **explicitly supersedes** is listed under "Superseded documents" in its section index with that row's reason. No "Superseded documents" entry exists that no `→ superseded — <reason>` row backs.
-- **Carried-forward documents are byte-identical.** Every topic document of an `included=` section that the layout map neither names nor supersedes is unchanged against the pinned baseline, keeps its ordinal, and still holds its row in the regenerated Documents table. The section index was regenerated from the union of carried-forward, re-authored, and new documents, and the manifest calls each of them `carried forward` rather than `untouched`.
-- Every record equals its Workfile record exactly, modulo the two-level promotion and the promoted `Status:` — one H1 reading `# ADR-NNNN: <title>` and its parts at `##`.
-- `Status: Accepted` appears only for the IDs in the ratification record's `ratified=` list, and every ID in that list persists `Accepted`; every ID in `withheld=` persists `Proposed`.
-- Every §9 row's link resolves relative to `09-architecture-decisions/README.md`, and the row's ID, title, status, and date match that record's own header. Every persisted record has a §9 row, and no pre-existing row was rewritten or reordered.
-- In update-delta scope the set of changed paths is exactly: the mapped documents of the `included=` sections, those sections' indices, `09-architecture-decisions/README.md` (appended rows only), the new records, and the top index. Everything else is byte-identical to the pinned baseline.
-- The top index's Change Log grew by exactly one row per act, its pre-existing rows are unchanged, and `Status` was promoted `Scaffolded → Accepted` on the first fill and left `Accepted` after.
-- No `arc42 guidance §N` text and no attribution notice exists anywhere under the target (grep = 0).
-- A flat legacy directory or a legacy single file was written only after cited user direction; the flat migration moved every one of the twelve section files by `git mv`, deleted none, and `git log --follow` on at least two moved paths reached the document's seed commit.
-- The work-package, traceability, and layout-map appendices were not written into the project.
-- No document, folder, or index field was created to hold the Workfile header's process metadata — its revision log, its contradictions blockquote, its inputs note — and no document's body was padded with that text.
-- The task directory gained no file: this session wrote no Workfile.
-- The manifest accounts for every path in the target, action by action, and matches what the diff actually shows.
+- **The existence rule held**: the layout was created only on an absent target under a `seed` header, and an `update delta` found all twelve folders present at baseline.
+- After a seed, every section folder holds exactly the topic documents Appendix C names for it — or only its index when the section is omitted — and the record directory holds one record per Appendix A entry.
+- Every document this session wrote equals its Workfile source exactly, modulo the `depth − 1` promotion and the added backlink line; every document has exactly one H1; no document exists that the map does not name.
+- Every omitted section is an index-only folder whose index carries the Workfile's marker verbatim, and every section index carries its H1, backlink, and the description from the fixed folder table.
+- **No topic document was deleted**, and every "Superseded documents" entry is backed by a `→ superseded — <reason>` row.
+- **Carried-forward documents are byte-identical** to the pinned baseline, keep their ordinals, and still hold their rows in the regenerated Documents table.
+- Every record equals its Workfile source modulo the two-level promotion and the promoted status; `Status: Accepted` appears for exactly the `ratified=` IDs and every `withheld=` ID reads `Proposed`.
+- Every §9 row's link resolves relative to `09-architecture-decisions/README.md` and matches that record's own header; rows are append-only.
+- In update-delta scope the changed-path set is exactly the mapped documents of the `included=` sections, those sections' indices, §9's index, the new records, and the top index; everything else is byte-identical.
+- The top index's Change Log grew by exactly one row and its prior rows are unchanged.
+- No arc42 guidance text and no attribution notice exists anywhere under the target (grep = 0); Appendices B and C were not persisted, and no home was invented for process metadata.
+- The task directory gained no file, and the manifest matches what the diff actually shows.
 
 ## Anti-Patterns
 
-- **Creating the structure** — scaffolding the folders yourself because the target has none, or adding the one folder that is missing. Either hides the fact that the scaffold step never ran or never passed its review, and it re-opens the overwrite hazard that a step which cannot create cannot have. The directed migration is not this: it moves files that already exist, under a direction the brief cites.
-- **Seeding over a filled document** — treating a `seed` header as authority against an `Accepted` target. The status invariant exists because the header is the drafting step's claim and the tree is the fact; when they disagree, you stop.
-- **Deleting a superseded document** — removing `01-building-block-view.md` because the new map calls that content `01-whitebox-overall-system.md`. A re-split adds and supersedes; it never removes. The deletion nobody reviewed is the one nobody can recover.
-- **Superseding by omission** — listing a document under "Superseded documents", or otherwise treating it as retired, because the new map does not name it. The map is document-granular and names only what the delta writes, so silence means carry forward byte-identical. Retirement is the explicit `→ superseded — <reason>` row the reviewer saw; supplying one here retires a document nobody agreed to retire.
-- **Rewriting a carried-forward document** — re-flowing, re-ordering, renumbering, or otherwise tidying a document of an included section the map does not name. Carried forward means byte-identical: a document this delta did not write is a document whose change nobody reviewed.
-- **Splitting below the map, or splitting by habit** — giving §5.1.1 its own document because the layout allows it, or merging two mapped documents into one because it reads better. A document *you create* that the map does not name is unreviewed structure, and the reviewer checks the tree against the map.
+- **Creating outside the existence rule** — adding folders on an `update delta` because one was missing, or seeding over a present document because the header said `seed`. A tree that disagrees with the header is a drafting defect to report, not a shape to repair.
+- **Seeding over a filled document** — treating the header as authority against the tree. The header is a claim; the tree is the fact, and when they disagree you stop.
+- **Deleting a superseded document** — removing `01-building-block-view.md` because the new map calls that content `01-whitebox-overall-system.md`. A re-split adds and supersedes; it never removes.
+- **Superseding by omission** — treating a document as retired because the map does not name it. Silence means carry forward byte-identical; retirement is the explicit row the ratifier saw.
+- **Rewriting a carried-forward document** — re-flowing, renumbering, or tidying a document the map does not name. Carried forward means byte-identical.
+- **Splitting below or above the map** — giving §5.1.1 its own document because the layout allows it, or merging two mapped documents because it reads better. Structure you create that the map does not name is unreviewed.
 - **Overwriting instead of merging** — writing the delta's documents over every folder in an existing directory deletes content whose removal nobody reviewed.
-- **Rewriting existing §9 rows** — the decision log is append-only; a reordered or reworded historical row destroys the record the log exists to keep.
-- **Regenerating an index without reading it first** — the Change Log is the one part of the top index that cannot be reconstructed from the tree, and it is gone the moment you write over it blind.
-- **Rewriting prose `§N` references into links** — unreviewable churn across every document, for navigation the indices already provide.
-- **Writing `_Not affected by this change_` into the project tree** — that marker belongs to a delta Workfile. An unaffected section is not written at all in update-delta mode; a persisted index reads `_Omitted — <reason>_` or lists documents.
-- **Migrating without direction, or migrating by delete-and-create** — moving files a project README, CI job, wiki, or issue tracker may link is a project decision, never a by-product of shipping a delta; and a `D`+`A` pair where an `R` was possible throws away the history the move existed to preserve.
-- **Persisting the work-package, traceability, or layout-map appendices** — planning material in the project tree goes stale immediately and contradicts the next run.
-- **Inventing the missing piece** — a section the Workfile left neither mapped nor marked, a decision with no ratification, an index title that was never in the Workfile. Report the gap; do not close it here.
-- **Promoting statuses wholesale** — setting every decision to `Accepted` because the run reached this step, rather than checking the ratification record's `ratified=` and `withheld=` lists ID by ID.
-- **Copying guidance or attribution into the target** — the licensed arc42 text lives in the skill that carries it and never reaches a project tree; a notice in a persisted file means guidance got there too.
-- **Writing a Workfile** — a manifest, a summary, or a "persistence report" in the task directory. Your medium is the target project; the manifest goes in the session's evidence block.
+- **Rewriting existing §9 rows, or regenerating an index without reading it first** — the log is append-only, and the Change Log is the one part of the top index that cannot be reconstructed from the tree.
+- **Rewriting prose `§N` references into links**, or **writing `_Not affected by this change_` into the tree** — the first is unreviewable churn, the second is delta bookkeeping that means nothing to a reader.
+- **Persisting Appendix B or C, or inventing the missing piece** — planning material goes stale immediately, and a section the Workfile left neither mapped nor marked is a gap to report, not a file to fill.
+- **Promoting statuses wholesale, copying guidance into the target, or writing a Workfile** — each substitutes your judgment for a ratification, a license boundary, or a medium that is not yours.
