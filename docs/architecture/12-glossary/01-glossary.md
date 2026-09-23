@@ -2,7 +2,7 @@
 
 _Part of [Yggdrasil — Architecture (arc42)](../README.md) · [§12](README.md)._
 
-Terms as the doctrine defines them; definitions are quoted or closely paraphrased from the cited source.
+Terms as the doctrine defines them; definitions are quoted or closely paraphrased from the cited source. Rows added by this delta cite the section of this document that defines them.
 
 | Term | Definition | Evidence |
 | --- | --- | --- |
@@ -30,3 +30,14 @@ Terms as the doctrine defines them; definitions are quoted or closely paraphrase
 | **Capability inventory** | The generated skill listing built-in skills by role plus custom-granted tools, loaded once per session by Odin | `agents/odin-autonomous.md:68`; `README.md:122` |
 | **Skill** | A `SKILL.md` with frontmatter (`name`, `description`) and five required sections, loadable by the role its prefix names | `scripts/README.md:67-69`; `skills/research/odin-research-workflow/SKILL.md:1-4` |
 | **The Pantheon** | Odin plus the five specialists: Mimir (Researcher), Brokk (Implementer), Heimdall (Reviewer), Bragi (Communicator), Kvasir (Strategist) | `agents/odin-autonomous.md:50-56`; `README.md:92` |
+| **Mode (architecture document)** | `document-existing` — an as-is record of the system, proposing nothing; `decide-new` — forward-looking decisions for a bounded objective with records at `Status: Proposed` | `skills/architecture/odin-architecture-workflow/SKILL.md:12-15` |
+| **Document scope** | `seed` — the target has no architecture document and every in-scope section is written from scratch; `update delta` — one exists and only the sections the objective changes are written | `skills/architecture/kvasir-software-architecture/SKILL.md` § Purpose ("Two document scopes") |
+| **Long-term relevant content** | Content that passes the test of §5.2 I-1: it stays true and useful to a reader of the persisted document after the triggering task completes — boundaries, interfaces, decisions with rationale, quality goals, stable mechanisms, risks | §5.2 I-1; ADR-0010 |
+| **Task-scoped content** | Content relevant only to the triggering task: run provenance, workspace references, work-package internals, temporary measures, implementation minutiae; excluded from §1–§12 and confined to Appendices B–D and the report | §5.2 I-1 tell-tale list; ADR-0010 |
+| **Implementation minutiae** | Internal details of a building block that cross no module boundary — helper structure, local control flow, naming inside a block, test-case selection | `skills/architecture/kvasir-software-architecture/SKILL.md` § Boundaries |
+| **Structural footprint** | The modules, entry points, and boundary interfaces an objective reaches or changes; the declared scope of a forward-looking context step | `skills/architecture/odin-architecture-workflow/SKILL.md:92`; `skills/architecture/mimir-architecture-context/SKILL.md:40` |
+| **Omission marker (typed)** | One of three fixed strings naming why a section or subsection is empty: scope, evidence, or unaffected by this update | §5.2 I-2; ADR-0011 |
+| **Refresh rule** | When a delta re-authors a persisted document it carries forward every durable statement and drops every task-scoped one, listing each drop in the report | §5.2 I-1; ADR-0010 |
+| **Carried-forward document** | A topic document of an included section that an update delta neither re-authors nor supersedes; persisted byte-identical and listed in the regenerated index | §5.2 I-5; ADR-0014 |
+| **Superseded document** | A previously persisted topic document a later layout map explicitly retires with a `→ superseded — <reason>` row; kept on disk and listed under "Superseded documents" in its section index | §5.2 I-5; ADR-0014; `skills/architecture/brokk-architecture-persistence/SKILL.md:67` |
+| **Document-stable reference** | A citation that resolves inside the persisted document or the repository: a repository path, a section number, a decision-record ID, or a requirement ID defined in §1.1 | §5.2 I-3; ADR-0012 |

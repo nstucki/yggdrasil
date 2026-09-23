@@ -6,4 +6,4 @@ The shape of the solution in half a page: the technology choices, the decomposit
 
 | # | Document | Root heading | Last updated |
 | --- | --- | --- | --- |
-| 01 | [Solution Strategy](01-solution-strategy.md) | 4. Solution Strategy | 2026-09-20 |
+| 01 | [Solution Strategy](01-solution-strategy.md) | 4. Solution Strategy | 2026-09-23 |
