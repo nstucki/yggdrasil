@@ -200,7 +200,7 @@ Decomposes a research question into parallel-executable clusters (mandatory Kvas
 
 ### Architecture
 
-Produces an arc42-structured architecture document in one of two modes — an as-is record of the architecture a codebase already has, or a forward-looking decision set with decision records and work packages — through a conditional codebase-context gate, a scaffolded skeleton, a mandatory design review, and persistence into the target project by default.
+Produces one arc42-structured architecture document — its sections plus a decision record for each structurally significant decision — through a conditional codebase-context gate, a drafting step left unreviewed by design, a ratification checkpoint over the decisions, and reviewed persistence into the target project by default, creating the folder layout when it is absent.
 
 **Triggering verdict:** `Architecture check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
 
