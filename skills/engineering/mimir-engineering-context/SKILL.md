@@ -34,7 +34,7 @@ Four of your outputs are consumed directly and must be shaped for that consumpti
 
 ## When to Use
 
-- Dispatched as the engineering-context step of the software engineering workflow, on an existing codebase, once the paths the work will touch are known — after the design delegation when one fired, so the declared scope can be the ratified write sets rather than a guess.
+- Dispatched as the engineering-context step of the software engineering workflow, on an existing codebase, once the paths the work will touch are known — after the architecture stage when it fired, so the declared scope can be the ratified write sets rather than a guess.
 - When the objective changes behavior whose current form must be characterized before it is altered: the inputs it accepts, the outputs it produces, its side effects, its edge cases, and its defaults.
 - When the test infrastructure for the affected area — runner, exact commands, layout, fixtures, and the suite's current result — is not already established and a test-first session will need it.
 - When the engineering conventions the new code will sit next to — naming, layout, test placement, fixture patterns, error-propagation idiom — are not already established.

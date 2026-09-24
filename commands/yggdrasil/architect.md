@@ -1,12 +1,12 @@
 ---
-description: "arg: request, required — mode inferred or stated (document | decide)"
+description: "arg: request, required — the system or area to document, or the objective to decide architecture for"
 agent: Odin (Interactive)
 subtask: false
 ---
 
 # Architect
 
-Architecture request (orchestrated Architecture workflow — arc42 in one of two modes, documenting the existing architecture as-is or deciding new architecture with decision records and work packages; the mode is stated in the request or inferred and recorded; the document is scaffolded, drafted, and design-reviewed before it is persisted to `docs/architecture/` by default; multi-dispatch with a user-visible ratification checkpoint before persistence; expect to wait).
+Architecture request (orchestrated Architecture workflow — an arc42 architecture document of the system or of the stated objective: structural context gathered when it is not already established, the document drafted with a decision record for each structurally significant decision, and persisted to `docs/architecture/` by default — creating the folder layout when none exists, merging when one does — after a user-visible ratification checkpoint; multi-dispatch; expect to wait).
 
 Request: $ARGUMENTS
 

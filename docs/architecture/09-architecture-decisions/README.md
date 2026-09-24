@@ -22,3 +22,7 @@ Decisions already in force, inferred from the repository and recorded as-is. Non
 | ADR-0012 | Persisted sections carry only document-stable references | Accepted | 2026-09-23 | decided | [ADR-0012](0012-persisted-sections-carry-only-document-stable-references.md) |
 | ADR-0013 | Relevance enforced by a judgment-based blocking review criterion | Accepted | 2026-09-23 | decided | [ADR-0013](0013-relevance-enforced-by-a-judgment-based-blocking-review-criterion.md) |
 | ADR-0014 | Document-granular update deltas with explicit supersession | Accepted | 2026-09-23 | decided | [ADR-0014](0014-document-granular-update-deltas-with-explicit-supersession.md) |
+| ADR-0015 | One mode-less Architecture workflow — the objective fixes the content, the target's state fixes the document scope | Accepted | 2026-09-24 | recorded | [ADR-0015](0015-one-mode-less-architecture-workflow.md) |
+| ADR-0016 | The drafting step is permanently unreviewed; the ratification checkpoint and the persistence review are its gates | Accepted | 2026-09-24 | recorded | [ADR-0016](0016-drafting-step-permanently-unreviewed.md) |
+| ADR-0017 | Persistence creates the folder layout — no scaffold step and no template skill | Accepted | 2026-09-24 | recorded | [ADR-0017](0017-persistence-creates-the-folder-layout.md) |
+| ADR-0018 | The Architecture workflow composes as a stage, not through a request/result contract | Accepted | 2026-09-24 | recorded | [ADR-0018](0018-architecture-workflow-composes-as-a-stage.md) |
