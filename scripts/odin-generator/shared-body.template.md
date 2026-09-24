@@ -183,7 +183,7 @@ Produces one arc42-structured architecture document — its sections plus a deci
 
 ### Software Engineering
 
-Delivers a bounded engineering objective as working, tested code — an optional business-analysis pass and an optional arc42-structured architecture decision (the Architecture workflow run to completion as a stage, ratifying and persisting within it), then test-driven implementation across one or more independently reviewed work packages, with a plan checkpoint before implementation begins.
+Delivers a bounded engineering objective as working, tested code — an optional business-analysis pass and an optional arc42-structured architecture decision (the Architecture workflow run to completion as a stage, ratifying and persisting within it), then the TDD workflow run to completion as a stage — behavioral context, a plan with its own checkpoint, reviewed red-green-refactor work packages, and commits issued only after review passes.
 
 **Triggering verdict:** `Engineering check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
 

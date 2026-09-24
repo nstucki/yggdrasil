@@ -34,7 +34,7 @@ A request to explain a codebase's structure where no architecture document exist
 
 ## Workflow
 
-1. **Context (conditional).** Skip Mimir only when the module boundaries, entry points, boundary interfaces, and existing architecture documentation of the system in scope are already established in the conversation — supplied by the user, or by a reviewed `NN-context-architecture-*.md` from an earlier run in this session — or when the objective is greenfield with no code yet. Otherwise dispatch. An engineering-context Workfile is **never** a skip reason: it records behavior, conventions, and test infrastructure, none of which grounds a §5 blackbox. Record the skip as `Context: skipped — <reason>`, never silently.
+1. **Context (conditional).** Skip Mimir only when the module boundaries, entry points, boundary interfaces, and existing architecture documentation of the system in scope are already established in the conversation — supplied by the user, or by a reviewed `NN-context-architecture-*.md` from an earlier run in this session — or when the objective is greenfield with no code yet. Otherwise dispatch. A TDD-context Workfile is **never** a skip reason: it records behavior, conventions, and test infrastructure, none of which grounds a §5 blackbox. Record the skip as `Context: skipped — <reason>`, never silently.
 
     Brief: the objective; the declared scope — the system or a named subsystem when the objective records it, the change's structural footprint when it changes something; the architecture location, so the documentation inventory looks there first; and the requirement that the output be **fact-rich and framing-poor**, with proofs per finding. Exclude task-scoped facts — the runner and its commands, the conventions new code must imitate, implementation-phase test infrastructure, and what the touched paths do today. Writes `NN-context-architecture-<area>.md`; its standing review is `Focus: context`.
 
@@ -88,6 +88,6 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 - **Persisting after a `BLOCKED` verdict**, or drafting a Response that reports success over a blocked review.
 - **More than one resume per blocked node.** One resume for an execution defect; a plan-level mismatch or a second `BLOCKED` ends the run and surfaces the review.
 - **Deleting project files on abort.** A run that stops at a blocked review discloses what it wrote and leaves it; removal is the user's direction.
-- **Treating an engineering-context Workfile as structural evidence.** Behavior, conventions, and a baseline test run do not establish module boundaries, entry points, or boundary interfaces, so skipping step 1 on one leaves §5 ungrounded and makes the recorded skip reason false.
+- **Treating a TDD-context Workfile as structural evidence.** Behavior, conventions, and a baseline test run do not establish module boundaries, entry points, or boundary interfaces, so skipping step 1 on one leaves §5 ungrounded and makes the recorded skip reason false.
 - **Creating a second architecture Workfile.** A parallel draft guarantees two documents that disagree.
 - **Skipping the Final Review Gate.** The Deliverable — the Response and the persisted directory — is user-facing output and must pass the gate like any other.

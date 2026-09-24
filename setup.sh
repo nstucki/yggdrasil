@@ -166,6 +166,13 @@ DST_GENERATOR="${DST_CONFIG_HOME}/generate-capabilities.sh"
 # holds optional skills, gated by the prompt below.
 MANDATORY_SKILL_DIRS="research memories deliberation engineering architecture"
 
+# Skill directories removed or renamed in this repo that a previous install may
+# still have at the destination. `cp -R` only adds and overwrites, so a stale
+# directory would survive an upgrade and stay loadable through the agents'
+# wildcard skill grants (e.g. "mimir-*", "heimdall-*"). Purge them before the
+# copy. Format: one "<feature>/<slug>" per entry, relative to DST_SKILLS.
+STALE_SKILL_DIRS="engineering/mimir-engineering-context engineering/heimdall-engineering-review"
+
 # ── Pre-flight checks ───────────────────────────────────────────────────────
 
 for dir in "$SRC_AGENTS" "$SRC_SKILLS" "$SRC_COMMANDS"; do
@@ -350,6 +357,13 @@ cp -R "${SRC_AGENTS}/." "$DST_AGENTS/"
 ok "Agents installed."
 
 # ── Install mandatory skills (unconditional) ────────────────────────────────
+
+for stale in $STALE_SKILL_DIRS; do
+    if [ -d "${DST_SKILLS}/${stale}" ]; then
+        info "Removing stale skill directory ${DST_SKILLS}/${stale}…"
+        rm -rf "${DST_SKILLS:?}/${stale}"
+    fi
+done
 
 info "Copying mandatory skills to ${DST_SKILLS}…"
 for feature in $MANDATORY_SKILL_DIRS; do

@@ -16,4 +16,4 @@ Your thresholds below complete the trigger rules in § Workflows.
 - **Architecture suggestion candidate:** suggest the Architecture workflow and let the user choose.
 - **Architecture ratification checkpoint:** pause for the user's ratification of the reviewed architecture document before it is persisted.
 - **Software Engineering suggestion candidate:** suggest the Software Engineering workflow and let the user choose.
-- **Software Engineering plan checkpoint:** pause for the user's steering input on the work-package plan before dispatching implementation work.
+- **Software Engineering — TDD stage plan checkpoint:** pause for the user's steering input on the work-package and commit plan before dispatching implementation work.

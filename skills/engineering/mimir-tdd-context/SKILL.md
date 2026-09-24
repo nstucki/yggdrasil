@@ -1,22 +1,22 @@
 ---
-name: mimir-engineering-context
-description: Gather fact-rich, framing-poor behavioral context for test-first implementation — touched paths, interfaces under test quoted verbatim, current behavior, engineering conventions, test infrastructure with an executed baseline run, and test-relevant dependencies — each finding proven by path and line.
+name: mimir-tdd-context
+description: Gather fact-rich, framing-poor behavioral context for the TDD workflow's test-first implementation — touched paths, interfaces under test quoted verbatim, current behavior, engineering conventions, test infrastructure with an executed baseline run, and test-relevant dependencies — each finding proven by path and line.
 ---
 
-# Engineering Context
+# TDD Context
 
 ## Purpose
 
 Produce the behavioral evidence base that test-first implementation stands on, so that acceptance criteria can be checked against what the code does today and no implementation session has to rediscover the test runner. You report **what is the case**, never what should be built: fact-rich, framing-poor, scoped to the paths the work will touch, every finding proven.
 
-This skill is complete for the engineering-context step and depends on no other skill. The brief is your only instruction; the codebase is your only source of truth.
+This skill is complete for the TDD workflow's context step and depends on no other skill. The brief is your only instruction; the codebase is your only source of truth.
 
 Four of your outputs are consumed directly and must be shaped for that consumption:
 
-- **The touched-path list with its source** — the plan that follows is scoped to exactly these paths. A list you derived from the objective and a list handed to you from a ratified write set carry different authority, so the source is recorded per path, never blurred.
+- **The touched-path list with its source** — the TDD plan that follows, with its package, execution-shape, and commit decisions, is scoped to exactly these paths. A list you derived from the objective and a list handed to you from a ratified write set carry different authority, so the source is recorded per path, never blurred.
 - **Interfaces under test, quoted with `path:line`** — failing tests are written against them before any implementation exists. A paraphrased signature produces a test that cannot be written.
 - **Current behavior of each touched path** — acceptance criteria are checked against it, and a criterion that contradicts today's behavior must surface before implementation, not during it.
-- **The executed baseline run** — the requesting agent must know whether the codebase passes its own tests *before* any test-first work starts, because a pre-existing red suite changes the plan and would otherwise be mistaken for damage caused by the new work. A guessed or assumed baseline is worse than none.
+- **The executed baseline run** — the requesting agent must know whether the codebase passes its own tests *before* any test-first work starts, because a pre-existing red suite changes the plan and would otherwise be mistaken for damage caused by the new work. A guessed or assumed baseline is worse than none. The baseline also fixes what "green" means for every planned commit: the failures it records are the only red a commit may carry.
 
 ## Boundaries
 
@@ -34,7 +34,7 @@ Four of your outputs are consumed directly and must be shaped for that consumpti
 
 ## When to Use
 
-- Dispatched as the engineering-context step of the software engineering workflow, on an existing codebase, once the paths the work will touch are known — after the architecture stage when it fired, so the declared scope can be the ratified write sets rather than a guess.
+- Dispatched as the context step of the TDD workflow, on an existing codebase, once the paths the work will touch are known — after the enclosing plan's architecture stage when it fired, so the declared scope can be the ratified write sets rather than a guess.
 - When the objective changes behavior whose current form must be characterized before it is altered: the inputs it accepts, the outputs it produces, its side effects, its edge cases, and its defaults.
 - When the test infrastructure for the affected area — runner, exact commands, layout, fixtures, and the suite's current result — is not already established and a test-first session will need it.
 - When the engineering conventions the new code will sit next to — naming, layout, test placement, fixture patterns, error-propagation idiom — are not already established.
@@ -72,9 +72,9 @@ Four of your outputs are consumed directly and must be shaped for that consumpti
 
 ## Output Contract
 
-**Workfile** — markdown at the path the brief names (task-directory pattern `NN-context-engineering-<area>.md`), sections in this fixed order:
+**Workfile** — markdown at the path the brief names (task-directory pattern `NN-context-tdd-<area>.md`), sections in this fixed order:
 
-1. `# Engineering Context — <area / objective>` with a 3–5 line summary
+1. `# TDD Context — <area / objective>` with a 3–5 line summary
 2. `## Scope` — objective restated · touched paths, each with its source (`architecture Appendix B` | `objective`) and its state (exists / to be created) · explicitly out of scope, with reasons
 3. `## Entry Points and Call Paths` — trigger · `path:line` · hops to the touched path
 4. `## Interfaces Under Test` — verbatim quotations in fenced blocks, each headed by its `path:line`, split into surfaces the tests will call and contracts the work consumes

@@ -40,9 +40,8 @@ The verdict is yours. What follows from it — resuming the session or re-dispat
 ## When to Use
 
 - Dispatched with a `Focus:` line naming exactly one of `context`, `persistence` — as the standing review of an architecture-context session or of a persistence session.
-- Loaded by name from another review skill that needs the `Focus: persistence` checklist for an architecture directory its own session persisted. Apply that Focus exactly as written here, including its blocking conditions.
 - The brief carries the producing session's brief, the artifact paths, and the **pinned baseline** — the pre-change file state or the commit the session started from, or `new file` for a creation. A brief that omits it is incomplete: ask, rather than diffing against the working tree.
-- **Not for** the drafted architecture Workfile — it has no review by design; decline and say so. **Not for** an engineering-context Workfile: route it to the engineering-review skill.
+- **Not for** the drafted architecture Workfile — it has no review by design; decline and say so. **Not for** a TDD-context Workfile: route it to `heimdall-tdd-review`.
 - **Not for** deciding what the architecture should have been, or pronouncing on a step whose artifact does not exist yet.
 
 ## Workflow
