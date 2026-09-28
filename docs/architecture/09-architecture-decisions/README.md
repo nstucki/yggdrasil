@@ -26,3 +26,7 @@ Decisions already in force, inferred from the repository and recorded as-is. Non
 | ADR-0016 | The drafting step is permanently unreviewed; the ratification checkpoint and the persistence review are its gates | Accepted | 2026-09-24 | recorded | [ADR-0016](0016-drafting-step-permanently-unreviewed.md) |
 | ADR-0017 | Persistence creates the folder layout — no scaffold step and no template skill | Accepted | 2026-09-24 | recorded | [ADR-0017](0017-persistence-creates-the-folder-layout.md) |
 | ADR-0018 | The Architecture workflow composes as a stage, not through a request/result contract | Accepted | 2026-09-24 | recorded | [ADR-0018](0018-architecture-workflow-composes-as-a-stage.md) |
+| ADR-0019 | The TDD workflow is standalone and composes as a stage of the Software Engineering workflow | Accepted | 2026-09-24 | recorded | [ADR-0019](0019-tdd-workflow-composes-as-a-stage.md) |
+| ADR-0020 | Only a fresh, reviewed commit session writes history — after every gating review passes | Accepted | 2026-09-24 | recorded | [ADR-0020](0020-only-a-reviewed-commit-session-writes-history.md) |
+| ADR-0021 | One unreviewed plan step owns the packages, the execution shape, and the commit plan | Accepted | 2026-09-24 | recorded | [ADR-0021](0021-one-unreviewed-plan-step-owns-packages-shape-and-commits.md) |
+| ADR-0022 | A commit is a reviewed green tree state — batch boundaries, four commit types, and three branch prefixes fixed by the plan and the commit skill | Accepted | 2026-09-24 | recorded | [ADR-0022](0022-a-commit-is-a-reviewed-green-tree-state.md) |
