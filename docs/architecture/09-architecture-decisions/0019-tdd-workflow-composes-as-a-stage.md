@@ -1,6 +1,6 @@
 # ADR-0019: The TDD workflow is standalone and composes as a stage of the Software Engineering workflow
 
-- **Status:** Accepted
+- **Status:** Accepted — superseded in part by ADR-0023
 - **Date:** 2026-09-24
 - **Kind:** recorded (evidence: `skills/tdd/odin-tdd-workflow/SKILL.md:3, 10-31, 62`; `skills/engineering/odin-engineering-workflow/SKILL.md:3, 10-14, 24-26, 35-43, 47-53, 57-64, 72, 79`; `skills/tdd/mimir-tdd-context/SKILL.md:2-3, 6, 12, 37`; `skills/tdd/heimdall-tdd-review/SKILL.md:2-3, 6, 10-19`; `skills/architecture/odin-architecture-workflow/SKILL.md:37, 91`; `skills/architecture/heimdall-architecture-review/SKILL.md:44`; `agents/odin-autonomous.md:213, 302`; `scripts/odin-generator/shared-body.template.md:186`; `scripts/odin-generator/communication-policy-interactive.fragment.md:19`; `setup.sh:174, 361-366`; `README.md:72, 132, 411-423`)
 

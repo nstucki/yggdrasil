@@ -1,6 +1,6 @@
 # ADR-0010: One long-term-relevance test for persisted content in both modes and both scopes
 
-- **Status:** Accepted
+- **Status:** Accepted — superseded in part by ADR-0015
 - **Date:** 2026-09-23
 
 ## Context

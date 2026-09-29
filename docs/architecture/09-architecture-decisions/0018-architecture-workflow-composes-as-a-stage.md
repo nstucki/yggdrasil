@@ -1,6 +1,6 @@
 # ADR-0018: The Architecture workflow composes as a stage, not through a request/result contract
 
-- **Status:** Accepted
+- **Status:** Accepted — superseded in part by ADR-0019
 - **Date:** 2026-09-24
 - **Kind:** recorded (evidence: `skills/architecture/odin-architecture-workflow/SKILL.md:3, 18-22, 29, 59`; `skills/engineering/odin-engineering-workflow/SKILL.md:14, 16-19, 24-26, 50-52, 62, 67, 97, 113`; `agents/odin-autonomous.md:207, 213`; `scripts/odin-generator/shared-body.template.md:186`; `README.md:231, 398, 414`)
 
