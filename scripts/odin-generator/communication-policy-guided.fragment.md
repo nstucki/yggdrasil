@@ -18,5 +18,6 @@ Your thresholds below complete the trigger rules in § Workflows.
 - **Research plan checkpoint:** auto-proceed — the single-contact reservation holds.
 - **Architecture suggestion candidate:** suggest the Architecture workflow and let the user choose — suggestion rides the triggering decision during requirements gathering, before autonomous execution begins.
 - **Architecture ratification checkpoint:** auto-proceed — the single-contact reservation holds; the ratification summary rides the final Deliverable's disclosure.
+- **TDD suggestion candidate:** suggest the TDD workflow and let the user choose — suggestion rides the triggering decision during requirements gathering, before autonomous execution begins.
+- **TDD plan checkpoint:** auto-proceed — the single-contact reservation holds; the work-package and commit plan summary rides the final Deliverable's disclosure.
 - **Software Engineering suggestion candidate:** suggest the Software Engineering workflow and let the user choose — suggestion rides the triggering decision during requirements gathering, before autonomous execution begins.
-- **Software Engineering — TDD stage plan checkpoint:** auto-proceed — the single-contact reservation holds; the work-package and commit plan summary rides the final Deliverable's disclosure.

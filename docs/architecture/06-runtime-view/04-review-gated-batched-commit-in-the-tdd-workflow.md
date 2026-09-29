@@ -2,7 +2,7 @@
 
 _Part of [Yggdrasil — Architecture (arc42)](../README.md) · [§6](README.md)._
 
-The path by which code reaches a target project's history: one batch of the TDD plan, from the plan checkpoint to the reviewed commit. Read from `skills/engineering/odin-tdd-workflow/SKILL.md:39-66`, `skills/engineering/brokk-tdd-commit/SKILL.md:60-71`, and `skills/engineering/heimdall-tdd-review/SKILL.md:61, 103, 116-129`. Realizes system goals 1, 2, and 4 and TDD-3, TDD-5, TDD-6, TDD-7, TDD-9. The context gate (step 1) and the Response (step 7) are omitted; they follow 6.1's pattern.
+The path by which code reaches a target project's history: one batch of the TDD plan, from the plan checkpoint to the reviewed commit. Read from `skills/tdd/odin-tdd-workflow/SKILL.md:39-66`, `skills/tdd/brokk-tdd-commit/SKILL.md:60-71`, and `skills/tdd/heimdall-tdd-review/SKILL.md:61, 103, 116-129`. Realizes system goals 1, 2, and 4 and TDD-3, TDD-5, TDD-6, TDD-7, TDD-9. The context gate (step 1) and the Response (step 7) are omitted; they follow 6.1's pattern.
 
 ```mermaid
 sequenceDiagram

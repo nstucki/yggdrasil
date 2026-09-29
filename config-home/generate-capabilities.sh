@@ -153,7 +153,7 @@ communicator_skills=""
 # the skill slug's <agent>- prefix (frontmatter name == directory slug,
 # enforced by validate.sh), NOT from the directory layout: mandatory skills
 # live in feature directories (research/, memories/, deliberation/,
-# engineering/, architecture/), optional skills under <agent>/. Anything under
+# engineering/, architecture/, tdd/), optional skills under <agent>/. Anything under
 # shared/ (including this generated inventory itself) is excluded from the
 # role inventory by path.
 export LC_ALL=C

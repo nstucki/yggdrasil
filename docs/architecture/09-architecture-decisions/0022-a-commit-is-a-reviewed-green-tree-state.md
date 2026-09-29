@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-09-24
-- **Kind:** recorded (evidence: `skills/engineering/kvasir-tdd-planning/SKILL.md:26-30, 75-97, 142-145, 153-156`; `skills/engineering/brokk-tdd-commit/SKILL.md:24-41, 63-66, 75-79`; `skills/engineering/heimdall-tdd-review/SKILL.md:120-125`; `skills/engineering/odin-tdd-workflow/SKILL.md:53, 56, 60, 83, 86-88, 98-99`)
+- **Kind:** recorded (evidence: `skills/tdd/kvasir-tdd-planning/SKILL.md:26-30, 75-97, 142-145, 153-156`; `skills/tdd/brokk-tdd-commit/SKILL.md:24-41, 63-66, 75-79`; `skills/tdd/heimdall-tdd-review/SKILL.md:120-125`; `skills/tdd/odin-tdd-workflow/SKILL.md:53, 56, 60, 83, 86-88, 98-99`)
 
 ## Context
 

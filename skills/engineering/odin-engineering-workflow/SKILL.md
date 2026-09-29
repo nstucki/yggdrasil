@@ -27,8 +27,8 @@ The requirements Workfile is **not** persisted by default; persist it to `docs/r
 
 ## When to Use
 
-- When the Engineering check verdict is **invoke** — via the `/yggdrasil/engineer` command, explicit language requesting the engineering workflow, test-driven development, or requirements/architecture work ahead of implementation, or a user-accepted suggestion, per the Trigger Thresholds in your Communication Policy.
-- **Not** for an ordinary implementation request. A plain "implement X", "fix this bug", "add this field" without workflow language is not an invoke: a non-trivial implementation request (new component, multi-module feature, new integration) is the *suggestion candidate*; a simple implementation request, a pure research request, or a question is a **skip**. Invoking the heavy workflow on ordinary work is the failure mode this threshold exists to prevent.
+- When the Engineering check verdict is **invoke** — via the `/yggdrasil/engineer` command, explicit language requesting the engineering workflow, or requirements/architecture work ahead of implementation — including test-driven-development language carried with that intent — or a user-accepted suggestion, per the Trigger Thresholds in your Communication Policy.
+- **Not** for an ordinary implementation request. A plain "implement X", "fix this bug", "add this field" without workflow language is not an invoke: a non-trivial implementation request that introduces structure or would split into packages (new component, multi-module feature, new integration) is the *suggestion candidate*; a bounded implementation request that fits the existing structure in one package — with or without test-first language — is the TDD check's, not this one's; a trivial change, a pure research request, or a question is a **skip**. Invoking the heavy workflow on ordinary work is the failure mode this threshold exists to prevent.
 
 ## Workflow
 

@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-09-24
-- **Kind:** recorded (evidence: `skills/engineering/kvasir-tdd-planning/SKILL.md:3, 10-40, 42-84, 99-106, 123-133`; `skills/engineering/odin-tdd-workflow/SKILL.md:12-14, 39-45, 81-83, 101-102, 104`; `skills/engineering/odin-engineering-workflow/SKILL.md:24, 79`; `agents/kvasir.md:26-33`; `agents/odin-interactive.md:298`; `agents/odin-autonomous.md:302`)
+- **Kind:** recorded (evidence: `skills/tdd/kvasir-tdd-planning/SKILL.md:3, 10-40, 42-84, 99-106, 123-133`; `skills/tdd/odin-tdd-workflow/SKILL.md:12-14, 39-45, 81-83, 101-102, 104`; `skills/engineering/odin-engineering-workflow/SKILL.md:24, 79`; `agents/kvasir.md:26-33`; `agents/odin-interactive.md:298`; `agents/odin-autonomous.md:302`)
 
 ## Context
 

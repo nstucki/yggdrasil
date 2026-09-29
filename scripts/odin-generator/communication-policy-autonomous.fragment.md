@@ -19,5 +19,6 @@ Your thresholds below complete the trigger rules in § Workflows.
 - **Research plan checkpoint:** auto-proceed — the surfaced plan summary rides the final Deliverable's disclosure.
 - **Architecture suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
 - **Architecture ratification checkpoint:** auto-proceed — the ratification summary rides the final Deliverable's disclosure.
+- **TDD suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
+- **TDD plan checkpoint:** auto-proceed — the surfaced work-package and commit plan summary rides the final Deliverable's disclosure.
 - **Software Engineering suggestion candidate:** skip — suggest-then-confirm requires interaction, which contradicts this Communication Policy.
-- **Software Engineering — TDD stage plan checkpoint:** auto-proceed — the surfaced work-package and commit plan summary rides the final Deliverable's disclosure.

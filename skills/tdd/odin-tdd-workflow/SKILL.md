@@ -7,7 +7,7 @@ description: Orchestration doctrine for the TDD workflow — gather behavioral c
 
 ## Purpose
 
-Define the orchestration doctrine for the TDD workflow — a workflow that turns work packages into reviewed, committed code. It packages the pattern `[Context → Review] │ Plan │ Checkpoint │ ( Package → Review )… │ [Integrate → Review] │ ( Commit → Review )… │ Response`.
+Define the orchestration doctrine for the TDD workflow — a trigger-gated workflow that turns work packages into reviewed, committed code. It packages the pattern `[Context → Review] │ Plan │ Checkpoint │ ( Package → Review )… │ [Integrate → Review] │ ( Commit → Review )… │ Response`.
 
 **Judgment and mechanics have separate owners.** Kvasir authors one plan Workfile in the workspace and touches no project file; Brokk implementation sessions change the tree and never commit; a fresh Brokk commit session records one planned batch strictly by its plan row and the reviews that gate it, and decides nothing. No role writes in another's medium.
 
@@ -25,10 +25,13 @@ Deliverable: response=yes, artifact=yes — code and tests committed in the targ
 
 ## When to Use
 
-- **As a stage of a larger plan:** run this workflow to completion, exactly as you run Research or Deliberation — today from the Software Engineering workflow's TDD step. No request line and no result line exist.
-- **Standalone:** no command or trigger check invokes it today. The workflow is standalone *by design*, so an entry point can be added later without touching it.
-- **Not for** ordinary implementation work. The enclosing workflow's trigger threshold decides that; this skill never self-triggers.
-- **Inputs it consumes from the conversation:** the objective; the architecture Workfile when one exists (its §5 interfaces are the contracts, its Appendix B the packages); the requirements Workfile when one exists; and a test command and executed baseline when the conversation already established them.
+- When the TDD check verdict is **invoke** — via the `/yggdrasil/tdd` command, explicit test-driven-development, test-first, or red-green-refactor language without requirements-analysis or architecture-before-implementation intent, or a user-accepted suggestion, per the Trigger Thresholds in your Communication Policy.
+- **As a stage of a larger plan:** run this workflow to completion, exactly as you run Research or Deliberation — today from the Software Engineering workflow's TDD step. No request line and no result line exist; the mechanics are identical either way, and only where the Response lands differs.
+- **Inputs it consumes from the conversation:** the objective; the architecture Workfile when one exists (its §5 interfaces are the contracts, its Appendix B the packages); the requirements Workfile when one exists; and a test command and executed baseline when the conversation already established them. Standalone, none of the three Workfiles usually exists: the context step then supplies the test command and the baseline, and the plan step derives exactly one package from the objective, its criteria restated from the request and labelled derived.
+
+**Firing criteria** — when test-first implementation by this workflow is warranted at all. It fires when ANY: test-driven development, test-first implementation, or red-green-refactor is asked for; a bounded change that fits the existing structure states its behavior testably — a bug with a reproduction, a feature with stated behavior, a behavior-preserving refactor wanting characterization tests; the user asks that a change land as reviewed commits. It fires **without exception as the Software Engineering workflow's implementation stage** — that workflow writes code no other way. It **never** fires for a change expected to introduce structure or to split into two or more work packages: the split is an architecture decision, and that request is the Engineering check's, which runs this workflow inside it. Skip when the change is trivial — a typo, a constant, a rename, documentation — or the user asks for direct implementation.
+
+A bounded implementation request with stated, testable behavior and no test-first language is the *suggestion candidate*; a request that introduces structure (new component, multi-module feature, new integration) is the Engineering check's candidate, never this one's; a pure research request or a question is a **skip**.
 
 ## Workflow
 
@@ -38,7 +41,7 @@ Deliverable: response=yes, artifact=yes — code and tests committed in the targ
 
 2. **Plan (unreviewed).** Dispatch Kvasir with `kvasir-tdd-planning`, the objective, the path of the Workfile to **create** (`NN-plan-tdd.md`), and the paths of the architecture, requirements, and context Workfiles that exist — or, when no context Workfile exists, the test command and baseline the conversation established. Record from its report: the `TDD plan:` line, the `Package check:` line, the commit plan one line per batch, the `Branch:` and `Tree at planning:` facts, the baseline, and the risks and gaps. **Every plan ships at `Status: Proposed`**; the checkpoint ratifies it.
 
-    Two preconditions the plan checks and reports rather than guesses. A test command it cannot source means the step-1 skip was wrong: fire the context step and re-dispatch planning. More than one package needed with no architecture Workfile stops the run and returns to the enclosing plan — in the Software Engineering workflow, its shape verdict was wrong and the Architecture stage must fire.
+    Two preconditions the plan checks and reports rather than guesses. A test command it cannot source means the step-1 skip was wrong: fire the context step and re-dispatch planning. More than one package needed with no architecture Workfile stops the run before any implementation dispatch. As a stage of the Software Engineering workflow, its shape verdict was wrong and the Architecture stage must fire. **Standalone**, the run ends with a Response that names the route — the Software Engineering workflow (`/yggdrasil/engineer`), whose architecture stage makes the split this workflow does not — and nothing is left in the tree.
 
 3. **Plan checkpoint (always recorded, no dispatch).** Surface exactly: the context review verdict, or `Context: skipped — <reason>`; the baseline result; the packages with their owned criteria, kind, and mode; the execution shape and any waves; the **commit plan** — batches, order, types, subjects, the branch (current or to be created), and any baseline-dirty paths; the risks and gaps; and the dispatch cost, qualitatively, with the formula on request. Whether to pause for steering or auto-proceed is governed by your Communication Policy.
 
@@ -99,7 +102,7 @@ Supply the originating brief, the artifact paths, the pinned `HEAD` and baseline
 - **Splitting a wave across batches**, or **batching packages whose write sets intersect** — neither boundary is a verifiable green tree state.
 - **`git add .` in the commit session.** The reviewed union is the staged set, path by path.
 - **Re-deriving or reshaping packages the plan (or Appendix B) already fixed.** The checkpoint is where a plan changes.
-- **Two packages without an architecture document.** The split is an architecture decision; return to the enclosing plan.
+- **Two packages without an architecture document.** The split is an architecture decision; return to the enclosing plan, or — standalone — end the run and name `/yggdrasil/engineer`.
 - **Guessing a test command** instead of firing the context step.
 - **Re-introducing a review of the plan step "to be safe."** It was removed by design; the checkpoint and the execution reviews are its gates.
 - **Rewriting history to repair a bad commit.** The fix is a corrective commit, disclosed.

@@ -181,13 +181,23 @@ Produces one arc42-structured architecture document — its sections plus a deci
 
 **On invoke:** load the `odin-architecture-workflow` skill first — it defines the full mechanism, constraints, and cost model. When suggesting it, convey the cost qualitatively — several reviewed specialist dispatches, noticeably heavier and slower than describing the structure directly; load the skill if the user wants specifics.
 
+### TDD
+
+Implements a bounded objective test-first and lands it as reviewed commits — a conditional behavioral-context gate with an executed baseline, a plan over the work package, execution shape, and commit plan left unreviewed by design and ratified at its own checkpoint, reviewed red-green-refactor work packages that stop uncommitted, an integration pass after a parallel wave, and a fresh commit session per planned batch that commits only after every gating review passes and is itself reviewed.
+
+**Triggering verdict:** `TDD check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
+
+**Invariant trigger rules:** the `/yggdrasil/tdd` command → invoke. Explicit test-driven-development, test-first, or red-green-refactor language **without** requirements-analysis or architecture-before-implementation intent → invoke. The same language **with** such intent — requirements to pin down, a design to decide, or a change that introduces structure or splits into two or more work packages — → skip here; the Engineering check owns it and runs this workflow as its implementation stage. A bounded implementation request that fits the existing structure in one package and states its behavior testably (a bug with a reproduction, a feature with stated behavior, a behavior-preserving refactor) without test-first language is the suggestion candidate — suggest or skip per the Communication Policy; a suggestion the user accepts → invoke. A trivial change, an explicit request for direct implementation, a pure research request, or a question → skip.
+
+**On invoke:** load the `odin-tdd-workflow` skill first — it defines the full mechanism, constraints, and cost model. When suggesting it, convey the cost qualitatively — a plan checkpoint plus several reviewed specialist dispatches per package and per commit, noticeably heavier and slower than implementing directly; load the skill if the user wants specifics.
+
 ### Software Engineering
 
-Delivers a bounded engineering objective as working, tested code — an optional business-analysis pass and an optional arc42-structured architecture decision (the Architecture workflow run to completion as a stage, ratifying and persisting within it), then the TDD workflow run to completion as a stage — behavioral context, a plan with its own checkpoint, reviewed red-green-refactor work packages, and commits issued only after review passes.
+Delivers a bounded engineering objective as working, tested code — an optional business-analysis pass, an optional arc42-structured architecture decision (the Architecture workflow run to completion as a stage, ratifying and persisting within it), then the TDD workflow run to completion as a stage (§ TDD — its plan checkpoint and review-gated commits within it).
 
 **Triggering verdict:** `Engineering check: command=<yes/no>, explicit-request=<yes/no> → <invoke/skip/suggest>`
 
-**Invariant trigger rules:** the `/yggdrasil/engineer` command → invoke. Explicit software-engineering-workflow, test-driven-development, or requirements-analysis/architecture-before-implementation language in the request → invoke. A non-trivial implementation request (new component, multi-module feature, new integration) without such language is the suggestion candidate — suggest or skip per the Communication Policy; a suggestion the user accepts → invoke. A plain implementation request with no test-driven or upfront-design signal, a pure research request, or a question → skip.
+**Invariant trigger rules:** the `/yggdrasil/engineer` command → invoke. Explicit software-engineering-workflow or requirements-analysis/architecture-before-implementation language in the request → invoke; test-driven-development language carried **with** that intent → invoke here, **without** it → skip here; the TDD check owns it. A non-trivial implementation request that introduces structure or would split into two or more work packages (new component, multi-module feature, new integration), without such language, is the suggestion candidate — suggest or skip per the Communication Policy; a suggestion the user accepts → invoke. A bounded implementation request that fits the existing structure in one package is the TDD check's candidate, not this one's; a trivial change, a pure research request, or a question → skip.
 
 **On invoke:** load the `odin-engineering-workflow` skill first — it defines the full mechanism, constraints, and cost model. When suggesting it, convey the cost qualitatively — substantially heavier and slower than implementing directly; load the skill if the user wants specifics.
 

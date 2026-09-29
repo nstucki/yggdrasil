@@ -95,6 +95,7 @@ Appendix B (work packages) and Appendix C (the layout map) are transient and nev
 
 - Dispatched as the persistence step of the architecture workflow, after the decisions have been ratified.
 - The brief supplies the architecture Workfile path, the `Ratification:` line, and the pinned baseline.
+- Dispatched for a **correction** when a persisted topic document's Workfile source was corrected after persistence — the brief adds a `Re-persist:` line (step 6). Never for correcting a record: that is a superseding record in a delta.
 - **Creating the layout is yours only under the existence rule** — never to "repair" a partial or foreign structure at the location.
 - **Not for** deciding how a section splits into documents. Appendix C is that decision, already made.
 - **Not for** authoring or revising architecture content. You transform and place what was ratified; a content gap is a report item.
@@ -133,10 +134,12 @@ A missing or invalid record means no decision may be promoted: report `ratificat
 
 5. **Update-delta scope.** For each section in `Section scope: included=`, write exactly the documents Appendix C names, and regenerate that section's index. Each document of an included section falls into exactly one of three cases: **named by a path row** → replaced whole-file, or created there when the row is new, keeping existing ordinals; **named by a `→ superseded — <reason>` row** → left on disk untouched and listed under "Superseded documents" with that reason; **named by no row at all** → carried forward byte-identical. Regenerate the index from the union of the three. For `09-architecture-decisions/README.md`, **append** the new rows at the end of the existing table — never rewrite or reorder an existing row, and never edit an existing record file. Write the new records at the numbers `Records from:` reserved. Regenerate the top index's header and Sections table and append exactly one Change Log row. **Never delete**, and **never create a folder** — all twelve were verified present in step 2. Every other path stays byte-identical.
 
-6. **Report the persistence manifest** in the session's evidence block:
+6. **Correction scope — named documents only.** When the brief carries `Re-persist: <path>[, <path> …] — <reason>`, a persisted document's Workfile source has been corrected and this run re-persists exactly those documents. It is neither a seed nor a delta, and the header's `Document scope:` is not applied; the grammar is fixed here and nowhere else. Preconditions, replacing step 2's: the target is the folder layout by the identity rule; every named path exists in it and is a topic document — a path under the record directory is refused (`precondition failed — record correction: <path>`; a record is corrected only by a superseding record in a delta); Appendix A IDs already on disk are expected, and `Records from:` is not checked. The `Ratification:` line is still validated and promotes nothing. Then: replace each named document whole-file from the Workfile heading Appendix C assigns it, at its existing ordinal, with the same promotion and backlink; regenerate each affected section's index and the top index's header and Sections table, so that the `Last updated` of the named documents and of their sections is the run date; append exactly one Change Log row with scope `correction`. Write no record, append no §9 row, and leave every other path byte-identical. The manifest reads `scope=correction`, action `replaced` for each named path.
+
+7. **Report the persistence manifest** in the session's evidence block:
 
    ```text
-   Persistence: target=<path>, scope=<seed | update delta>, layout=<created | existing>, collision-fallback=<none | <path>>
+   Persistence: target=<path>, scope=<seed | update delta | correction>, layout=<created | existing>, collision-fallback=<none | <path>>
    | Path | Action | Source |
    | --- | --- | --- |
    | README.md | regenerated | top index |
@@ -160,6 +163,7 @@ A missing or invalid record means no decision may be promoted: report `ratificat
 - Every record equals its Workfile source modulo the two-level promotion and the promoted status; `Status: Accepted` appears for exactly the `ratified=` IDs and every `withheld=` ID reads `Proposed`.
 - Every §9 row's link resolves relative to `09-architecture-decisions/README.md` and matches that record's own header; rows are append-only.
 - In update-delta scope the changed-path set is exactly the mapped documents of the `included=` sections, those sections' indices, §9's index, the new records, and the top index; everything else is byte-identical.
+- In correction scope the changed-path set is exactly the `Re-persist:` paths, their section indices, and the top index; no record was written and no §9 row appended; the `Last updated` of every named document and its section equals the run date.
 - The top index's Change Log grew by exactly one row and its prior rows are unchanged.
 - No arc42 guidance text and no attribution notice exists anywhere under the target (grep = 0); Appendices B and C were not persisted, and no home was invented for process metadata.
 - The task directory gained no file, and the manifest matches what the diff actually shows.
@@ -177,3 +181,4 @@ A missing or invalid record means no decision may be promoted: report `ratificat
 - **Rewriting prose `§N` references into links**, or **writing `_Not affected by this change_` into the tree** — the first is unreviewable churn, the second is delta bookkeeping that means nothing to a reader.
 - **Persisting Appendix B or C, or inventing the missing piece** — planning material goes stale immediately, and a section the Workfile left neither mapped nor marked is a gap to report, not a file to fill.
 - **Promoting statuses wholesale, copying guidance into the target, or writing a Workfile** — each substitutes your judgment for a ratification, a license boundary, or a medium that is not yours.
+- **Replaying a delta to fix one document, or hand-editing the persisted file** — the first collides on record IDs and duplicates §9 and Change Log rows; the second leaves the document's `Last updated`, its section index, and the top index behind. A correction names its paths in `Re-persist:` and touches nothing else.
