@@ -66,9 +66,8 @@ The Bragi session receives no dedicated review.
 ## Quality Criteria
 
 - **The shape verdict is recorded before any dispatch.**
-- **The architecture is ratified and persisted before any package consumes it** — no implementation session builds against decisions the checkpoint has not ratified.
+- **The TDD stage is dispatched only after the Architecture stage has completed** — ratification and persistence are that stage's own gates, consumed here, never re-checked or repeated.
 - **arc42 pruning is explicit** — the `Section scope:` line is recorded and every omitted section carries a marker.
-- **Ratification is explicit** — every persisted ADR was ratified at the checkpoint or by recorded adoption, and only then promoted to `Accepted`.
 - **Cost (total dispatches, including the standing reviews and the Final Review Gate, which are not numbered steps):** `A + R·D + T + 2`, where A and R are 1 when the analysis and architecture steps fire (0 otherwise), **D is the Architecture workflow's own dispatch count — 4 when its context gate is skipped, 6 when it fires**, **T is the TDD workflow's own dispatch count** (`2C + 1 + 2N·(1+S) + 2W + 2K`, minimum 5 — see `odin-tdd-workflow` § Quality Criteria), and the trailing 2 is the Response plus the Final Review Gate. Minimum 7; a medium run (A=1, D=4, T=9) is 16. Disclose the cost qualitatively at the checkpoints and quantitatively on request.
 - **The Deliverable discloses** the shape taken, the assumptions adopted, acceptance-criterion coverage, the commits landed, and the architecture directory and decision-record locations.
 
@@ -76,10 +75,8 @@ The Bragi session receives no dedicated review.
 
 - **Silent shape inference.** Dispatching without the recorded `Engineering shape:` verdict, or skipping analysis and architecture by omission rather than by a stated reason — the reason is what the user steers against at the checkpoint.
 - **Trigger creep.** Invoking the full workflow on ordinary implementation work. A plain "implement X" is a skip or a suggestion candidate, never an invoke.
-- **Steering the TDD stage from outside.** Passing packages, modes, batches, or commit instructions into the stage in the brief — its plan step and plan checkpoint own those; the enclosing run supplies only the objective and the Workfiles it produced.
-- **Forming a plan from an unratified architecture document** — the stage's checkpoint is the gate; a `BLOCKED` stage routes through § Failed Review Classification instead of feeding Appendix B to the TDD stage.
-- **Architecture reaching the repo without the stage's persistence review.** The persisted document and its decision records are user-facing Artifacts, not internal notes.
-- **Persisting `Accepted` without ratification**, or persisting a delta over an existing document by overwriting it instead of merging document-by-document.
+- **Steering a stage from outside.** Passing behavioral context into the Architecture stage, or packages, modes, batches, or commit instructions into the TDD stage — each stage makes those decisions itself; this run supplies only the objective and the Workfiles it produced.
+- **Feeding Appendix B forward from an Architecture stage that did not complete.** A `BLOCKED` stage stops this run under § Failed Review Classification; nothing it drafted becomes a TDD input.
 - **Template worship.** Letting all twelve arc42 sections be filled for a change that touches three, or briefing for a complete document instead of a pruned one — the ceremony buries the signal the implementation sessions need.
 - **Restating specialist methodology in briefs.** Name the skill, the inputs, and the Workfile; the dispatched session loads its own method.
 - **Re-architecting mid-flight.** If execution shows the design is wrong, that is Mid-Execution Consultation territory, not a second run of the architecture step.
