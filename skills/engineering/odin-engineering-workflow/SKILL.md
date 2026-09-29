@@ -11,19 +11,17 @@ Define the orchestration doctrine for the Software Engineering workflow — a tr
 
 The workflow packages the pattern `[Analysis] → [Architecture stage] → TDD stage → Response`. Two properties make it more than "Implement → Review": the **shape is decided and recorded before any dispatch**, and **each stage carries its own checkpoint** — the Architecture stage's ratification checkpoint and the TDD stage's plan checkpoint — so nothing is implemented against a decision the user has not seen.
 
-This skill is dispatch doctrine only. `bragi-business-analysis`, the Architecture workflow's skills (loaded by `odin-architecture-workflow`), and the TDD workflow's skills (loaded by `odin-tdd-workflow`) are the per-step methodologies, loaded by the dispatched sessions themselves. Briefs name the skill, the inputs, and the Workfile to write — never the method.
+This skill is dispatch doctrine only. `bragi-business-analysis`, the Architecture workflow's skills (loaded by `odin-architecture-workflow`), and the TDD workflow's skills (loaded by `odin-tdd-workflow`) are the per-step methodologies, loaded by the dispatched sessions themselves. Briefs name the skill, the inputs, and the output to write — **never the method**.
 
-**Fixed Deliverable (per § Deliverables and § Deliverable Determination in your system prompt):** a Response (drafted by Bragi, step 5) and an Artifact (code and tests committed in the target project; plus the persisted arc42 architecture directory — a folder per section holding its generated index and topic documents, the decision records in `09-architecture-decisions/`, and the top index — whenever the architecture step fired). This fixes the Deliverable at Odin's top level:
+**Fixed Deliverable (per § Deliverables and § Deliverable Determination in your system prompt):** a Response (drafted by Bragi, step 5) and an Artifact (code and tests committed in the target project; plus the persisted arc42 architecture directory whenever the architecture step fired):
 
 ```text
-Deliverable: response=yes, artifact=yes — code and tests committed in the target project (plus the persisted arc42 architecture directory: a folder per section holding its index and documents, the decision records in their own folder, and the top index, when the architecture step fired), source=workflow-fixed
+Deliverable: response=yes, artifact=yes — code and tests committed in the target project (plus the persisted arc42 architecture directory, when the architecture step fired), source=workflow-fixed
 ```
 
-The requirements Workfile is **not** persisted by default; persist it to `docs/requirements/<slug>.md` only on user direction. Appendices B and C of the architecture Workfile are transient planning content and are never persisted.
+The requirements Workfile is **not** persisted by default; persist it to `docs/requirements/<slug>.md` only on user direction.
 
-**Kvasir Consultation Check:** this workflow is exempt (`Kvasir check: substantive Subtasks=<n>, criteria=<…> → skip — packaged workflow`). Its strategic consultation is internal — the architecture step (step 3, which runs the Architecture workflow to completion as a stage), which is mandatory whenever the work splits into more than one package — and the TDD stage's plan step, and its stages' checkpoints are the user's steering points. Each stage's own exemption covers the sessions inside it. When this workflow is one stage of a larger composite plan, the composite is still evaluated by the Check as usual. Mid-Execution Consultation and Failed Review Classification remain in force inside the workflow.
-
-**The architecture step is a stage:** it runs the Architecture workflow (`odin-architecture-workflow`) to completion — context, drafting, ratification, persistence, with the standing reviews of its context and persistence sessions — before the TDD stage begins. **The TDD step is a stage too:** it runs the TDD workflow (`odin-tdd-workflow`) to completion — its own context gate, plan, plan checkpoint, reviewed packages, integration, and review-gated commits.
+**Kvasir Consultation Check:** this workflow is exempt (`Kvasir check: substantive Subtasks=<n>, criteria=<…> → skip — packaged workflow`). Its strategic consultation is internal — the architecture step (step 3) and the TDD stage's plan step — and its stages' checkpoints are the user's steering points. Each stage's own exemption covers the sessions inside it. When this workflow is one stage of a larger composite plan, the composite is still evaluated by the Check as usual. Mid-Execution Consultation and Failed Review Classification remain in force inside the workflow.
 
 ## When to Use
 
@@ -67,8 +65,7 @@ The Bragi session receives no dedicated review.
 
 - **The shape verdict is recorded before any dispatch.**
 - **The TDD stage is dispatched only after the Architecture stage has completed** — ratification and persistence are that stage's own gates, consumed here, never re-checked or repeated.
-- **arc42 pruning is explicit** — the `Section scope:` line is recorded and every omitted section carries a marker.
-- **Cost (total dispatches, including the standing reviews and the Final Review Gate, which are not numbered steps):** `A + R·D + T + 2`, where A and R are 1 when the analysis and architecture steps fire (0 otherwise), **D is the Architecture workflow's own dispatch count — 4 when its context gate is skipped, 6 when it fires**, **T is the TDD workflow's own dispatch count** (`2C + 1 + 2N·(1+S) + 2W + 2K`, minimum 5 — see `odin-tdd-workflow` § Quality Criteria), and the trailing 2 is the Response plus the Final Review Gate. Minimum 7; a medium run (A=1, D=4, T=9) is 16. Disclose the cost qualitatively at the checkpoints and quantitatively on request.
+- **Cost (total dispatches, including the standing reviews and the Final Review Gate, which are not numbered steps):** `A + R·D + T + 2`, where A and R are 1 when the analysis and architecture steps fire (0 otherwise), **D and T are the Architecture and TDD workflows' own dispatch counts** (each in its skill's § Quality Criteria), and the trailing 2 is the Response plus the Final Review Gate. Minimum 7; a medium run (A=1, D=4, T=9) is 16. Disclose the cost qualitatively at the checkpoints and quantitatively on request.
 - **The Deliverable discloses** the shape taken, the assumptions adopted, acceptance-criterion coverage, the commits landed, and the architecture directory and decision-record locations.
 
 ## Anti-Patterns
@@ -77,7 +74,6 @@ The Bragi session receives no dedicated review.
 - **Trigger creep.** Invoking the full workflow on ordinary implementation work. A plain "implement X" is a skip or a suggestion candidate, never an invoke.
 - **Steering a stage from outside.** Passing behavioral context into the Architecture stage, or packages, modes, batches, or commit instructions into the TDD stage — each stage makes those decisions itself; this run supplies only the objective and the Workfiles it produced.
 - **Feeding Appendix B forward from an Architecture stage that did not complete.** A `BLOCKED` stage stops this run under § Failed Review Classification; nothing it drafted becomes a TDD input.
-- **Template worship.** Letting all twelve arc42 sections be filled for a change that touches three, or briefing for a complete document instead of a pruned one — the ceremony buries the signal the implementation sessions need.
-- **Restating specialist methodology in briefs.** Name the skill, the inputs, and the Workfile; the dispatched session loads its own method.
+- **Restating a specialist's method in a brief.** Name the skill, the inputs, and the output.
 - **Re-architecting mid-flight.** If execution shows the design is wrong, that is Mid-Execution Consultation territory, not a second run of the architecture step.
 - **Skipping the Final Review Gate.** The Deliverable — code, tests, and the persisted architecture documentation — is user-facing output and must pass the gate like any other.

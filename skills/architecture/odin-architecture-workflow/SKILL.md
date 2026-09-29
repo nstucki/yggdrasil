@@ -82,7 +82,7 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 
 ## Anti-Patterns
 
-- **Restating a specialist's method in a brief.** Name the skill, the inputs, and the output; how a document is laid out on disk and what belongs in a section are the dispatched skills' rules.
+- **Restating a specialist's method in a brief.** Name the skill, the inputs, and the output.
 - **Re-introducing a review of the drafting step, a mode line, or a pre-drafting structure dispatch "to be safe."** All three were removed by design; adding one back costs a dispatch and restores an inconsistency the redesign eliminated.
 - **Re-briefing persistence to create over a present target, or to fill an absent one, when its precondition fails.** The header is wrong, and Kvasir fixes headers.
 - **Persisting after a `BLOCKED` verdict**, or drafting a Response that reports success over a blocked review.

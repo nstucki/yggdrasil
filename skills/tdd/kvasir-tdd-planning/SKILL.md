@@ -68,7 +68,7 @@ Then four fixed sections, in this order.
 The two verdict lines, fenced, their grammar fixed **here and nowhere else**:
 
 ```text
-Package check: packages=<n>, disjoint write sets=<yes/no>, contracts fixed upfront=<yes/no>, independently testable=<yes/no>, shared-surface churn isolated=<yes/no>, fan-out ≤ 4=<yes/no> → <single | sequential | scaffold→parallel(<k>)→integrate>
+Package check: packages=<n>, disjoint write sets=<yes/no>, contracts fixed upfront=<yes/no>, independently testable=<yes/no>, shared-surface churn isolated=<yes/no>, fan-out ≤ 4=<yes/no> → <sequential | scaffold→parallel(<k>)→integrate>
 TDD plan: packages=<n>, shape=<…>, mode=<integrated | split-phase | mixed>, commits=<k>, branch=<name>, source=<architecture-doc | derived>
 ```
 
