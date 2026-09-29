@@ -114,8 +114,8 @@ Rules that make the map mechanical:
 1. **One root per document.** A row maps exactly one heading plus every descendant no other row maps; the parent document ends where the first carved-out child begins. Never group siblings into one row — two roots would mean two H1s.
 2. **Totality.** Every heading below an included `## N.` is covered exactly once, by its own row or by its nearest mapped ancestor. Walk the headings against the map once the last section is drafted.
 3. **Three path patterns, no others.** **(i) Topic document** — `<folder>/NN-<slug>.md`, `NN` two-digit and contiguous from `01` within that folder in map order, the slug the kebab-case of the row's root heading; promotion = the root heading's depth − 1. **(ii) Decision record** — `09-architecture-decisions/NNNN-<slug>.md`, four-digit, continuing from the header's `Records from:`; promotion `2`. **(iii) The `## 9.` heading itself** — `09-architecture-decisions/README.md`, promotion `—`, the one named exception: §9's body *is* the generated log.
-4. **Rows that name no path** take no part in the totality walk: `→ index (omitted)` for a marker-only subsection inside a split section, and — in update-delta scope only — `| <existing document heading> | → superseded — <reason> | — |`, which retires a document already persisted in an included section.
-5. **Update-delta accounting.** Read each included section's index before mapping. Every document already in that folder is accounted for exactly one of three ways: re-authored by a path row, retired by a supersession row, or **carried forward byte-identical by having no row at all**. Existing documents keep their ordinals; new ones continue the folder's sequence. In seed scope a supersession row is a defect.
+4. **Rows that name no path** take no part in the totality walk: `→ index (omitted)` for a marker-only subsection inside a split section, and — in update-delta scope only — two row forms that act on something already persisted: `| <existing document heading> | → superseded — <reason> | — |`, which retires a topic document of an included section, and `| ADR-NNNN (existing record) | → status: <status text> | — |`, which flips the `Status:` line — and nothing else — of a record that one of this Workfile's Appendix A records, or an already-accepted record, names as superseded under `Related`. The status text is exactly `Superseded by ADR-MMMM[, ADR-MMMM …]` when the superseding record replaces the whole Decision, or `Accepted — superseded in part by ADR-MMMM[, ADR-MMMM …]` when any clause of it still stands; the persistence step's § Workflow step 5 owns the grammar and its preconditions — this is an echo. When the record already carries a supersession form, carry its IDs forward and append yours.
+5. **Update-delta accounting.** Read each included section's index before mapping. Every **topic** document already in that folder is accounted for exactly one of three ways: re-authored by a path row, retired by a supersession row, or **carried forward byte-identical by having no row at all**. Existing documents keep their ordinals; new ones continue the folder's sequence. In seed scope a supersession row is a defect.
 6. **Appendix C is never persisted**, and neither is Appendix B. Only §1–§12 and the Appendix A records reach the project tree.
 
 ## Workflow
@@ -177,7 +177,7 @@ quality goals and the §2 constraints.>
 <§1.1 requirement IDs · building blocks (§5) · other record IDs · the implementing package>
 ```
 
-`Options Considered` is present **if and only if** `Kind: decided`; a `recorded` decision states what the system does, in the present indicative, followed by the evidence that establishes it, and its `Consequences` are the ones that have actually materialized. Title records by the choice made ("Event-sourced order history"), not by the question asked, so the §9 log reads as a list of positions. Number from `Records from:`, and link each record from the §9 table by its appendix anchor — persistence rewrites the link to the record's path. A record that supersedes an existing project record names it in `Related` and in §9; you do not edit the superseded file.
+`Options Considered` is present **if and only if** `Kind: decided`; a `recorded` decision states what the system does, in the present indicative, followed by the evidence that establishes it, and its `Consequences` are the ones that have actually materialized. Title records by the choice made ("Event-sourced order history"), not by the question asked, so the §9 log reads as a list of positions. Number from `Records from:`, and link each record from the §9 table by its appendix anchor — persistence rewrites the link to the record's path. A record that supersedes an existing project record names it in `Related` (as `supersedes …`, stating which clauses or citations) and in §9, and adds a `→ status:` row for it in Appendix C (§ Layout Map rule 4) so the superseded record's `Status:` line says so on the page; that one line is the **only** change a superseded record ever receives, and persistence makes it, not you — you never edit the superseded file, and you never write a `→ status:` row for a record no Appendix A record (or already-accepted record) names under `Related`.
 
 ## Output Contract
 
@@ -186,7 +186,7 @@ quality goals and the §2 constraints.>
 **Report** (not written to the Workfile), in this order:
 
 1. The `Section scope:` line.
-2. The decision list — ID, title, `Kind`, one line of rationale each.
+2. The decision list — ID, title, `Kind`, one line of rationale each; where a record supersedes an existing one, the rationale line names the superseded ID and the status text its `→ status:` row carries, so the checkpoint surfaces the flip beside the decision that causes it.
 3. The `Package check:` line, or exactly `Package check: n/a`.
 4. Open risks from §11, worst first.
 5. **Investigation gaps** — what you could not confirm, what you assumed instead, and which section is weakest as a result, including every section marked with the no-evidence marker.
@@ -217,6 +217,7 @@ quality goals and the §2 constraints.>
 - Every §5 block cites a real path, and its interfaces are precise enough to write a failing test against without reading the implementation.
 - Every diagram element traces to the specification or to an input Workfile, and the Mermaid markup is well-formed.
 - Appendix C is total and pattern-conforming, and every split section names three or more independently consulted units.
+- Every `→ status:` row names a record that an Appendix A record — or an already-accepted record — supersedes under `Related`, carries one of the two fixed status forms, and preserves any IDs the record's status line already holds; no record of this run's Appendix A is named by one.
 - Appendix B, when present, holds vertical slices, each in-scope criterion is owned exactly once, and the `Package check:` line is consistent with the table.
 
 ## Anti-Patterns
