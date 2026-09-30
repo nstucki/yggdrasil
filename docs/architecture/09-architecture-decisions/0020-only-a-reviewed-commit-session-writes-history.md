@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-09-24
-- **Kind:** recorded (evidence: `skills/tdd/brokk-tdd-commit/SKILL.md:3, 10-22, 43-71, 86-94`; `skills/tdd/brokk-test-driven-development/SKILL.md:3, 10, 94-98, 102, 112-114, 145`; `skills/tdd/heimdall-tdd-review/SKILL.md:15-17, 47, 61, 103, 107, 113-129, 164-165`; `skills/tdd/odin-tdd-workflow/SKILL.md:12-14, 47-49, 58-60, 64-66, 75, 84-88, 96-100, 105`; `scripts/odin-generator/shared-body.template.md:150`; `agents/brokk.md:10-41`)
+- **Kind:** recorded (evidence: `skills/engineering/brokk-tdd-commit/SKILL.md:3, 10-22, 43-71, 86-94`; `skills/engineering/brokk-test-driven-development/SKILL.md:3, 10, 94-98, 102, 112-114, 145`; `skills/engineering/heimdall-tdd-review/SKILL.md:15-17, 47, 61, 103, 107, 113-129, 164-165`; `skills/engineering/odin-tdd-workflow/SKILL.md:12-14, 47-49, 58-60, 64-66, 75, 84-88, 96-100, 105`; `scripts/odin-generator/shared-body.template.md:150`; `agents/brokk.md:10-41`)
 
 ## Context
 
