@@ -42,7 +42,7 @@ A request to explain a codebase's structure where no architecture document exist
 
     **Every record ships at `Status: Proposed`.** Ratification is the checkpoint's; promotion to `Accepted` is persistence's. Neither is the author's.
 
-3. **Ratification checkpoint (no dispatch).** Surface exactly three things: the decisions awaiting ratification — ID, title, kind, one-line rationale; the context review verdict, or `context skipped — <reason>`; and the persistence location, with the header's `Document scope:` read out as *the layout will be created* (`seed`) or *merged into the existing document* (`update delta`). Whether to pause for steering or auto-proceed is governed by your Communication Policy; when auto-proceeding, ratify by adoption and let the summary ride the Deliverable disclosure.
+3. **Ratification checkpoint (no dispatch).** Surface exactly: the decisions awaiting ratification — ID, title, kind, one-line rationale; the context review verdict, or `context skipped — <reason>`; the persistence location, with the header's `Document scope:` read out as *the layout will be created* (`seed`) or *merged into the existing document* (`update delta`); and the dispatch cost, qualitatively, with the count on request. Whether to pause for steering or auto-proceed is governed by your Communication Policy; when auto-proceeding, ratify by adoption and let the summary ride the Deliverable disclosure.
 
     Record the outcome as the **ratification record**, one line, in the grammar `brokk-architecture-persistence` § The Ratification Record defines — echoed here so you can write it; that section, not this echo, is normative:
 
@@ -78,7 +78,7 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 - **The target's state is verified against the header at persistence**, never assumed from the draft.
 - **The drafting step is the one unreviewed node, by design**; its output reaches the repository only through the checkpoint and the persistence review.
 - **The Deliverable discloses** the decisions ratified, the persisted location and whether it was created or updated, any prior documentation left untouched, and the investigation gaps.
-- **Cost:** 4 dispatches with context already established, 6 when the context gate fires, 2 when persistence is declined. Disclose it qualitatively at the checkpoint and quantitatively on request.
+- **Cost:** 3 dispatches with context already established, 5 when the context gate fires, 1 when persistence is declined; add 2 when this workflow runs standalone — the Response and the Final Review Gate. Disclose it qualitatively at the checkpoint and quantitatively on request.
 
 ## Anti-Patterns
 

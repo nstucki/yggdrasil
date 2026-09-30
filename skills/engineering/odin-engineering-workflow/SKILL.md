@@ -21,7 +21,7 @@ Deliverable: response=yes, artifact=yes — code and tests committed in the targ
 
 The requirements Workfile is **not** persisted by default; persist it to `docs/requirements/<slug>.md` only on user direction.
 
-**Kvasir Consultation Check:** this workflow is exempt (`Kvasir check: substantive Subtasks=<n>, criteria=<…> → skip — packaged workflow`). Its strategic consultation is internal — the architecture step (step 3) and the TDD stage's plan step — and its stages' checkpoints are the user's steering points. Each stage's own exemption covers the sessions inside it. When this workflow is one stage of a larger composite plan, the composite is still evaluated by the Check as usual. Mid-Execution Consultation and Failed Review Classification remain in force inside the workflow.
+**Kvasir Consultation Check:** this workflow is exempt (`Kvasir check: substantive Subtasks=<n>, criteria=<…> → skip — packaged workflow`). Its strategic consultation is internal — the architecture step (step 3) and the TDD stage's plan step — and its stages' checkpoints are the user's steering points. Each stage's own exemption covers the sessions inside it. Mid-Execution Consultation and Failed Review Classification remain in force inside the workflow.
 
 ## When to Use
 
@@ -38,7 +38,7 @@ The requirements Workfile is **not** persisted by default; persist it to `docs/r
 
     All four `{analysis, architecture}` combinations are valid; the two steps are independent. Explicit user direction overrides inference in that direction and is recorded as the reason. Firing criteria:
     - **Analysis** fires when ANY: outcome-phrased objective; acceptance criteria absent or ambiguous; multiple actors or stakeholders implied; user-facing behavior with unclear edge cases; requirements, a spec, stories, or acceptance criteria asked for; a natural-language request rather than a concrete change. Skip when the change is already testable (bug with a reproduction, small feature with stated behavior, behavior-preserving refactor) or the user declines.
-    - **Architecture** fires per the firing criteria in `odin-architecture-workflow` § When to Use, and **without exception whenever two or more work packages are expected** — the split is itself an architecture decision.
+    - **Architecture** fires per the firing criteria in `odin-architecture-workflow` § When to Use.
 
 2. **Business Analysis (optional).** Dispatch Bragi with `bragi-business-analysis` and the objective. Writes `NN-requirements.md`: acceptance criteria with stable IDs, ranked quality goals, non-functional targets, assumptions, capped open questions with proposed defaults, glossary. Relay the open questions per your Communication Policy — as ordinary clarifications before the architecture step proceeds under Interactive, or by adopting the proposed defaults as documented assumptions under Guided and Autonomous. No dedicated review.
 
@@ -65,7 +65,7 @@ The Bragi session receives no dedicated review.
 
 - **The shape verdict is recorded before any dispatch.**
 - **The TDD stage is dispatched only after the Architecture stage has completed** — ratification and persistence are that stage's own gates, consumed here, never re-checked or repeated.
-- **Cost (total dispatches, including the standing reviews and the Final Review Gate, which are not numbered steps):** `A + R·D + T + 2`, where A and R are 1 when the analysis and architecture steps fire (0 otherwise), **D and T are the Architecture and TDD workflows' own dispatch counts** (each in its skill's § Quality Criteria), and the trailing 2 is the Response plus the Final Review Gate. Minimum 7; a medium run (A=1, D=4, T=9) is 16. Disclose the cost qualitatively at the checkpoints and quantitatively on request.
+- **Cost (total dispatches, including the standing reviews and the Final Review Gate, which are not numbered steps):** `A + R·D + T + 2`, where A and R are 1 when the analysis and architecture steps fire (0 otherwise), **D and T are the Architecture and TDD workflows' own dispatch counts** (each in its skill's § Quality Criteria, before its standalone addition), and the trailing 2 is the Response plus the Final Review Gate. Minimum 7; a medium run (A=1, D=3, T=9) is 15. Disclose the cost qualitatively at the checkpoints and quantitatively on request.
 - **The Deliverable discloses** the shape taken, the assumptions adopted, acceptance-criterion coverage, the commits landed, and the architecture directory and decision-record locations.
 
 ## Anti-Patterns

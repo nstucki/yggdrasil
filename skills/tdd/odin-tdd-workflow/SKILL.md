@@ -92,7 +92,7 @@ Supply the originating brief, the artifact paths, the pinned `HEAD` and baseline
 - **Every acceptance criterion traces to a test** that was observed failing first, at a named location.
 - **Every skip and every amendment is recorded** with its reason, never taken silently.
 - **The Deliverable discloses** the commits landed, the criterion coverage, and anything left uncommitted.
-- **Cost (total dispatches, including the standing reviews):** `T = 2C + 1 + 2N·(1+S) + 2W + 2K`, where C is 1 when the context step fires, N is the package count including any scaffold and integration package, S is 1 in split-phase mode, W is 1 when a parallel wave ran, and K is the number of commits in the plan; add 1 for the Response when this workflow runs standalone. Minimum 5 (N=1, K=1); a sequential medium run (C=1, N=2, K=1) is 9; a full parallel run (C=1, N=4, W=1, K=2) is 15. Disclose it qualitatively at the checkpoint and quantitatively on request.
+- **Cost (total dispatches, including the standing reviews):** `T = 2C + 1 + 2N·(1+S) + 2K`, where C is 1 when the context step fires, N is the package count including any scaffold and integration package, S is 1 in split-phase mode, and K is the number of commits in the plan; add 2 when this workflow runs standalone — the Response and the Final Review Gate. Minimum 5 (N=1, K=1); a sequential medium run (C=1, N=2, K=1) is 9; a full parallel run (C=1, N=4, K=2) is 15. Disclose it qualitatively at the checkpoint and quantitatively on request.
 
 ## Anti-Patterns
 
