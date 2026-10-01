@@ -1,19 +1,19 @@
 ---
 name: brokk-test-driven-development
-description: Implement a bounded work package by the red-green-refactor cycle — failing tests traced to acceptance criteria first, minimal implementation second, behavior-preserving refactor third — returning run evidence for each phase.
+description: Implement a bounded work package by the red-green-refactor cycle — failing tests traced to acceptance criteria first, minimal implementation second, behavior-preserving refactor third — returning run evidence for each phase, stopping at a reviewed-ready, uncommitted tree; committing belongs to a separate step.
 ---
 
 # Test-Driven Development
 
 ## Purpose
 
-Execute one bounded work package test-first: every behavior is proven absent by a failing test before it is implemented, made present by the smallest sufficient change, then cleaned up without changing behavior. This skill owns **phase ordering**, **evidence capture**, **work-package and write-set discipline**, the **rules for running as one of several concurrent sessions in a shared working tree**, and the craft standards the cycle relies on.
+Execute one bounded work package test-first: every behavior is proven absent by a failing test before it is implemented, made present by the smallest sufficient change, then cleaned up without changing behavior. This skill owns **phase ordering**, **evidence capture**, **work-package and write-set discipline**, the **rules for running as one of several concurrent sessions in a shared working tree**, and the craft standards the cycle relies on. **It never commits**: the tree it leaves is reviewed uncommitted, and a separate commit step records it.
 
-**Self-contained by design.** This skill is the complete method for the test-driven step and depends on no other skill. The test-craft, implementation, refactoring, and commit standards the cycle needs are in § Craft Standards below. The package brief supplies the contracts and acceptance criteria — nothing else is imported. A gap in these standards is a report item, not a reason to reach elsewhere or improvise.
+**Self-contained by design.** This skill is the complete method for the test-driven step and depends on no other skill. The test-craft, implementation, and refactoring standards the cycle needs are in § Craft Standards below. The package brief supplies the contracts and acceptance criteria — nothing else is imported. A gap in these standards is a report item, not a reason to reach elsewhere or improvise.
 
 ## When to Use
 
-- Dispatched as the test-driven execution step of an engineering workflow, with one work package to implement.
+- Dispatched as the test-driven execution step of the TDD workflow, with one work package to implement.
 - Implementing one package of a multi-package plan, alone or concurrently with sibling sessions.
 - Implementing a single slice end-to-end when the plan produced exactly one package.
 - The brief carries a `Phase:` and/or `Mode:` line (see Workflow) — those lines select the subsections below.
@@ -30,7 +30,7 @@ Execute one bounded work package test-first: every behavior is proven absent by 
 
 **Step 1: Consume the work package.**
 
-1. **Extract the package contract.** Resolve each of: **scope / write set** (the files this session may create or change), **contracts and interfaces** to provide and consume (signatures, types, error and status contracts, schema changes), **owned acceptance criteria** with their IDs, **test seam and test command**, **dependencies** on other packages, and the **done criterion**.
+1. **Extract the package contract.** Resolve each of: **scope / write set** (the files this session may create or change), **contracts and interfaces** to provide and consume (signatures, types, error and status contracts, schema changes), **owned acceptance criteria** with their IDs, **test seam and test command**, **dependencies** on other packages, and the **done criterion** — and, when the brief lists them, the **reviewed-but-uncommitted paths** of earlier packages in the same batch, which are read-only for this session exactly as in parallel mode.
 2. **Know where each input comes from.** Interface and contract detail comes from the design document's blackbox interface specifications when a design step ran; acceptance criteria and quality scenarios come from the requirements document when an analysis step ran; when both steps were skipped, derive them from the request itself and **restate the derived list explicitly in the report** so the requesting agent can correct it.
 3. **Report gaps instead of filling them.** A missing contract detail, an untestable acceptance criterion, or a contradiction between the request and the specified interface is a report item — and, if it blocks the first failing test, a consultation. Do not invent requirements to close the gap.
 4. **Record the session header** before editing anything:
@@ -91,28 +91,27 @@ Final:       <command> → <verbatim pass summary>   (full-suite line too, in so
 AC coverage: table of | AC ID | test name | file:line | status |
 Files changed: <paths>   Write-set deviation: <none | path + reason>
 Would-fail check: <how it was confirmed the tests fail without the implementation>
-Commits: <none | type: message>
+Commits: none
 Gaps / concerns reported: <contract gaps, untestable ACs, pre-existing failures>
 ```
 
-Capture run output verbatim (trimmed to the informative tail), never summarized into prose.
+Capture run output verbatim (trimmed to the informative tail), never summarized into prose. `Commits:` is always `none`: this session never commits, in any mode, and a reviewer treats any other value as blocking.
 
 ### Parallel-context discipline (`Mode: parallel`)
 
-Concurrent sessions share one working tree, so isolation is a discipline, not a guarantee.
+Concurrent sessions share one working tree, so isolation is a discipline, not a guarantee. The no-commit rule is not parallel-specific — see § No Commits — so it is not repeated here.
 
 1. **Scaffold before fan-out.** Shared surfaces — interface and contract declarations, dependency-injection and registration tables, route tables, migrations, dependency manifests and lockfiles, generated code, and shared test fixtures or harness setup — belong to a **sequential scaffold session that completes and is reviewed before any concurrent package starts**, and are frozen for the duration of the wave. If this session *is* the scaffold: create only the shared surface (declarations, fixtures, and stubs that fail loudly), implement no package internals, and report the frozen contract surface explicitly so the concurrent sessions can build against it.
 2. **No cross-package edits.** Files outside your write set — including the scaffold — are read-only. A required change there is a report item or a consultation; never an edit, and never a local workaround that duplicates the shared surface.
 3. **Run only your own test subset.** Sibling packages are mid-flight, so their failures are expected and are not yours. Do not investigate them, do not "fix" them, and never skip-mark, disable, or delete a failing test to get a clean run.
-4. **No commits during the wave.** The tree contains other sessions' partial work. Committing is the serial integration session's job.
-5. **No tree-wide side effects.** No dependency installation or upgrade, no repository-wide formatter or codegen run, no lockfile regeneration, no schema/migration application — those are scaffold or integration duties.
-6. **Report the seam.** State the write set actually touched, any contract detail you needed that the scaffold did not provide, and anything the integration session must reconcile.
+4. **No tree-wide side effects.** No dependency installation or upgrade, no repository-wide formatter or codegen run, no lockfile regeneration, no schema/migration application — those are scaffold or integration duties.
+5. **Report the seam.** State the write set actually touched, any contract detail you needed that the scaffold did not provide, and anything the integration session must reconcile.
 
 **Solo mode** relaxes only these: baseline and final runs use the full suite, and shared surfaces may be created in-session as ordinary units of work.
 
-### Commits
+### No Commits
 
-Only when the brief explicitly permits them, and never in `parallel` mode: commit per phase — `test:` for the red, `feat:` or `fix:` for the green, `refactor:` for the cleanup — leaving each commit at a state whose tests were run. Commit mechanics and message rules are in § Craft Standards → Commit mechanics. Otherwise leave the work uncommitted and say so.
+This session never records a commit, in any phase and in any mode, whether or not the brief mentions one. You stop at a refactored green state and hand the uncommitted tree to review; the TDD workflow's commit step (`brokk-tdd-commit`) records it afterwards, by the plan, once the review has passed. A brief that asks this session to commit is a defect in the brief: report it and leave the work uncommitted.
 
 ### Craft Standards
 
@@ -132,22 +131,6 @@ The standards the cycle runs on. Apply them; do not re-derive them, and do not e
 
 **Refactoring moves (from green only).** Rename for intent. Extract a function or method to remove duplication or shorten an over-long one. Inline needless indirection. Simplify conditionals with guard clauses and early returns. Replace magic values with named constants. One move at a time; run the tests after each; revert any move that goes red rather than debugging forward. Stay inside the package's write set.
 
-**Commit mechanics** — only when the brief explicitly permits commits, and never in `Mode: parallel`.
-
-1. Run the tests you are responsible for and confirm green before every commit.
-2. Review what you are about to record: `git status`, then `git diff`.
-3. Stage **by explicit name** — `git add <path>` per file, `git rm <path>` for a deletion, `git mv <old> <new>` for a rename. Never `git add .`, never `git add -A`, never stage a directory wholesale.
-4. Re-read the staged set with `git diff --cached` before committing.
-5. Confirm `.yggdrasil-workspace/` is gitignored and that no workspace file is staged. Add the ignore entry if it is missing.
-6. Commit with `git commit -m "<type>: <imperative, lowercase subject, ≤ ~50 characters>"`. Types for this cycle: `test:` for the red, `feat:` or `fix:` for the green, `refactor:` for the cleanup. Add a body (blank line, wrapped at ~72 characters) only when the *why* is not obvious from the diff.
-7. If the brief asks for a branch, create it before the first commit: `git switch -c <type>/<kebab-case-name>`.
-8. Never rewrite history: no `amend`, `rebase`, `reset`, `filter-branch`, or force update of any ref.
-9. Never perform a remote or history-moving operation: no `push`, `fetch`, `pull`, `merge`, `cherry-pick`, or `revert`.
-10. Never chain git subcommands in one invocation — no `&&`, `||`, `;`, pipes, or redirection. One git command per invocation, output read before the next.
-11. Commit no secrets, scratch files, or build artifacts.
-
-Report the branch, the commit count, and each commit message in the evidence block.
-
 ## Quality Criteria
 
 - **Red before green, with proof.** Every owned acceptance criterion has at least one test whose failure was observed and captured before the implementation existed.
@@ -159,7 +142,8 @@ Report the branch, the commit count, and each commit message in the evidence blo
 - **Boundaries held.** Files changed are a subset of the declared write set; any deviation is named with a reason.
 - **Contracts honored exactly** as specified; every divergence is reported rather than silently adopted.
 - **Baseline honesty.** The pre-change run is captured, and pre-existing failures are reported unchanged.
-- **Parallel invariants held** when in `parallel` mode: no cross-package edits, own subset only, no commits, no tree-wide side effects.
+- **Tree left uncommitted.** `HEAD` is unchanged from the session's start, and the evidence block reads `Commits: none`.
+- **Parallel invariants held** when in `parallel` mode: no cross-package edits, own subset only, no tree-wide side effects.
 - **Handover integrity** in `green+refactor`: the reviewed tests are unmodified.
 - **Test craft standards** — independence, determinism, one behavior per test, assertions specific enough to catch a regression — hold as defined in § Craft Standards.
 - **Evidence block complete** and in the given schema.
@@ -179,5 +163,6 @@ Report the branch, the commit count, and each commit message in the evidence blo
 - **Fabricated or paraphrased evidence** — reporting "tests pass" without the captured run output.
 - **Inventing requirements** to close a contract or acceptance-criterion gap instead of reporting it.
 - **Test-level inflation** — reaching for an end-to-end test where a unit test proves the behavior, making red slow and failures vague.
-- **Reaching outside this skill for method** — expecting another skill to supply test craft, implementation standards, or commit rules; this skill is complete for the test-driven step, and a gap in it is a report item, not a reason to improvise.
-- **Restating a comprehensive general testing or git playbook** — re-deriving edge-case catalogs, level definitions, refactoring technique, or version-control procedure at length instead of applying the Craft Standards this skill defines.
+- **Committing.** Any commit from this session — "to checkpoint progress", "because the brief allowed it", "because the tree is green" — bypasses the review that gates history; the commit step exists for exactly that.
+- **Reaching outside this skill for method** — expecting another skill to supply test craft or implementation standards; this skill is complete for the test-driven step, and a gap in it is a report item, not a reason to improvise.
+- **Restating a comprehensive general testing playbook** — re-deriving edge-case catalogs, level definitions, or refactoring technique at length instead of applying the Craft Standards this skill defines.

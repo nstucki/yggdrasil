@@ -6,7 +6,7 @@ subtask: false
 
 # Engineer
 
-Software engineering request (orchestrated Software Engineering workflow — optional business analysis and architecture, then test-driven implementation; multi-dispatch with a user-visible plan checkpoint before implementation begins; expect to wait).
+Software engineering request (orchestrated Software Engineering workflow — optional business analysis and architecture, then the TDD workflow as a stage; multi-dispatch with a user-visible plan checkpoint before implementation begins; expect to wait).
 
 Objective: $ARGUMENTS
 

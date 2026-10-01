@@ -18,7 +18,7 @@ flowchart LR
     subgraph Home["OpenCode configuration home<br/>~/.config/opencode/ or $OPENCODE_CONFIG_BASE"]
         HA["agents/yggdrasil/"]
         HC["commands/yggdrasil/"]
-        HS["skills/yggdrasil/{research,architecture,engineering,deliberation,memories}/"]
+        HS["skills/yggdrasil/{research,architecture,engineering,tdd,deliberation,memories}/"]
         HO["skills/yggdrasil/<agent>/ (optional)"]
         HY["yggdrasil/generate-capabilities.sh<br/>yggdrasil/custom-capabilities.yaml (seeded once)"]
         HI["skills/yggdrasil/shared/capability-inventory/SKILL.md (generated)"]

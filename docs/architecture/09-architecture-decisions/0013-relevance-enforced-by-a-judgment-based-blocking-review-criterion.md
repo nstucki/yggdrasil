@@ -1,6 +1,6 @@
 # ADR-0013: Relevance enforced by a judgment-based blocking review criterion
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0016
 - **Date:** 2026-09-23
 
 ## Context

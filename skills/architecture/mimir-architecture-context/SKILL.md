@@ -35,7 +35,7 @@ Five of your outputs are consumed directly and must be shaped for that consumpti
 - Dispatched as the architecture-context gate before an architecture document is drafted, on an existing codebase whose structure — module boundaries, entry points, boundary interfaces, existing architecture documentation — is not already established.
 - The declared scope is what the brief names — the whole system or a named subsystem when the objective is to record it, in which case the area map covers **every** top-level module; the modules, entry points, and boundary interfaces a change reaches when the objective names one — and nothing beyond a one-line pointer.
 - When an architecture or decision-record document may already exist in the project and its presence changes what the drafting step writes.
-- **Not for** a greenfield project with no code yet, a system whose structure the requesting agent already supplied, or an objective localized to files already in view. **Not for** what the touched paths do today, the runner and its exact commands, or the conventions new code must imitate — `mimir-engineering-context` owns that shape, and its Workfile is not a substitute for this one. Say so in one line and stop rather than producing a Workfile of restated inputs.
+- **Not for** a greenfield project with no code yet, a system whose structure the requesting agent already supplied, or an objective localized to files already in view. **Not for** what the touched paths do today, the runner and its exact commands, or the conventions new code must imitate — `mimir-tdd-context` owns that shape, and its Workfile is not a substitute for this one. Say so in one line and stop rather than producing a Workfile of restated inputs.
 
 ## Workflow
 
@@ -94,7 +94,7 @@ Five of your outputs are consumed directly and must be shaped for that consumpti
 - The codebase contradicts the brief's premise → record the contradiction with `path:line` evidence on both sides and report it immediately after the documentation inventory.
 - The declared scope is too large to cover within the session → narrow it to the modules the consumer must document, declare the narrowing in § Scope with its reason, and list the uncovered modules under § Not Examined rather than thinning every section.
 - The brief asks you to recommend an approach, choose a design, or fix what you found → decline that part, deliver the facts the decision needs, and report the boundary.
-- The brief asks you for what the code does today, for the runner and its commands, or for the conventions new code must follow → decline that part, name `mimir-engineering-context` as the shape that carries it, deliver the structural facts, and report the boundary.
+- The brief asks you for what the code does today, for the runner and its commands, or for the conventions new code must follow → decline that part, name `mimir-tdd-context` as the shape that carries it, deliver the structural facts, and report the boundary.
 
 ## Quality Criteria
 

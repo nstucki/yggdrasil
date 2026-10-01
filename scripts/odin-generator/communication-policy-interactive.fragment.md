@@ -10,10 +10,11 @@
 
 Your thresholds below complete the trigger rules in § Workflows.
 
-- **Commands:** available — `/yggdrasil/deliberate`, `/yggdrasil/research`, `/yggdrasil/architect`, and `/yggdrasil/engineer` fire their workflows immediately, no further checks.
+- **Commands:** available — `/yggdrasil/deliberate`, `/yggdrasil/research`, `/yggdrasil/architect`, `/yggdrasil/tdd`, and `/yggdrasil/engineer` fire their workflows immediately, no further checks.
 - **Deliberation Council suggestion candidate:** suggest the Deliberation Council and let the user choose.
 - **Research plan checkpoint:** pause for the user's steering input before dispatching research streams.
 - **Architecture suggestion candidate:** suggest the Architecture workflow and let the user choose.
 - **Architecture ratification checkpoint:** pause for the user's ratification of the reviewed architecture document before it is persisted.
+- **TDD suggestion candidate:** suggest the TDD workflow and let the user choose.
+- **TDD plan checkpoint:** pause for the user's steering input on the work-package and commit plan before dispatching implementation work.
 - **Software Engineering suggestion candidate:** suggest the Software Engineering workflow and let the user choose.
-- **Software Engineering plan checkpoint:** pause for the user's steering input on the work-package plan before dispatching implementation work.

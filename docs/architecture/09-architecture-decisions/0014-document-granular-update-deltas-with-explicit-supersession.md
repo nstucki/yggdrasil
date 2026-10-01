@@ -1,6 +1,6 @@
 # ADR-0014: Document-granular update deltas with explicit supersession
 
-- **Status:** Accepted
+- **Status:** Accepted — superseded in part by ADR-0016, ADR-0017
 - **Date:** 2026-09-23
 
 ## Context

@@ -34,7 +34,7 @@ A request to explain a codebase's structure where no architecture document exist
 
 ## Workflow
 
-1. **Context (conditional).** Skip Mimir only when the module boundaries, entry points, boundary interfaces, and existing architecture documentation of the system in scope are already established in the conversation — supplied by the user, or by a reviewed `NN-context-architecture-*.md` from an earlier run in this session — or when the objective is greenfield with no code yet. Otherwise dispatch. An engineering-context Workfile is **never** a skip reason: it records behavior, conventions, and test infrastructure, none of which grounds a §5 blackbox. Record the skip as `Context: skipped — <reason>`, never silently.
+1. **Context (conditional).** Skip Mimir only when the module boundaries, entry points, boundary interfaces, and existing architecture documentation of the system in scope are already established in the conversation — supplied by the user, or by a reviewed `NN-context-architecture-*.md` from an earlier run in this session — or when the objective is greenfield with no code yet. Otherwise dispatch. A TDD-context Workfile is **never** a skip reason: it records behavior, conventions, and test infrastructure, none of which grounds a §5 blackbox. Record the skip as `Context: skipped — <reason>`, never silently.
 
     Brief: the objective; the declared scope — the system or a named subsystem when the objective records it, the change's structural footprint when it changes something; the architecture location, so the documentation inventory looks there first; and the requirement that the output be **fact-rich and framing-poor**, with proofs per finding. Exclude task-scoped facts — the runner and its commands, the conventions new code must imitate, implementation-phase test infrastructure, and what the touched paths do today. Writes `NN-context-architecture-<area>.md`; its standing review is `Focus: context`.
 
@@ -42,7 +42,7 @@ A request to explain a codebase's structure where no architecture document exist
 
     **Every record ships at `Status: Proposed`.** Ratification is the checkpoint's; promotion to `Accepted` is persistence's. Neither is the author's.
 
-3. **Ratification checkpoint (no dispatch).** Surface exactly three things: the decisions awaiting ratification — ID, title, kind, one-line rationale; the context review verdict, or `context skipped — <reason>`; and the persistence location, with the header's `Document scope:` read out as *the layout will be created* (`seed`) or *merged into the existing document* (`update delta`). Whether to pause for steering or auto-proceed is governed by your Communication Policy; when auto-proceeding, ratify by adoption and let the summary ride the Deliverable disclosure.
+3. **Ratification checkpoint (no dispatch).** Surface exactly: the decisions awaiting ratification — ID, title, kind, one-line rationale; the context review verdict, or `context skipped — <reason>`; the persistence location, with the header's `Document scope:` read out as *the layout will be created* (`seed`) or *merged into the existing document* (`update delta`); and the dispatch cost, qualitatively, with the count on request. Whether to pause for steering or auto-proceed is governed by your Communication Policy; when auto-proceeding, ratify by adoption and let the summary ride the Deliverable disclosure.
 
     Record the outcome as the **ratification record**, one line, in the grammar `brokk-architecture-persistence` § The Ratification Record defines — echoed here so you can write it; that section, not this echo, is normative:
 
@@ -78,16 +78,16 @@ Supply the originating brief, the artifact paths, and the pinned baseline with e
 - **The target's state is verified against the header at persistence**, never assumed from the draft.
 - **The drafting step is the one unreviewed node, by design**; its output reaches the repository only through the checkpoint and the persistence review.
 - **The Deliverable discloses** the decisions ratified, the persisted location and whether it was created or updated, any prior documentation left untouched, and the investigation gaps.
-- **Cost:** 4 dispatches with context already established, 6 when the context gate fires, 2 when persistence is declined. Disclose it qualitatively at the checkpoint and quantitatively on request.
+- **Cost:** 3 dispatches with context already established, 5 when the context gate fires, 1 when persistence is declined; add 2 when this workflow runs standalone — the Response and the Final Review Gate. Disclose it qualitatively at the checkpoint and quantitatively on request.
 
 ## Anti-Patterns
 
-- **Restating a specialist's method in a brief.** Name the skill, the inputs, and the output; how a document is laid out on disk and what belongs in a section are the dispatched skills' rules.
+- **Restating a specialist's method in a brief.** Name the skill, the inputs, and the output.
 - **Re-introducing a review of the drafting step, a mode line, or a pre-drafting structure dispatch "to be safe."** All three were removed by design; adding one back costs a dispatch and restores an inconsistency the redesign eliminated.
 - **Re-briefing persistence to create over a present target, or to fill an absent one, when its precondition fails.** The header is wrong, and Kvasir fixes headers.
 - **Persisting after a `BLOCKED` verdict**, or drafting a Response that reports success over a blocked review.
 - **More than one resume per blocked node.** One resume for an execution defect; a plan-level mismatch or a second `BLOCKED` ends the run and surfaces the review.
 - **Deleting project files on abort.** A run that stops at a blocked review discloses what it wrote and leaves it; removal is the user's direction.
-- **Treating an engineering-context Workfile as structural evidence.** Behavior, conventions, and a baseline test run do not establish module boundaries, entry points, or boundary interfaces, so skipping step 1 on one leaves §5 ungrounded and makes the recorded skip reason false.
+- **Treating a TDD-context Workfile as structural evidence.** Behavior, conventions, and a baseline test run do not establish module boundaries, entry points, or boundary interfaces, so skipping step 1 on one leaves §5 ungrounded and makes the recorded skip reason false.
 - **Creating a second architecture Workfile.** A parallel draft guarantees two documents that disagree.
 - **Skipping the Final Review Gate.** The Deliverable — the Response and the persisted directory — is user-facing output and must pass the gate like any other.

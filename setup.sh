@@ -164,7 +164,14 @@ DST_GENERATOR="${DST_CONFIG_HOME}/generate-capabilities.sh"
 # always-installed commands and Odin's workflow/memory mechanisms depend on
 # these skills with no fallback (see README). Every other skills/ subdirectory
 # holds optional skills, gated by the prompt below.
-MANDATORY_SKILL_DIRS="research memories deliberation engineering architecture"
+MANDATORY_SKILL_DIRS="research memories deliberation engineering architecture tdd"
+
+# Skill directories removed or renamed in this repo that a previous install may
+# still have at the destination. `cp -R` only adds and overwrites, so a stale
+# directory would survive an upgrade and stay loadable through the agents'
+# wildcard skill grants (e.g. "mimir-*", "heimdall-*"). Purge them before the
+# copy. Format: one "<feature>/<slug>" per entry, relative to DST_SKILLS.
+STALE_SKILL_DIRS="engineering/mimir-engineering-context engineering/heimdall-engineering-review engineering/odin-tdd-workflow engineering/kvasir-tdd-planning engineering/mimir-tdd-context engineering/brokk-tdd-commit engineering/heimdall-tdd-review engineering/brokk-test-driven-development"
 
 # ── Pre-flight checks ───────────────────────────────────────────────────────
 
@@ -351,6 +358,13 @@ ok "Agents installed."
 
 # ── Install mandatory skills (unconditional) ────────────────────────────────
 
+for stale in $STALE_SKILL_DIRS; do
+    if [ -d "${DST_SKILLS}/${stale}" ]; then
+        info "Removing stale skill directory ${DST_SKILLS}/${stale}…"
+        rm -rf "${DST_SKILLS:?}/${stale}"
+    fi
+done
+
 info "Copying mandatory skills to ${DST_SKILLS}…"
 for feature in $MANDATORY_SKILL_DIRS; do
     mkdir -p "${DST_SKILLS}/${feature}"
@@ -360,7 +374,7 @@ done
 ok "Mandatory skills installed."
 
 if [ "$COPY_SKILLS" != true ]; then
-    warn "Note: the mandatory skills (research/, memories/, deliberation/, engineering/, architecture/)"
+    warn "Note: the mandatory skills (research/, memories/, deliberation/, engineering/, architecture/, tdd/)"
     warn "install regardless of your answer — Odin's workflows and the commands depend on them."
 fi
 

@@ -38,7 +38,7 @@
 #      valid `subtask` field (if present, must be `false`), and non-empty template body.
 #   9. Mandatory-skill isolation from optional skills — no .md file under a
 #      mandatory feature directory (research/, memories/, deliberation/,
-#      engineering/, architecture/) may reference the slug of a skill that
+#      engineering/, architecture/, tdd/) may reference the slug of a skill that
 #      ships only with an optional agent bundle (skills/<agent>/), so mandatory
 #      skills keep working on a mandatory-only install. Both slug lists are
 #      derived at check time.
@@ -438,7 +438,7 @@ check_agent_freshness() {
 # agent by name. Skill ownership is derived from the skill slug's <agent>-
 # prefix (frontmatter name == directory slug, enforced by Check 3), NOT from
 # the directory layout — so mandatory skills in the feature directories
-# (research/, memories/, deliberation/, engineering/, architecture/) are
+# (research/, memories/, deliberation/, engineering/, architecture/, tdd/) are
 # scanned identically to optional skills under skills/<agent>/. A skill's
 # owner therefore changes with a slug rename, not with a directory move.
 # Matching is case-insensitive with word boundaries (grep -iw), so
@@ -764,7 +764,7 @@ FAIL_MANDATORY_ISOLATION=0
 # The mandatory feature directories — mirrors MANDATORY_SKILL_DIRS in setup.sh.
 # Keep the two in sync. Every other skills/*/ root is optional: an agent bundle
 # (skills/<agent>/) the user may decline, or the shared/ scaffold.
-MANDATORY_SKILL_DIRS='research memories deliberation engineering architecture'
+MANDATORY_SKILL_DIRS='research memories deliberation engineering architecture tdd'
 
 # Is $1 the name of a mandatory feature directory?
 is_mandatory_skill_dir() {

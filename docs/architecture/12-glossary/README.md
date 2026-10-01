@@ -6,4 +6,4 @@ The terms this document uses in a specific sense, and the ones the project and i
 
 | # | Document | Root heading | Last updated |
 | --- | --- | --- | --- |
-| 01 | [Glossary](01-glossary.md) | 12. Glossary | 2026-09-24 |
+| 01 | [Glossary](01-glossary.md) | 12. Glossary | 2026-09-29 |

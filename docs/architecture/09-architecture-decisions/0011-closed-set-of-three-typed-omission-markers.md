@@ -1,6 +1,6 @@
 # ADR-0011: Closed set of three typed omission markers
 
-- **Status:** Accepted
+- **Status:** Accepted — superseded in part by ADR-0015
 - **Date:** 2026-09-23
 
 ## Context

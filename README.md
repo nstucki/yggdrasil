@@ -69,7 +69,7 @@ Odin operates in three modes, adapting his autonomy to the task:
 
 The lifecycle flows through the pantheon: **Odin** receives the objective and determines the path; **Bragi** advises on communication, **Kvasir** on strategy and decomposition; **Mimir** researches and gathers context; **Brokk** implements; **Heimdall** reviews; and **Odin** evaluates the outcome and decides next steps.
 
-Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Odin also packages four complete workflows that are invoked whole rather than composed step by step: the **Deliberation Council**, deep **Research**, **Architecture** — an arc42 document recording what a system is or deciding what it should become — and **Software Engineering** — optional requirements analysis and architecture, then test-driven implementation across independently reviewed work packages. Every plan ends at a Final Review Gate, where Heimdall validates the assembled Deliverable against your original request before it reaches you.
+Odin selects among several established orchestration patterns depending on the task — from a simple *Research → Report* to the standard *Research → Implement → Review* to fuller flows that bring Kvasir's counsel to bear on complex, high-stakes work. Odin also packages five complete workflows that are invoked whole rather than composed step by step: the **Deliberation Council**, deep **Research**, **Architecture** — an arc42 document recording what a system is or deciding what it should become — **TDD** — a bounded change implemented test-first and landed as reviewed commits — and **Software Engineering** — optional requirements analysis and architecture, then a TDD stage — reviewed test-driven work packages, committed only after review. Every plan ends at a Final Review Gate, where Heimdall validates the assembled Deliverable against your original request before it reaches you.
 
 Patterns can be combined, repeated, or reordered as the task demands — for example, multiple research → implement → review rounds within a single task.
 
@@ -129,7 +129,8 @@ Required (always installed, regardless of the prompt — Odin's workflow and Ygg
 - **Deliberation skills** (`odin-deliberation-council` and the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/deliberation/`
 - **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`) → `~/.config/opencode/skills/yggdrasil/research/`
 - **Architecture skills** (`odin-architecture-workflow`, `mimir-architecture-context`, `kvasir-software-architecture`, `heimdall-architecture-review`, `brokk-architecture-persistence`) → `~/.config/opencode/skills/yggdrasil/architecture/`
-- **Engineering skills** (`odin-engineering-workflow`, `mimir-engineering-context`, `bragi-business-analysis`, `brokk-test-driven-development`, `heimdall-engineering-review`) → `~/.config/opencode/skills/yggdrasil/engineering/`
+- **Engineering skills** (`odin-engineering-workflow`, `bragi-business-analysis`) → `~/.config/opencode/skills/yggdrasil/engineering/`
+- **TDD skills** (`odin-tdd-workflow`, `mimir-tdd-context`, `kvasir-tdd-planning`, `brokk-test-driven-development`, `brokk-tdd-commit`, `heimdall-tdd-review`) → `~/.config/opencode/skills/yggdrasil/tdd/`
 
 Optional (the curated starter skills, installed only if accepted at the prompt):
 
@@ -183,10 +184,14 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 │   └── brokk-architecture-persistence/
 ├── engineering/                       # Mandatory skills
 │   ├── odin-engineering-workflow/
-│   ├── mimir-engineering-context/
-│   ├── bragi-business-analysis/
+│   └── bragi-business-analysis/
+├── tdd/                               # Mandatory skills
+│   ├── odin-tdd-workflow/
+│   ├── mimir-tdd-context/
+│   ├── kvasir-tdd-planning/
 │   ├── brokk-test-driven-development/
-│   └── heimdall-engineering-review/
+│   ├── brokk-tdd-commit/
+│   └── heimdall-tdd-review/
 ├── bragi/                             # Optional skills (if accepted at install)
 │   ├── bragi-presentation-structuring/
 │   ├── bragi-question-formulation/
@@ -223,12 +228,13 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 
 Commands are **macros for user requests to Odin** — equivalent to stating the same request in natural language. Natural-language invocation remains fully valid; commands are shortcuts, not the only door. This ensures commands always flow through the full orchestration pipeline with proper review gates — never bypassing specialist review.
 
-Yggdrasil provides seven globally-installed slash-commands, available in every project once installed:
+Yggdrasil provides eight globally-installed slash-commands, available in every project once installed:
 
 - **`/yggdrasil/deliberate <question>`** — Run the Deliberation Council: multiple perspective lenses analyze the question in parallel, synthesize the competing arguments, and deliver a reasoned conclusion. Multi-specialist workflow; expect to wait.
 - **`/yggdrasil/research <topic>`** — Conduct deep research: decompose the topic into independent research areas, investigate each in parallel with review and synthesis, and deliver a comprehensive report. Adaptive multi-specialist workflow; expect to wait.
 - **`/yggdrasil/architect <request>`** — Run the Architecture workflow: produce an arc42-structured architecture document of the system or of a stated objective, with a decision record for each structurally significant decision. Structural context is gathered when it is not already established, the document is drafted, and after a ratification checkpoint it is persisted into `docs/architecture/` by default — one folder per arc42 section, created when none exists and merged into when one does. Multi-specialist workflow; expect to wait.
-- **`/yggdrasil/engineer <objective>`** — Run the Software Engineering workflow: optional business analysis and an arc42-structured architecture decision — the Architecture workflow run to completion as a stage, ratifying and persisting within it — then test-driven implementation across one or more independently reviewed work packages. A plan checkpoint shows you the packages and the architecture decisions before implementation begins. Multi-specialist workflow; expect to wait.
+- **`/yggdrasil/tdd <objective>`** — Run the TDD workflow: implement a bounded change test-first and land it as reviewed commits. Behavioral context and an executed baseline are gathered when not already established; a plan fixes the work package, the execution shape, and the commit plan, and pauses at a checkpoint for your steering; each package runs red → green → refactor and is reviewed while still uncommitted; a fresh commit session records each planned batch only after every gating review passes. Multi-specialist workflow; expect to wait.
+- **`/yggdrasil/engineer <objective>`** — Run the Software Engineering workflow: optional business analysis and an arc42-structured architecture decision — the Architecture workflow run to completion as a stage, ratifying and persisting within it — then the TDD workflow run as a stage: reviewed work packages, each commit issued only after its review passes. A plan checkpoint shows you the packages, the commit plan, and the architecture decisions before implementation begins. Multi-specialist workflow; expect to wait.
 - **`/yggdrasil/remember [topic]`** — Promote reviewed findings to the project knowledge base. Runs the reviewed promotion pipeline (orchestrated, not an instant write). The only way promotion is initiated; never automatic at task wrap-up.
 - **`/yggdrasil/dream [scope]`** — Consolidate and audit the knowledge base for duplicates, contradictions, and staleness. Orchestrated maintenance; may prune by judgment but never silently performs a forget.
 - **`/yggdrasil/forget <scope>`** — Delete entries from the knowledge base. Destructive and always confirmed before dispatch; invocation is intent, not confirmation. Working-tree only; full wipe requires a second confirmation.
@@ -275,7 +281,7 @@ Specialist skills (Mimir, Brokk, Heimdall, Kvasir, Bragi) are plain Markdown fil
    $CONFIG_BASE/skills/yggdrasil/<agent>/<agent>-<name>/SKILL.md
    ```
 
-    Mandatory skills live in the feature directories `research/`, `memories/`, `deliberation/`, `architecture/`, and `engineering/`; optional skills install flat at `<agent>/<agent>-<name>/`.
+    Mandatory skills live in the feature directories `research/`, `memories/`, `deliberation/`, `architecture/`, `engineering/`, and `tdd/`; optional skills install flat at `<agent>/<agent>-<name>/`.
 
    where `<agent>` is one of `mimir`, `brokk`, `heimdall`, `kvasir`, `bragi`. The frontmatter requires `name` (must exactly match the directory name) and a one-line `description` phrased by role — never naming any agent:
 
@@ -397,30 +403,49 @@ What varies is not a mode but the state of the target: if no architecture docume
 
 **Architecture or engineering?** If your request carries implementation intent — "decide the architecture, *then build it*" — use `/yggdrasil/engineer` instead. The Software Engineering workflow owns architecture-before-implementation and runs this workflow to completion as one of its stages, so you get the same document plus the code. Use `/yggdrasil/architect` when the document *is* the deliverable.
 
-**What to expect:** A multi-specialist workflow — four dispatches for a run whose context is already established, six when architecture context has to be gathered first, two when you decline persistence — so noticeably slower than asking for a description of the structure. Persistence is the default: at the checkpoint you may decline it and keep the result as a transient working document instead.
+**What to expect:** A multi-specialist workflow — three dispatches for a run whose context is already established, five when architecture context has to be gathered first, one when you decline persistence, plus two more when it runs on its own rather than as a stage of the Software Engineering workflow (the final answer and its review gate) — so noticeably slower than asking for a description of the structure. Persistence is the default: at the checkpoint you may decline it and keep the result as a transient working document instead.
 
 **What you get:** a `docs/architecture/` directory (or a location you name) laid out one folder per arc42 section — `01-introduction-and-goals/` through `12-glossary/`. Each folder holds a generated `README.md` index and one or more topic documents, so a section split into parts stays navigable: section 5 may hold one document per building block, section 8 one per cross-cutting concept. Decision records live in `09-architecture-decisions/` beside that section's index, which doubles as the decision log. The top-level `README.md` is the document's index and the place to start reading. Every index is generated — edit the topic documents and the records, not the indices.
 
 **If a run is stopped:** a run that halts at a failed review leaves whatever persistence had already written in your project. That is deliberate — the workflow does not delete files it created, and it names the path in its answer. Delete it yourself if you do not want it, or leave it for the next run to merge into.
 
-### Software Engineering
+### TDD
 
-Odin further provides a **Software Engineering workflow** for building a bounded objective as working, tested code. It decides an explicit shape up front — whether to gather context, whether to analyze requirements, whether to decide architecture — then implements test-first across one or more independently reviewed work packages. Use this when you want requirements pinned down and the design decided and reviewed before code is written, rather than implementing straight away. Every skill it uses — its own and the Architecture workflow's, which it runs as its architecture stage — is mandatory and installs unconditionally, so it depends on zero optional skills and behaves identically whichever optional skill sets you accepted or declined at install time.
+Odin also provides a **TDD workflow** that implements a bounded change test-first and lands it in your project as reviewed commits. There is one form and no mode to choose: the objective is implemented red → green → refactor, and code reaches history only after every review gating it has passed. The same workflow runs standalone and as the Software Engineering workflow's implementation stage, with identical mechanics.
 
 **How it works:**
 
-1. **Shape decision** — Odin records which steps will run and why, before dispatching anything, including whether engineering context has to be gathered before implementation.
+1. **Behavioral context (conditional)** — what each touched path does today, the engineering conventions beside it, the exact test commands, and a genuinely executed baseline run are gathered and independently reviewed. Skipped only when the conversation already established all of that, or when the objective is greenfield — and the skip is recorded with its reason, never taken silently.
+2. **Plan** — one working document fixes the work package, the execution shape, and the commit plan: which packages land together, in what order, under which message, on which branch. This is deliberately the one step with no review of its own — the checkpoint below and the execution reviews are its gates.
+3. **Plan checkpoint** — you see the packages with their acceptance criteria, the baseline result, the commit plan, the branch, and the risks (this is your steering point). You may adjust the packages, the batches, the messages, or the branch.
+4. **Packages** — each package is implemented red → green → refactor: failing tests traced to acceptance criteria first, then the minimal implementation, then a behavior-preserving refactor. Every package returns run evidence and is independently reviewed **while still uncommitted**.
+5. **Integration (only after a parallel wave)** — packages run in parallel only when their write sets are disjoint and their contracts are fixed up front; a wave is followed by a session that runs the full suite and closes the seams.
+6. **Commits** — a fresh commit session records each planned batch: it re-runs the full suite on the combined tree and commits only after every review gating that batch has passed — and each commit is itself reviewed.
+7. **Final answer** — the outcome is drafted as a user-facing summary and passes the final review gate before delivery.
+
+**When to use:** Use the `/yggdrasil/tdd` command, or explicitly ask for test-driven development or a test-first implementation of a bounded change. A bug with a reproduction or a small feature with stated behavior may be offered as a suggestion.
+
+**TDD or engineering?** If your request needs requirements pinned down, a design decided, or is expected to split into several work packages, use `/yggdrasil/engineer` instead. The Software Engineering workflow owns analysis-and-architecture-before-implementation and runs this workflow to completion as its implementation stage, so you get the same reviewed commits plus the requirements and the architecture. Use `/yggdrasil/tdd` when the change fits the existing structure and its behavior is already clear.
+
+**What to expect:** A multi-specialist workflow — a plan checkpoint plus several reviewed dispatches per package and per commit — so noticeably slower than implementing directly. If planning finds the change needs more than one package and no architecture document exists, the run ends there and points you at `/yggdrasil/engineer`, with nothing left in the tree.
+
+**What you get:** tested code landing as reviewed, green commits on a `feature/`, `fix/`, or `refactor/` branch — never on `main`. Work left uncommitted because a review blocked the run stays in your working tree and is disclosed, never reverted.
+
+### Software Engineering
+
+Odin further provides a **Software Engineering workflow** for building a bounded objective as working, tested code. It decides an explicit shape up front — whether to analyze requirements, whether to decide architecture — then runs the [TDD workflow](#tdd) as a stage to implement test-first across one or more independently reviewed work packages. Use this when you want requirements pinned down and the design decided and reviewed before code is written, rather than implementing straight away. Every skill it uses — its own and the Architecture workflow's, which it runs as its architecture stage — is mandatory and installs unconditionally, so it depends on zero optional skills and behaves identically whichever optional skill sets you accepted or declined at install time.
+
+**How it works:**
+
+1. **Shape decision** — Odin records which steps will run and why, before dispatching anything.
 2. **Business analysis (optional)** — the objective is analyzed into stakeholders, scope, testable acceptance criteria with stable IDs, ranked quality goals, non-functional targets, assumptions, and open questions — with no solution prescribed.
 3. **Architecture (optional)** — the [Architecture workflow](#architecture) is run to completion as a stage, producing an arc42 document pruned to the sections the objective actually affects, with each significant decision written as a separate Architecture Decision Record (at least two options evaluated against the quality goals), plus a breakdown into work packages. Ratification and persistence happen inside that stage, at its own checkpoint; nothing here re-ratifies or persists. No implementation plan is formed before the stage completes.
-4. **Engineering context (conditional)** — behavioral facts are gathered and independently reviewed when current behavior must be characterized before it is changed, or when the test infrastructure or the surrounding conventions are not yet established: what each touched path does today, the exact test commands, and a genuinely executed baseline run. It runs after the architecture step so it can scope itself to the write sets the ratified design actually names, rather than guessing ahead of it.
-5. **Plan checkpoint** — you see the work packages, the execution mode, and the architecture decisions already ratified at the architecture stage's own checkpoint, before implementation begins (this is your steering point).
-6. **Test-driven implementation** — each work package is implemented red → green → refactor: failing tests traced to acceptance criteria first, then the minimal implementation, then a behavior-preserving refactor. Every package returns run evidence and is independently reviewed. Packages run in parallel only when their write sets are disjoint and their contracts are fixed up front; otherwise sequentially.
-7. **Integration** — when there is more than one package, a final session runs the full test suite and resolves the seams between packages. The architecture directory was already persisted by the stage in step 3, so nothing is written to it here.
-8. **Final answer** — the outcome is drafted as a user-facing summary (shape taken, acceptance-criteria coverage, test evidence, assumptions, open risks, document locations) and independently reviewed before delivery.
+4. **TDD stage** — the [TDD workflow](#tdd) is run to completion as a stage: its context gate, plan, plan checkpoint, reviewed packages, integration, and review-gated commits, exactly as when invoked standalone.
+5. **Final answer** — the outcome is drafted as a user-facing summary (shape taken, acceptance-criteria coverage, test evidence, commits landed, assumptions, open risks, document locations) and independently reviewed before delivery.
 
-**When to use:** Use the `/yggdrasil/engineer` command, or explicitly ask for the engineering workflow, test-driven development, or requirements and architecture work ahead of implementation. A non-trivial implementation request (new component, multi-module feature, new integration) may be offered as a suggestion. Plain implementation requests — a bug with a repro, a small stated change — skip this workflow and take the ordinary implement → review path.
+**When to use:** Use the `/yggdrasil/engineer` command, or explicitly ask for the engineering workflow, or for requirements and architecture work ahead of implementation. Plain test-driven-development requests for a bounded change route to the [TDD workflow](#tdd) instead. A non-trivial implementation request (new component, multi-module feature, new integration) may be offered as a suggestion. Plain implementation requests — a bug with a repro, a small stated change — skip this workflow and take the ordinary implement → review path.
 
-**What to expect:** This is the heaviest packaged workflow — substantially slower and more dispatch-intensive than implementing directly. The plan checkpoint gives you a chance to adjust the shape and the packages before code is written. You'll receive tested code, and — when the architecture step ran — the architecture persisted as a `docs/architecture/` directory in the project: one folder per arc42 section, each with its index and topic documents, and the accepted decision records under `09-architecture-decisions/`.
+**What to expect:** This is the heaviest packaged workflow — substantially slower and more dispatch-intensive than implementing directly. The TDD stage's plan checkpoint gives you a chance to adjust the shape, the packages, and the commit plan before code is written. You'll receive tested code, and — when the architecture step ran — the architecture persisted as a `docs/architecture/` directory in the project: one folder per arc42 section, each with its index and topic documents, and the accepted decision records under `09-architecture-decisions/`. Code lands as reviewed, green commits on a `feature/`, `fix/`, or `refactor/` branch — never on `main`.
 
 ## Development
 

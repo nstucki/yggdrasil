@@ -1,6 +1,6 @@
 # ADR-0012: Persisted sections carry only document-stable references
 
-- **Status:** Accepted
+- **Status:** Accepted — superseded in part by ADR-0015
 - **Date:** 2026-09-23
 
 ## Context
