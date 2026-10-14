@@ -12,7 +12,6 @@ Validate that research Workfiles ground every finding in specific, verifiable pr
 ## When to Use
 
 - When reviewing a research Workfile (findings, analysis, investigation output).
-- When reviewing a synthesis Workfile that combines multiple research streams.
 - When a review brief asks for proof validation of any findings document.
 
 ## Workflow

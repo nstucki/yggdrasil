@@ -127,7 +127,7 @@ Required (always installed, regardless of the prompt — Odin's workflow and Ygg
 
 - **Memory skills** (`odin-memory-system`, `brokk-memory-curation`) → `~/.config/opencode/skills/yggdrasil/memories/`
 - **Deliberation skills** (`odin-deliberation-council` and the five `bragi-council-deliberation-*` perspective skills) → `~/.config/opencode/skills/yggdrasil/deliberation/`
-- **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`) → `~/.config/opencode/skills/yggdrasil/research/`
+- **Research skills** (`odin-research-workflow`, `kvasir-research-decomposition`, `mimir-research-convention`, `heimdall-research-review`, `bragi-research-report`) → `~/.config/opencode/skills/yggdrasil/research/`
 - **Architecture skills** (`odin-architecture-workflow`, `mimir-architecture-context`, `kvasir-software-architecture`, `heimdall-architecture-review`, `brokk-architecture-persistence`) → `~/.config/opencode/skills/yggdrasil/architecture/`
 - **Engineering skills** (`odin-engineering-workflow`, `bragi-business-analysis`) → `~/.config/opencode/skills/yggdrasil/engineering/`
 - **TDD skills** (`odin-tdd-workflow`, `mimir-tdd-context`, `kvasir-tdd-planning`, `brokk-test-driven-development`, `brokk-tdd-commit`, `heimdall-tdd-review`) → `~/.config/opencode/skills/yggdrasil/tdd/`
@@ -164,7 +164,8 @@ Yggdrasil ships with a curated set of optional skills. **These are starting poin
 │   ├── odin-research-workflow/
 │   ├── kvasir-research-decomposition/
 │   ├── mimir-research-convention/
-│   └── heimdall-research-review/
+│   ├── heimdall-research-review/
+│   └── bragi-research-report/
 ├── memories/                          # Mandatory skills
 │   ├── odin-memory-system/
 │   └── brokk-memory-curation/
@@ -231,7 +232,7 @@ Commands are **macros for user requests to Odin** — equivalent to stating the 
 Yggdrasil provides eight globally-installed slash-commands, available in every project once installed:
 
 - **`/yggdrasil/deliberate <question>`** — Run the Deliberation Council: multiple perspective lenses analyze the question in parallel, synthesize the competing arguments, and deliver a reasoned conclusion. Multi-specialist workflow; expect to wait.
-- **`/yggdrasil/research <topic>`** — Conduct deep research: decompose the topic into independent research areas, investigate each in parallel with review and synthesis, and deliver a comprehensive report. Adaptive multi-specialist workflow; expect to wait.
+- **`/yggdrasil/research <topic>`** — Conduct deep research: decompose the topic into independent research areas, investigate each in parallel with review, and deliver a concise, question-targeted report. Adaptive multi-specialist workflow; expect to wait.
 - **`/yggdrasil/architect <request>`** — Run the Architecture workflow: produce an arc42-structured architecture document of the system or of a stated objective, with a decision record for each structurally significant decision. Structural context is gathered when it is not already established, the document is drafted, and after a ratification checkpoint it is persisted into `docs/architecture/` by default — one folder per arc42 section, created when none exists and merged into when one does. Multi-specialist workflow; expect to wait.
 - **`/yggdrasil/tdd <objective>`** — Run the TDD workflow: implement a bounded change test-first and land it as reviewed commits. Behavioral context and an executed baseline are gathered when not already established; a plan fixes the work package, the execution shape, and the commit plan, and pauses at a checkpoint for your steering; each package runs red → green → refactor and is reviewed while still uncommitted; a fresh commit session records each planned batch only after every gating review passes. Multi-specialist workflow; expect to wait.
 - **`/yggdrasil/engineer <objective>`** — Run the Software Engineering workflow: optional business analysis and an arc42-structured architecture decision — the Architecture workflow run to completion as a stage, ratifying and persisting within it — then the TDD workflow run as a stage: reviewed work packages, each commit issued only after its review passes. A plan checkpoint shows you the packages, the commit plan, and the architecture decisions before implementation begins. Multi-specialist workflow; expect to wait.
@@ -371,19 +372,19 @@ Odin provides an optional **Deliberation Council** workflow for high-stakes ques
 
 ### Research
 
-Odin also provides a **Research workflow** for deep investigation of complex topics. It decomposes the question into independent research areas, investigates each in parallel with citations and review, synthesizes the findings, and delivers a comprehensive report. Use this when you need thorough, multi-faceted research rather than a quick answer.
+Odin also provides a **Research workflow** for deep investigation of complex topics. It decomposes the question into independent research areas, investigates each in parallel with citations and review, and consolidates the reviewed findings into a concise, question-targeted report. Use this when you need thorough, multi-faceted research rather than a quick answer.
 
 **How it works:**
 
 1. **Decomposition** — the topic is analyzed and broken into independent research areas.
 2. **Plan checkpoint** — you see the research plan and can redirect before investigation begins (this is your steering point).
 3. **Parallel investigation** — each research area is investigated independently, with findings grounded in live sources and backed by specific citations.
-4. **Review and synthesis** — each investigation is reviewed, then synthesized into a comprehensive answer that names its own boundaries (what was covered, what was not, what remains uncertain).
-5. **Final answer** — the synthesis is drafted as a user-facing report and independently reviewed before delivery.
+4. **Review** — each investigation is independently reviewed before its findings enter the report.
+5. **Final answer** — the reviewed findings are consolidated into a concise, question-targeted report that names its own boundaries (what was covered, what was not, what remains uncertain), and the report is independently reviewed before delivery.
 
 **When to use:** Explicitly request research, investigation, or deep analysis, or use the `/yggdrasil/research` command. Factual or executable requests skip this workflow.
 
-**What to expect:** This is a multi-specialist workflow that takes longer than a simple answer. The plan checkpoint gives you a chance to steer the investigation. You'll receive a comprehensive report with citations and clear boundaries on what was and wasn't covered.
+**What to expect:** This is a multi-specialist workflow that takes longer than a simple answer. The plan checkpoint gives you a chance to steer the investigation. You'll receive a concise, question-targeted report with citations and clear boundaries on what was and wasn't covered.
 
 ### Architecture
 

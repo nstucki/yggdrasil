@@ -2,7 +2,7 @@
 
 _Part of [Yggdrasil — Architecture (arc42)](../README.md) · [§6](README.md)._
 
-The command path, using `/yggdrasil/research` as the instance. Read from `commands/yggdrasil/research.md:1-13`, `agents/odin-autonomous.md:172-199, 298`, and `skills/research/odin-research-workflow/SKILL.md:22-39` (via the context Workfile). Realizes goals 1 and 4.
+The command path, using `/yggdrasil/research` as the instance. Read from `commands/yggdrasil/research.md:1-13`, `agents/odin-autonomous.md:172-199, 298`, and `skills/research/odin-research-workflow/SKILL.md:22-38` (via the context Workfile). Realizes goals 1 and 4.
 
 ```mermaid
 sequenceDiagram
@@ -29,14 +29,10 @@ sequenceDiagram
         O->>H: stream review
         H-->>O: verdict
     end
-    O->>M: step 4 — synthesis over reviewed streams
-    M-->>O: synthesis Workfile
-    O->>H: review
-    H-->>O: verdict
-    O->>Bg: step 5 — draft Deliverable
-    Bg-->>O: draft Workfile
+    O->>Bg: step 4 — consolidate reviewed streams, draft Deliverable
+    Bg-->>O: report Workfile
     opt artifact requested
-        O->>B: step 6 — persist Artifact
+        O->>B: step 5 — persist Artifact
         B-->>O: path
         O->>H: review
     end
@@ -45,4 +41,4 @@ sequenceDiagram
     O-->>U: Deliverable
 ```
 
-**Error path actually taken.** A `BLOCKED` stream review resumes the Mimir session once; if it stays blocked, the workflow stops and surfaces the failure rather than proceeding to synthesis on unreviewed material (context Workfile § Cross-cutting Concepts item 8; `agents/odin-autonomous.md:267-279`). The plan checkpoint's pause behavior is a Communication Policy threshold: Autonomous auto-proceeds and rides the summary on the final disclosure (`agents/odin-autonomous.md:298`).
+**Error path actually taken.** A `BLOCKED` stream review resumes the Mimir session once; if it stays blocked, the workflow stops and surfaces the failure rather than proceeding to the report on unreviewed material (context Workfile § Cross-cutting Concepts item 8; `agents/odin-autonomous.md:267-279`). The plan checkpoint's pause behavior is a Communication Policy threshold: Autonomous auto-proceeds and rides the summary on the final disclosure (`agents/odin-autonomous.md:298`).
