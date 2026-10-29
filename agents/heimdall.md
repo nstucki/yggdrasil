@@ -36,6 +36,9 @@ permission:
     "go test*": allow
     "npm test*": allow
     "pytest*": allow
+    "uv run pytest *": allow
+    "uv run python -m pytest *": allow
+    "uv run -m pytest *": allow
     # verification scripts
     "npm run*": allow
     # release-class scripts
